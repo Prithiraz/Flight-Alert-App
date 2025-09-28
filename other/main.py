@@ -14,6 +14,11 @@ from pydantic import BaseModel
 import requests
 from typing import Dict, Any, Optional
 import urllib.parse
+import os
+
+# Get the directory of this script for template path
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_DIR = os.path.join(SCRIPT_DIR, "templates")
 
 # Mock ryanair module - in a real app this would be a proper airline API integration
 class ryanair:
@@ -34,7 +39,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Flight Alert App", version="2.0.0")
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=TEMPLATE_DIR)
 
 # Pydantic models for request/response validation
 class FlightQuery(BaseModel):

@@ -55,292 +55,543 @@ AEROSPACE_FACTS = [
     }
 ]
 
-# HTML template for the main page
+# HTML template for the main page - Modern FlightAlert Pro Dashboard
 MAIN_PAGE_HTML = """
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Flight Alert App v3.0 - Premium Flight Search</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlightAlert Pro - Smart Flight Search & Alerts</title>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; padding: 20px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
             color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
-        .container { 
-            max-width: 1200px; margin: 0 auto; 
-            background: white; 
-            border-radius: 15px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        .header { 
-            background: linear-gradient(45deg, #1e3c72, #2a5298); 
-            color: white; 
-            padding: 40px; 
-            text-align: center; 
-        }
-        .header h1 { margin: 0; font-size: 3em; font-weight: 300; }
-        .header p { margin: 10px 0; opacity: 0.9; font-size: 1.2em; }
-        .pricing { 
-            display: flex; 
-            justify-content: center; 
-            gap: 30px; 
-            padding: 40px; 
-            background: #f8f9fa;
-        }
-        .price-card { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 10px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            text-align: center; 
-            flex: 1; 
-            max-width: 300px;
-        }
-        .price-card.featured { 
-            border: 3px solid #667eea; 
-            transform: scale(1.05);
-        }
-        .price { font-size: 2.5em; color: #667eea; font-weight: bold; }
-        .button { 
-            background: #667eea; 
-            color: white; 
-            padding: 15px 30px; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 1.1em;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
-        }
-        .button:hover { background: #5a6fd8; }
-        .features { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 30px; 
-            padding: 40px; 
-        }
-        .feature { 
-            background: #f8f9fa; 
-            padding: 30px; 
-            border-radius: 10px; 
-            border-left: 4px solid #667eea;
-        }
-        .endpoints { 
-            padding: 40px; 
-            background: #f1f3f4;
-        }
-        .endpoint { 
-            background: white; 
-            margin: 10px 0; 
-            padding: 20px; 
-            border-radius: 5px; 
-            border-left: 4px solid #28a745;
-        }
-        .method { 
-            color: white; 
-            padding: 5px 10px; 
-            border-radius: 3px; 
-            font-weight: bold; 
-            margin-right: 10px;
-        }
-        .get { background: #007bff; }
-        .post { background: #28a745; }
-        .aerospace-facts { 
-            padding: 40px; 
-            background: linear-gradient(135deg, #74b9ff, #0984e3);
-            color: white;
-        }
-        .fact-card { 
-            background: rgba(255,255,255,0.1); 
-            padding: 20px; 
-            margin: 15px 0; 
-            border-radius: 10px;
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
-        .rare-aircraft { 
-            padding: 40px; 
-            background: #2d3436;
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #667eea;
             color: white;
         }
-        .aircraft-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 20px; 
-            margin-top: 20px;
+        
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
         }
-        .aircraft-card { 
-            background: #636e72; 
-            padding: 20px; 
-            border-radius: 10px;
+        
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
         }
-        .rarity { 
-            color: #fdcb6e; 
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .search-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+        
+        .form-group input, .form-group select {
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-btn {
+            grid-column: 1 / -1;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.25rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+        
+        .feature-card p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .stats-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-item {
+            padding: 1.5rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #4a5568;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        .benefits-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+        }
+        
+        .benefits-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 12px;
+        }
+        
+        .benefit-item::before {
+            content: '✓';
+            color: #48bb78;
             font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+        
+        .cta-section {
+            background: linear-gradient(45deg, #4299e1, #667eea);
+            color: white;
+            text-align: center;
+            padding: 4rem;
+            border-radius: 20px;
+            margin: 3rem 0;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .tracking-map {
+            background: #2d3748;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            color: white;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .map-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #4a5568, #2d3748);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>✈️ Flight Alert App v3.0</h1>
-            <p>Premium Flight Search & Alert System</p>
-            <p><strong>Real-time data • Advanced filtering • Rare aircraft tracking</strong></p>
-        </div>
-
-        <div class="pricing">
-            <div class="price-card">
-                <h3>Monthly Subscription</h3>
-                <div class="price">£5</div>
-                <p>per month</p>
-                <ul style="text-align: left; margin: 20px 0;">
-                    <li>Unlimited flight searches</li>
-                    <li>Real-time price alerts</li>
-                    <li>Multi-currency support</li>
-                    <li>Basic aircraft filters</li>
-                </ul>
-                <button class="button" onclick="subscribe('monthly')">Subscribe Monthly</button>
-            </div>
-            
-            <div class="price-card featured">
-                <h3>Lifetime Access</h3>
-                <div class="price">£70</div>
-                <p>one-time payment</p>
-                <ul style="text-align: left; margin: 20px 0;">
-                    <li>Everything in Monthly</li>
-                    <li>Rare aircraft tracking</li>
-                    <li>Live flight radar</li>
-                    <li>Aerospace calculations</li>
-                    <li>Priority support</li>
-                </ul>
-                <button class="button" onclick="subscribe('lifetime')">Get Lifetime Access</button>
+    <header class="header">
+        <div class="nav-container">
+            <a href="/" class="logo">FlightAlert Pro</a>
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-secondary" onclick="showLogin()">Login</a>
+                <a href="#" class="btn btn-primary" onclick="showSignup()">Sign Up</a>
             </div>
         </div>
+    </header>
 
-        <div class="features">
-            <div class="feature">
-                <h3>🎯 Advanced Flight Search</h3>
-                <p>Search across multiple airlines with real-time pricing from Amadeus, Skyscanner, and other premium APIs.</p>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>FlightAlert Pro</h1>
+                <p>Get instant alerts for flight deals, rare aircraft, and delays. Never miss a great flight deal again!</p>
             </div>
-            <div class="feature">
-                <h3>💰 Smart Price Alerts</h3>
-                <p>Set price thresholds and get notified when flights drop below your target price.</p>
-            </div>
-            <div class="feature">
-                <h3>🌍 Multi-Currency Support</h3>
-                <p>View prices in GBP, USD, EUR, and 10+ other currencies with live exchange rates.</p>
-            </div>
-            <div class="feature">
-                <h3>✈️ Rare Aircraft Tracking</h3>
-                <p>Special filters for plane enthusiasts to find flights on rare aircraft like A380, Concorde routes, and vintage planes.</p>
-            </div>
-            <div class="feature">
-                <h3>🗺️ Live Flight Radar</h3>
-                <p>Real-time aircraft tracking with simplified ATC-style global map showing live flights.</p>
-            </div>
-            <div class="feature">
-                <h3>📊 Aerospace Insights</h3>
-                <p>Educational content with flight calculations, aircraft specifications, and aviation facts.</p>
-            </div>
-        </div>
+        </section>
 
-        <div class="aerospace-facts">
-            <h2>🚀 Aerospace Facts & Calculations</h2>
-            {% for fact in aerospace_facts %}
-            <div class="fact-card">
-                <h4>{{ fact.title }}</h4>
-                <p>{{ fact.fact }}</p>
-                <small><strong>Calculation:</strong> {{ fact.calculation }}</small>
+        <section class="container">
+            <div class="search-section">
+                <h2 style="text-align: center; margin-bottom: 2rem; color: #2d3748; font-size: 2rem;">Smart Flight Search</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: #4a5568;">Search across 100+ airlines and booking sites to find the best deals. Our AI-powered system tracks prices 24/7.</p>
+                
+                <form class="search-form" onsubmit="searchFlights(event)">
+                    <div class="form-group">
+                        <label for="from">From</label>
+                        <input type="text" id="from" placeholder="Departure city or airport" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="to">To</label>
+                        <input type="text" id="to" placeholder="Destination city or airport" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="departure">Departure</label>
+                        <input type="date" id="departure" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="return">Return (Optional)</label>
+                        <input type="date" id="return">
+                    </div>
+                    <div class="form-group">
+                        <label for="passengers">Passengers</label>
+                        <select id="passengers">
+                            <option value="1">1 Passenger</option>
+                            <option value="2">2 Passengers</option>
+                            <option value="3">3 Passengers</option>
+                            <option value="4">4+ Passengers</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="class">Class</label>
+                        <select id="class">
+                            <option value="economy">Economy</option>
+                            <option value="premium">Premium Economy</option>
+                            <option value="business">Business</option>
+                            <option value="first">First Class</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="search-btn">🔍 Search Flights</button>
+                </form>
             </div>
-            {% endfor %}
-        </div>
 
-        <div class="rare-aircraft">
-            <h2>🦄 Rare Aircraft Database</h2>
-            <p>Track flights on the world's most exclusive and rare aircraft</p>
-            <div class="aircraft-grid">
-                {% for aircraft, info in rare_aircraft.items() %}
-                <div class="aircraft-card">
-                    <h4>{{ aircraft }}</h4>
-                    <p><strong>Manufacturer:</strong> {{ info.manufacturer }}</p>
-                    <p><strong>Status:</strong> {{ info.status }}</p>
-                    <p><strong>Max Speed:</strong> Mach {{ info.max_speed_mach }}</p>
-                    <p class="rarity">Rarity: {{ info.rarity }}/10</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Smart Flight Search</h3>
+                    <p>Search across 100+ airlines and booking sites to find the best deals. Our AI-powered system tracks prices 24/7.</p>
                 </div>
-                {% endfor %}
+                <div class="feature-card">
+                    <div class="feature-icon">🚨</div>
+                    <h3>Instant Alerts</h3>
+                    <p>Get notified immediately when flight prices drop, rare aircraft are spotted, or your flight is delayed.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>Live Flight Tracking</h3>
+                    <p>Track flights in real-time with our 3D map. Monitor delays, airport conditions, and trending routes.</p>
+                </div>
             </div>
-        </div>
 
-        <div class="endpoints">
-            <h2>🚀 API Endpoints</h2>
-            <p><strong>All endpoints require valid subscription and authentication token</strong></p>
-            
-            <div class="endpoint">
-                <span class="method post">POST</span>
-                <strong>/api/auth/subscribe</strong> - Create subscription and payment session
+            <div class="tracking-map">
+                <h3 style="margin-bottom: 1rem;">Live Flight Tracking</h3>
+                <div class="map-placeholder">
+                    🌍 3D Flight Map - Real-time Aircraft Tracking
+                </div>
+                <p>Interactive map showing live flights, delays, and routing information</p>
             </div>
-            
-            <div class="endpoint">
-                <span class="method post">POST</span>
-                <strong>/api/auth/login</strong> - Login and get access token
+
+            <div class="benefits-section">
+                <h2 style="text-align: center; margin-bottom: 1rem; color: #2d3748;">Why Choose FlightAlert Pro?</h2>
+                <div class="benefits-list">
+                    <div class="benefit-item">Real-time price monitoring across 100+ booking sites</div>
+                    <div class="benefit-item">Instant notifications via email and push alerts</div>
+                    <div class="benefit-item">Advanced filters for airlines, airports, and budgets</div>
+                    <div class="benefit-item">Premium features including 3D flight maps</div>
+                </div>
             </div>
-            
-            <div class="endpoint">
-                <span class="method post">POST</span>
-                <strong>/api/flights/search</strong> - Premium flight search with real APIs
+
+            <div class="stats-section">
+                <h2 style="color: #2d3748; margin-bottom: 1rem;">Live Flight Stats</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">12,847</span>
+                        <div class="stat-label">Flights Tracked</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">195</span>
+                        <div class="stat-label">Countries</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">37,000ft</span>
+                        <div class="stat-label">Avg Altitude</div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="endpoint">
-                <span class="method post">POST</span>
-                <strong>/api/flights/rare</strong> - Search for rare aircraft flights
+
+            <div class="cta-section">
+                <h2>Ready to Start Saving?</h2>
+                <p>Join thousands of travelers who save money with FlightAlert Pro</p>
+                <a href="#" class="btn btn-primary" onclick="showSignup()" style="font-size: 1.2rem; padding: 1rem 2rem;">Get Started Now</a>
             </div>
-            
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/airports</strong> - Get comprehensive airport database
-            </div>
-            
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/airlines</strong> - Get airline database with IATA codes
-            </div>
-            
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/currency/rates</strong> - Get live currency exchange rates
-            </div>
-            
-            <div class="endpoint">
-                <span class="method get">GET</span>
-                <strong>/api/flights/live-map</strong> - Live aircraft tracking data
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <script>
-        function subscribe(type) {
-            const email = prompt("Enter your email address:");
-            if (!email) return;
-
-            fetch('/api/auth/subscribe', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email, subscription_type: type })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = data.checkout_url;
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            });
+        // Define functions first
+        function showLogin() {
+            const email = prompt("Enter your email to login:");
+            if (email) {
+                fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Login successful! Token: ' + data.token.substring(0, 20) + '...');
+                    } else {
+                        alert('Login failed: ' + data.error);
+                    }
+                })
+                .catch(err => alert('Login error: ' + err.message));
+            }
         }
+
+        function showSignup() {
+            const email = prompt("Enter your email to sign up:");
+            if (email) {
+                const subscriptionType = confirm("Choose subscription:\nOK for Monthly (£5/month)\nCancel for Lifetime (£70 one-time)") ? 'monthly' : 'lifetime';
+                
+                fetch('/api/auth/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, subscription_type: subscriptionType })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.checkout_url;
+                    } else {
+                        alert('Signup failed: ' + data.error);
+                    }
+                })
+                .catch(err => alert('Signup error: ' + err.message));
+            }
+        }
+
+        function searchFlights(event) {
+            event.preventDefault();
+            
+            const formData = {
+                from: document.getElementById('from').value,
+                to: document.getElementById('to').value,
+                departure: document.getElementById('departure').value,
+                return: document.getElementById('return').value,
+                passengers: document.getElementById('passengers').value,
+                class: document.getElementById('class').value
+            };
+            
+            // For demo purposes, show alert. In real app, this would search flights
+            alert(`Searching flights from ${formData.from} to ${formData.to} on ${formData.departure}`);
+            
+            // In real implementation, this would call the flight search API
+            // fetch('/api/flights/search', { method: 'POST', body: JSON.stringify(formData) })
+        }
+
+        // Set default departure date to tomorrow
+        document.addEventListener('DOMContentLoaded', function() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('departure').value = tomorrow.toISOString().split('T')[0];
+        });
+
+        // Simulate live stats updates
+        setInterval(() => {
+            const flightsElement = document.querySelector('.stat-number');
+            if (flightsElement) {
+                const currentFlights = parseInt(flightsElement.textContent.replace(',', ''));
+                const newFlights = currentFlights + Math.floor(Math.random() * 10);
+                flightsElement.textContent = newFlights.toLocaleString();
+            }
+        }, 5000);
     </script>
 </body>
 </html>
@@ -348,12 +599,8 @@ MAIN_PAGE_HTML = """
 
 @app.route('/', methods=['GET'])
 def home():
-    """Enhanced home page with payment integration"""
-    return render_template_string(
-        MAIN_PAGE_HTML, 
-        aerospace_facts=AEROSPACE_FACTS[:4],
-        rare_aircraft=dict(list(RARE_AIRCRAFT_DB.items())[:8])
-    )
+    """Modern FlightAlert Pro dashboard"""
+    return MAIN_PAGE_HTML
 
 @app.route('/api/auth/subscribe', methods=['POST'])
 def create_subscription():

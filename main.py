@@ -369,6 +369,8 @@ def advanced_search():
             "error": "Internal server error",
             "message": "An error occurred during advanced search"
         }), 500
+
+@app.route('/api/status', methods=['GET'])
 def api_status():
     """API status check endpoint"""
     return jsonify({

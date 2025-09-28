@@ -6,7 +6,11 @@ Provides flight search and alert functionality via REST API
 
 import logging
 from datetime import datetime
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 import requests
 from typing import Dict, Any, Optional
 import urllib.parse
@@ -29,7 +33,25 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+app = FastAPI(title="Flight Alert App", version="2.0.0")
+templates = Jinja2Templates(directory="templates")
+
+# Pydantic models for request/response validation
+class FlightQuery(BaseModel):
+    departure: str
+    arrival: str
+    date: Optional[str] = None
+    max_price: Optional[float] = None
+    min_price: Optional[float] = None
+    airline: Optional[str] = None
+    max_duration: Optional[int] = None
+    alert_price: Optional[float] = None
+
+class AdvancedSearchQuery(BaseModel):
+    departure: str
+    arrival: str
+    date: Optional[str] = None
+    airline: Optional[str] = None
 
 # Mock flight data for demonstration (in a real app, this would connect to airline APIs)
 MOCK_FLIGHTS = [
@@ -201,70 +223,34 @@ def create_query(departure, arrival, date=None, passengers=1, airline=None):
         
     return query
 
-@app.route('/', methods=['GET'])
-def home():
+@app.get('/', response_class=HTMLResponse)
+def home(request: Request):
     """Home endpoint with comprehensive API documentation"""
-    return jsonify({
+    return templates.TemplateResponse("home.html", {
+        "request": request,
         "message": "Welcome to Flight Alert App",
         "version": "2.0.0",
-        "description": "Advanced flight search and price alert system",
-        "endpoints": {
-            "/": "GET - API documentation",
-            "/api/status": "GET - Check API status",
-            "/api/query": "POST - Search for flights with advanced filtering",
-            "/api/advanced-search": "POST - Advanced search with airline deep links and external APIs",
-            "/api/alerts": "GET - View active price alerts",
-            "/api/routes": "GET - List available flight routes"
-        },
-        "query_parameters": {
-            "required": ["departure", "arrival"],
-            "optional": [
-                "date (string) - Travel date",
-                "max_price (number) - Maximum price filter", 
-                "min_price (number) - Minimum price filter",
-                "airline (string) - Airline preference",
-                "max_duration (number) - Maximum flight duration in minutes",
-                "alert_price (number) - Price threshold for alerts"
-            ]
-        },
-        "example_request": {
-            "departure": "JFK",
-            "arrival": "LAX", 
-            "max_price": 300,
-            "airline": "american",
-            "alert_price": 250
-        },
-        "supported_airports": ["JFK", "LAX", "ORD", "DEN", "BOS", "SEA"],
-        "features": [
-            "Advanced flight filtering",
-            "Price alert system",
-            "Flight duration calculations", 
-            "Airline preference matching",
-            "Price statistics and analytics"
-        ]
+        "description": "Advanced flight search and price alert system"
     })
 
-@app.route('/api/alerts', methods=['GET'])
+@app.get('/api/alerts')
 def get_alerts():
     """Get active price alerts"""
     try:
         # In a real app, this would query a database
         recent_alerts = PRICE_ALERTS[-10:]  # Get last 10 alerts
         
-        return jsonify({
+        return {
             "alerts": recent_alerts,
             "total_alerts": len(PRICE_ALERTS),
             "timestamp": datetime.now().isoformat()
-        })
+        }
         
     except Exception as e:
         logger.error(f"Error retrieving alerts: {str(e)}")
-        return jsonify({
-            "error": "Internal server error",
-            "message": "An error occurred while retrieving alerts"
-        }), 500
+        raise HTTPException(status_code=500, detail="An error occurred while retrieving alerts")
 
-@app.route('/api/routes', methods=['GET'])
+@app.get('/api/routes')
 def get_routes():
     """Get available flight routes and basic statistics"""
     try:
@@ -295,48 +281,32 @@ def get_routes():
             route["price_range"]["min"] = round(route["price_range"]["min"], 2)
             route["price_range"]["max"] = round(route["price_range"]["max"], 2)
         
-        return jsonify({
+        return {
             "routes": list(routes.values()),
             "total_routes": len(routes),
             "total_flights": len(MOCK_FLIGHTS),
             "airlines": list(airlines),
             "timestamp": datetime.now().isoformat()
-        })
+        }
         
     except Exception as e:
         logger.error(f"Error retrieving routes: {str(e)}")
-        return jsonify({
-            "error": "Internal server error", 
-            "message": "An error occurred while retrieving routes"
-        }), 500
+        raise HTTPException(status_code=500, detail="An error occurred while retrieving routes")
 
-@app.route('/api/advanced-search', methods=['POST'])
-def advanced_search():
+@app.post('/api/advanced-search')
+def advanced_search(query: AdvancedSearchQuery):
     """
     Advanced flight search using external airline APIs and deep linking
     Demonstrates usage of create_query, deep_airline_urls, and ryanair integration
     """
     try:
-        data = request.get_json()
-        if not data:
-            return jsonify({
-                "error": "No JSON data provided",
-                "message": "Please provide search criteria in JSON format"
-            }), 400
-            
-        departure = data.get('departure', '').upper()
-        arrival = data.get('arrival', '').upper()
-        date = data.get('date')
-        airline = data.get('airline', '').lower()
-        
-        if not departure or not arrival:
-            return jsonify({
-                "error": "Missing required parameters",
-                "message": "Both 'departure' and 'arrival' airport codes are required"
-            }), 400
+        departure = query.departure.upper()
+        arrival = query.arrival.upper()
+        date = query.date
+        airline = query.airline.lower() if query.airline else None
         
         # Create standardized query using the create_query function
-        query = create_query(departure, arrival, date, passengers=1, airline=airline)
+        search_query = create_query(departure, arrival, date, passengers=1, airline=airline)
         
         # Get deep airline URLs for the search
         available_airlines = []
@@ -351,7 +321,7 @@ def advanced_search():
         ryanair_results = ryanair.get_flights(departure, arrival, date)
         
         response = {
-            "query": query,
+            "query": search_query,
             "deep_links": available_airlines,
             "ryanair_integration": ryanair_results,
             "search_metadata": {
@@ -361,26 +331,23 @@ def advanced_search():
             }
         }
         
-        return jsonify(response)
+        return response
         
     except Exception as e:
         logger.error(f"Error in advanced search: {str(e)}")
-        return jsonify({
-            "error": "Internal server error",
-            "message": "An error occurred during advanced search"
-        }), 500
+        raise HTTPException(status_code=500, detail="An error occurred during advanced search")
 
-@app.route('/api/status', methods=['GET'])
+@app.get('/api/status')
 def api_status():
     """API status check endpoint"""
-    return jsonify({
+    return {
         "status": "active",
         "timestamp": datetime.now().isoformat(),
         "service": "Flight Alert App API"
-    })
+    }
 
-@app.route('/api/query', methods=['POST'])
-def query_flights():
+@app.post('/api/query')
+def query_flights(query: FlightQuery, request: Request):
     """
     Main query endpoint for flight searches
     Handles POST requests to search for flights based on criteria
@@ -388,26 +355,18 @@ def query_flights():
     """
     try:
         # Log the incoming request
-        client_ip = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+        client_ip = request.client.host
         logger.info(f"Flight query request from {client_ip}")
         
-        # Get request data
-        data = request.get_json()
-        if not data:
-            return jsonify({
-                "error": "No JSON data provided",
-                "message": "Please provide search criteria in JSON format"
-            }), 400
-        
-        # Extract search parameters
-        departure = data.get('departure', '').upper()
-        arrival = data.get('arrival', '').upper()
-        date = data.get('date')
-        max_price = data.get('max_price')
-        min_price = data.get('min_price')
-        airline = data.get('airline', '').lower()
-        max_duration = data.get('max_duration')  # in minutes
-        alert_price = data.get('alert_price')  # price threshold for alerts
+        # Extract search parameters from Pydantic model
+        departure = query.departure.upper()
+        arrival = query.arrival.upper()
+        date = query.date
+        max_price = query.max_price
+        min_price = query.min_price
+        airline = query.airline.lower() if query.airline else None
+        max_duration = query.max_duration  # in minutes
+        alert_price = query.alert_price  # price threshold for alerts
         
         logger.info(f"Search criteria: departure={departure}, arrival={arrival}, date={date}, "
                    f"max_price={max_price}, min_price={min_price}, airline={airline}, "
@@ -416,19 +375,9 @@ def query_flights():
         # Create query object for consistency with advanced search
         search_query = create_query(departure, arrival, date, airline=airline)
         
-        # Validate required parameters
-        if not departure or not arrival:
-            return jsonify({
-                "error": "Missing required parameters",
-                "message": "Both 'departure' and 'arrival' airport codes are required"
-            }), 400
-        
         # Validate price range if both provided
         if min_price is not None and max_price is not None and min_price > max_price:
-            return jsonify({
-                "error": "Invalid price range",
-                "message": "min_price cannot be greater than max_price"
-            }), 400
+            raise HTTPException(status_code=400, detail="min_price cannot be greater than max_price")
         
         # Filter flights based on search criteria
         matching_flights = []
@@ -532,14 +481,11 @@ def query_flights():
         if alert_flights:
             logger.info(f"Found {len(alert_flights)} flights below alert price threshold of ${alert_price}")
         
-        return jsonify(response)
+        return response
         
     except Exception as e:
         logger.error(f"Error processing flight query: {str(e)}")
-        return jsonify({
-            "error": "Internal server error",
-            "message": "An error occurred while processing your flight search"
-        }), 500
+        raise HTTPException(status_code=500, detail="An error occurred while processing your flight search")
 
 def format_duration(minutes):
     """Convert duration in minutes to human-readable format"""
@@ -552,39 +498,12 @@ def format_duration(minutes):
     else:
         return f"{mins}m"
 
-@app.errorhandler(404)
-def not_found(error):
-    """Handle 404 errors"""
-    return jsonify({
-        "error": "Endpoint not found",
-        "message": "The requested endpoint does not exist",
-        "available_endpoints": ["/", "/api/status", "/api/query", "/api/advanced-search", "/api/alerts", "/api/routes"],
-        "tip": "Visit the root endpoint (/) for complete API documentation"
-    }), 404
-
-@app.errorhandler(405)
-def method_not_allowed(error):
-    """Handle 405 Method Not Allowed errors"""
-    return jsonify({
-        "error": "Method not allowed",
-        "message": "The requested HTTP method is not allowed for this endpoint",
-        "tip": "Check the API documentation at the root endpoint (/) for correct methods"
-    }), 405
-
-@app.errorhandler(500)
-def internal_server_error(error):
-    """Handle 500 Internal Server Error"""
-    return jsonify({
-        "error": "Internal server error",
-        "message": "An unexpected error occurred on the server",
-        "tip": "Please try again later or contact support if the problem persists"
-    }), 500
-
 if __name__ == '__main__':
+    import uvicorn
     logger.info("Starting Flight Alert App v2.0...")
     logger.info(f"Loaded {len(MOCK_FLIGHTS)} mock flights across multiple routes")
     logger.info("Available endpoints: /, /api/status, /api/query, /api/alerts, /api/routes") 
     logger.info("Enhanced features: price alerts, advanced filtering, route analytics")
     
-    # Run the Flask development server
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    # Run the FastAPI server with uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5000)

@@ -5,9 +5,12 @@ A Flask-based flight search and alert application with REST API endpoints.
 ## Features
 
 - Flight search API with filtering capabilities
+- Advanced flight search with airline deep links and external API integration
 - Real-time flight status information
 - RESTful API endpoints
 - Error handling and logging
+- Price alert system
+- Support for multiple airline APIs (including Ryanair integration)
 
 ## Installation
 
@@ -38,6 +41,13 @@ Search for flights with the following JSON parameters:
 - `date` (optional): Travel date
 - `max_price` (optional): Maximum price filter
 
+### POST /api/advanced-search
+Advanced flight search with airline deep links and external API integration:
+- `departure` (required): Departure airport code (e.g., "JFK")
+- `arrival` (required): Arrival airport code (e.g., "LAX")
+- `date` (optional): Travel date
+- `airline` (optional): Preferred airline
+
 Example request:
 ```bash
 curl -X POST http://localhost:8000/api/query \
@@ -45,9 +55,21 @@ curl -X POST http://localhost:8000/api/query \
   -d '{"departure": "JFK", "arrival": "LAX", "max_price": 300}'
 ```
 
+Advanced search example:
+```bash
+curl -X POST http://localhost:8000/api/advanced-search \
+  -H "Content-Type: application/json" \
+  -d '{"departure": "JFK", "arrival": "LAX", "date": "2024-01-15"}'
+```
+
 ## Testing
 
-Run the test script to verify all endpoints:
+1. First, start the application:
+```bash
+python main.py
+```
+
+2. In another terminal, run the test script to verify all endpoints:
 ```bash
 python test_api.py
 ```
@@ -57,3 +79,7 @@ python test_api.py
 - ✅ Resolved HTTP 404 error for POST /api/query endpoint
 - ✅ Added proper API routing and error handling
 - ✅ Implemented flight search functionality
+- ✅ Added missing "ryanair" import functionality
+- ✅ Implemented missing "create_query" function
+- ✅ Added missing "deep_airline_urls" variable
+- ✅ Enhanced application with advanced search capabilities and external API integrations

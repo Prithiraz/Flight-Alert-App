@@ -9,6 +9,18 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 import requests
 from typing import Dict, Any, Optional
+import urllib.parse
+
+# Mock ryanair module - in a real app this would be a proper airline API integration
+class ryanair:
+    @staticmethod
+    def get_flights(departure, arrival, date=None):
+        """Mock Ryanair API integration"""
+        return {
+            "flights": [],
+            "status": "success",
+            "airline": "Ryanair"
+        }
 
 # Configure logging
 logging.basicConfig(
@@ -150,6 +162,45 @@ MOCK_FLIGHTS = [
 # Price alert tracking (in a real app, this would be stored in a database)
 PRICE_ALERTS = []
 
+# Deep airline URLs for advanced flight search functionality
+deep_airline_urls = {
+    "american": "https://www.aa.com/homePage.do",
+    "delta": "https://www.delta.com",
+    "united": "https://www.united.com", 
+    "southwest": "https://www.southwest.com",
+    "jetblue": "https://www.jetblue.com",
+    "alaska": "https://www.alaskaair.com",
+    "ryanair": "https://www.ryanair.com"
+}
+
+def create_query(departure, arrival, date=None, passengers=1, airline=None):
+    """
+    Create a standardized flight query object for airline APIs
+    
+    Args:
+        departure (str): Departure airport code
+        arrival (str): Arrival airport code  
+        date (str, optional): Travel date in YYYY-MM-DD format
+        passengers (int): Number of passengers
+        airline (str, optional): Preferred airline
+        
+    Returns:
+        dict: Standardized query object
+    """
+    query = {
+        "departure": departure.upper(),
+        "arrival": arrival.upper(),
+        "passengers": passengers,
+        "query_timestamp": datetime.now().isoformat()
+    }
+    
+    if date:
+        query["date"] = date
+    if airline:
+        query["airline"] = airline.lower()
+        
+    return query
+
 @app.route('/', methods=['GET'])
 def home():
     """Home endpoint with comprehensive API documentation"""
@@ -161,6 +212,7 @@ def home():
             "/": "GET - API documentation",
             "/api/status": "GET - Check API status",
             "/api/query": "POST - Search for flights with advanced filtering",
+            "/api/advanced-search": "POST - Advanced search with airline deep links and external APIs",
             "/api/alerts": "GET - View active price alerts",
             "/api/routes": "GET - List available flight routes"
         },
@@ -258,7 +310,65 @@ def get_routes():
             "message": "An error occurred while retrieving routes"
         }), 500
 
-@app.route('/api/status', methods=['GET'])
+@app.route('/api/advanced-search', methods=['POST'])
+def advanced_search():
+    """
+    Advanced flight search using external airline APIs and deep linking
+    Demonstrates usage of create_query, deep_airline_urls, and ryanair integration
+    """
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                "error": "No JSON data provided",
+                "message": "Please provide search criteria in JSON format"
+            }), 400
+            
+        departure = data.get('departure', '').upper()
+        arrival = data.get('arrival', '').upper()
+        date = data.get('date')
+        airline = data.get('airline', '').lower()
+        
+        if not departure or not arrival:
+            return jsonify({
+                "error": "Missing required parameters",
+                "message": "Both 'departure' and 'arrival' airport codes are required"
+            }), 400
+        
+        # Create standardized query using the create_query function
+        query = create_query(departure, arrival, date, passengers=1, airline=airline)
+        
+        # Get deep airline URLs for the search
+        available_airlines = []
+        for airline_name, url in deep_airline_urls.items():
+            available_airlines.append({
+                "name": airline_name,
+                "deep_link": url,
+                "search_url": f"{url}?from={departure}&to={arrival}&date={date or ''}"
+            })
+        
+        # Integrate with Ryanair API (mock)
+        ryanair_results = ryanair.get_flights(departure, arrival, date)
+        
+        response = {
+            "query": query,
+            "deep_links": available_airlines,
+            "ryanair_integration": ryanair_results,
+            "search_metadata": {
+                "total_airlines": len(deep_airline_urls),
+                "query_type": "advanced_search",
+                "timestamp": datetime.now().isoformat()
+            }
+        }
+        
+        return jsonify(response)
+        
+    except Exception as e:
+        logger.error(f"Error in advanced search: {str(e)}")
+        return jsonify({
+            "error": "Internal server error",
+            "message": "An error occurred during advanced search"
+        }), 500
 def api_status():
     """API status check endpoint"""
     return jsonify({
@@ -300,6 +410,9 @@ def query_flights():
         logger.info(f"Search criteria: departure={departure}, arrival={arrival}, date={date}, "
                    f"max_price={max_price}, min_price={min_price}, airline={airline}, "
                    f"max_duration={max_duration}, alert_price={alert_price}")
+        
+        # Create query object for consistency with advanced search
+        search_query = create_query(departure, arrival, date, airline=airline)
         
         # Validate required parameters
         if not departure or not arrival:
@@ -394,6 +507,7 @@ def query_flights():
                 "max_duration": max_duration,
                 "alert_price": alert_price
             },
+            "query_metadata": search_query,
             "results": {
                 "count": len(matching_flights),
                 "flights": matching_flights
@@ -405,6 +519,10 @@ def query_flights():
                 "route": f"{departure} → {arrival}"
             },
             "alert_info": alert_info,
+            "deep_links": {
+                "available_airlines": list(deep_airline_urls.keys()),
+                "external_search_available": True
+            },
             "timestamp": datetime.now().isoformat()
         }
         
@@ -438,7 +556,7 @@ def not_found(error):
     return jsonify({
         "error": "Endpoint not found",
         "message": "The requested endpoint does not exist",
-        "available_endpoints": ["/", "/api/status", "/api/query", "/api/alerts", "/api/routes"],
+        "available_endpoints": ["/", "/api/status", "/api/query", "/api/advanced-search", "/api/alerts", "/api/routes"],
         "tip": "Visit the root endpoint (/) for complete API documentation"
     }), 404
 

@@ -70,6 +70,27 @@ def test_api_endpoints():
     except requests.exceptions.RequestException as e:
         print(f"✗ Query endpoint test failed: {e}")
     
+    # Test advanced search endpoint
+    try:
+        advanced_query_data = {
+            "departure": "JFK",
+            "arrival": "LAX",
+            "date": "2024-01-15",
+            "airline": "american"
+        }
+        response = requests.post(f"{base_url}/api/advanced-search", json=advanced_query_data)
+        print(f"POST /api/advanced-search - Status: {response.status_code}")
+        if response.status_code == 200:
+            print("✓ Advanced search endpoint working")
+            data = response.json()
+            print(f"  Found {len(data['deep_links'])} airline deep links")
+            print(f"  Ryanair integration: {data['ryanair_integration']['status']}")
+        else:
+            print("✗ Advanced search endpoint failed")
+            print(f"  Response: {response.text}")
+    except requests.exceptions.RequestException as e:
+        print(f"✗ Advanced search endpoint failed: {e}")
+    
     # Test non-existent endpoint (should return 404)
     try:
         response = requests.get(f"{base_url}/api/nonexistent")

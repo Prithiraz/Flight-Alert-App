@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Alert App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .api-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .endpoint {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+        .get { background-color: #28a745; color: white; }
+        .post { background-color: #007bff; color: white; }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .feature {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛫 Flight Alert App</h1>
+        <p>Advanced flight search and price alert system</p>
+        <p><strong>Version 2.0.0</strong></p>
+    </div>
+
+    <div class="api-section">
+        <h2>🚀 API Endpoints</h2>
+        
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <strong>/</strong> - API documentation (this page)
+        </div>
+        
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <strong>/api/status</strong> - Check API status and availability
+        </div>
+        
+        <div class="endpoint">
+            <span class="method post">POST</span>
+            <strong>/api/query</strong> - Search for flights with advanced filtering
+            <br><small>Required: <code>departure</code>, <code>arrival</code></small>
+            <br><small>Optional: <code>date</code>, <code>max_price</code>, <code>min_price</code>, <code>airline</code>, <code>max_duration</code>, <code>alert_price</code></small>
+        </div>
+        
+        <div class="endpoint">
+            <span class="method post">POST</span>
+            <strong>/api/advanced-search</strong> - Advanced search with airline deep links and external APIs
+            <br><small>Required: <code>departure</code>, <code>arrival</code></small>
+            <br><small>Optional: <code>date</code>, <code>airline</code></small>
+        </div>
+        
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <strong>/api/alerts</strong> - View active price alerts
+        </div>
+        
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <strong>/api/routes</strong> - List available flight routes
+        </div>
+    </div>
+
+    <div class="api-section">
+        <h2>✈️ Features</h2>
+        <div class="feature-list">
+            <div class="feature">
+                <h4>Advanced Flight Filtering</h4>
+                <p>Filter flights by price, duration, airline, and more</p>
+            </div>
+            <div class="feature">
+                <h4>Price Alert System</h4>
+                <p>Set price thresholds and get notified of deals</p>
+            </div>
+            <div class="feature">
+                <h4>Multi-Airline Integration</h4>
+                <p>Search across multiple airlines including Ryanair</p>
+            </div>
+            <div class="feature">
+                <h4>Real-time Data</h4>
+                <p>Get up-to-date flight information and pricing</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="api-section">
+        <h2>📝 Example Usage</h2>
+        <h4>Basic Flight Search:</h4>
+        <pre><code>curl -X POST http://localhost:5000/api/query \
+  -H "Content-Type: application/json" \
+  -d '{
+    "departure": "JFK",
+    "arrival": "LAX",
+    "max_price": 300,
+    "airline": "american"
+  }'</code></pre>
+
+        <h4>Advanced Search with Deep Links:</h4>
+        <pre><code>curl -X POST http://localhost:5000/api/advanced-search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "departure": "JFK",
+    "arrival": "LAX",
+    "date": "2024-01-15",
+    "airline": "ryanair"
+  }'</code></pre>
+    </div>
+
+    <div class="api-section">
+        <h2>🏢 Supported Airports</h2>
+        <p><strong>Major Hubs:</strong> JFK, LAX, ORD, DEN, BOS, SEA</p>
+        <p><em>More airports available through airline APIs</em></p>
+    </div>
+</body>
+</html>

@@ -46,6 +46,31 @@ DUFFEL_API_KEY = os.environ.get("DUFFEL_API_KEY", "")
 # Configure Stripe
 stripe.api_key = STRIPE_SECRET_KEY
 
+# Mock ryanair module - in a real app this would be a proper airline API integration
+class ryanair:
+    @staticmethod
+    def get_flights(departure, arrival, date=None):
+        """Mock Ryanair API integration"""
+        return {
+            "flights": [],
+            "status": "success",
+            "airline": "Ryanair"
+        }
+
+# Deep airline URLs - mapping airline codes to their homepage URLs
+deep_airline_urls = {
+    "FR": "https://www.ryanair.com",
+    "W6": "https://wizzair.com",
+    "U2": "https://www.easyjet.com",
+    "BA": "https://www.britishairways.com",
+    "DL": "https://www.delta.com",
+    "AA": "https://www.aa.com",
+    "UA": "https://www.united.com",
+    "LH": "https://www.lufthansa.com",
+    "AF": "https://www.airfrance.com",
+    "KL": "https://www.klm.com"
+}
+
 # Database setup
 DB_PATH = os.path.join(os.path.dirname(SCRIPT_DIR), "flightalert.db")
 
@@ -216,6 +241,34 @@ def get_exchange_rate(from_currency: str, to_currency: str) -> float:
     except Exception as e:
         logger.error(f"Exchange rate fetch error: {e}")
         return 1.0
+
+def create_query(departure: str, arrival: str, date: Optional[str] = None, passengers: int = 1, airline: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Create a standardized flight query object for airline APIs
+    
+    Args:
+        departure (str): Departure airport code
+        arrival (str): Arrival airport code  
+        date (str, optional): Travel date in YYYY-MM-DD format
+        passengers (int): Number of passengers
+        airline (str, optional): Preferred airline
+        
+    Returns:
+        dict: Standardized query object
+    """
+    query = {
+        "departure": departure.upper(),
+        "arrival": arrival.upper(),
+        "passengers": passengers,
+        "query_timestamp": datetime.now().isoformat()
+    }
+    
+    if date:
+        query["date"] = date
+    if airline:
+        query["airline"] = airline.lower()
+        
+    return query
 
 def get_airline_name(code: str) -> str:
     """Get airline full name from code"""

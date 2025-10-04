@@ -130,7 +130,7 @@ DB_PATH = os.path.join(os.path.dirname(SCRIPT_DIR), "flightalert.db")
 # Duffel API Configuration
 # For Replit: Add DUFFEL_API_KEY as a Secret
 # For GitHub: Set as environment variable or manually configure
-DUFFEL_API_KEY = os.getenv("DUFFEL_API_KEY", "DUFFEL_API_KEY")
+DUFFEL_API_KEY = os.getenv("DUFFEL_API_KEY", "DUFFEL_API_KEY = os.getenv(\"DUFFEL_API_KEY\")")
 DUFFEL_BASE_URL = "https://api.duffel.com"
 >>>>>>> Stashed changes
 
@@ -5874,7 +5874,7 @@ AMADEUS_TEST_MODE = os.getenv("AMADEUS_TEST_MODE", "true").lower() == "true"
 # Duffel API Configuration
 # For Replit: Add DUFFEL_API_KEY as a Secret
 # For GitHub: Set as environment variable or manually configure
-DUFFEL_API_KEY = os.getenv("DUFFEL_API_KEY", "DUFFEL_API_KEY")
+DUFFEL_API_KEY = os.getenv("DUFFEL_API_KEY", "DUFFEL_API_KEY = os.getenv(\"DUFFEL_API_KEY\")")
 DUFFEL_BASE_URL = "https://api.duffel.com"
 
 # Debug Duffel configuration
@@ -7025,7 +7025,7 @@ AMADEUS_TEST_MODE = os.getenv("AMADEUS_TEST_MODE", "true").lower() == "true"
 # Duffel API Configuration
 # For Replit: Add DUFFEL_API_KEY as a Secret
 # For GitHub: Set as environment variable or manually configure
-DUFFEL_API_KEY = os.getenv("DUFFEL_API_KEY", "DUFFEL_API_KEY")
+DUFFEL_API_KEY = os.getenv("DUFFEL_API_KEY", "DUFFEL_API_KEY = os.getenv(\"DUFFEL_API_KEY\")")
 DUFFEL_BASE_URL = "https://api.duffel.com"
 
 # Debug Duffel configuration

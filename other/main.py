@@ -17,6 +17,7 @@ try:
     import pytz
     import requests
     import jinja2
+    import stripe
     print("✅ All required packages imported successfully")
 except ImportError as e:
     print(f"❌ Missing package: {e}")

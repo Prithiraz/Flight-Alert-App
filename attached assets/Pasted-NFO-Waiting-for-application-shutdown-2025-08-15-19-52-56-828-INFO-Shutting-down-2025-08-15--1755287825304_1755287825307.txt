@@ -1,0 +1,142 @@
+NFO:     Waiting for application shutdown.
+2025-08-15 19:52:56,828 INFO Shutting down...
+2025-08-15 19:52:56,830 WARNING Browser close error (expected on restart): Browser.close: Connection closed while reading from the driver
+INFO:     Application shutdown complete.
+INFO:     Finished server process [9334]
+INFO:     Stopping reloader process [4941]
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-15 19:52:58,069 INFO ✅ Loaded 9096 airport codes for validation
+✅ All required packages imported successfully
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [10004] using StatReload
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-15 19:52:59,565 INFO ✅ Loaded 9096 airport codes for validation
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-15 19:53:00,132 INFO ✅ Loaded 9096 airport codes for validation
+INFO:     Started server process [10017]
+INFO:     Waiting for application startup.
+2025-08-15 19:53:00,158 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-15 19:53:00,158 INFO ✅ Database initialized with BYOB architecture
+2025-08-15 19:53:00,159 INFO Starting Playwright for validation...
+2025-08-15 19:53:00,698 INFO ✅ Playwright ready for validation
+2025-08-15 19:53:00,698 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /login HTTP/1.1" 200 OK
+🔐 Login attempt for email: prithirazchoudhury2@gmail.com
+🔍 User lookup result: Found
+✅ Login successful for prithirazchoudhury2@gmail.com
+INFO:     87.80.49.90:0 - "POST /login HTTP/1.1" 302 Found
+INFO:     87.80.49.90:0 - "GET /search HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /create_alert HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /dashboard HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/fastapi/routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/fastapi/routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/main.py", line 2109, in dashboard
+    return templates.TemplateResponse("dashboard.html", {
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/templating.py", line 210, in TemplateResponse
+    return _TemplateResponse(
+           ^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/templating.py", line 41, in __init__
+    content = template.render(context)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspaces/dynamic-scraper/templates/dashboard.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/workspaces/dynamic-scraper/templates/base.html", line 126, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/templates/dashboard.html", line 98, in block 'content'
+    <a href="{{url_for('upgrade')}}" class="btn btn-warning btn-block mb-2">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/templating.py", line 127, in url_for
+    return request.url_for(name, **path_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/requests.py", line 187, in url_for
+    url_path = url_path_provider.url_path_for(name, **path_params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/starlette/routing.py", line 663, in url_path_for
+    raise NoMatchFound(name, path_params)
+starlette.routing.NoMatchFound: No route exists for name "upgrade" and params "".
+INFO:     87.80.49.90:0 - "GET /search HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /extension HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /operator HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /alerts HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/alerts HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/alerts HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/matches HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/alerts HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/alerts HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/matches HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /create_alert HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/airports?q=Londo HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/airports?q=Lon HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/airports?q=Lo HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/airports?q=Dh HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/airports?q=Dha HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/airports?q=Dhaka HTTP/1.1" 404 Not Found

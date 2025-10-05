@@ -1,0 +1,117 @@
+
+{
+  "skyscanner": {
+    "name": "Skyscanner",
+    "priority": 1,
+    "urls": [
+      "https://www.skyscanner.net/transport/flights/{origin_lower}/{dest_lower}/{date_compact}/",
+      "https://www.skyscanner.com/transport/flights/{origin_lower}/{dest_lower}/{date_compact}/"
+    ],
+    "mobile_urls": [
+      "https://m.skyscanner.net/transport/flights/{origin_lower}/{dest_lower}/{date_compact}/"
+    ],
+    "selectors": {
+      "search_form": "[data-testid=\"search-controls\"]",
+      "origin_input": "[data-testid=\"origin-input\"]",
+      "dest_input": "[data-testid=\"destination-input\"]",
+      "date_input": "[data-testid=\"depart-input\"]",
+      "search_button": "[data-testid=\"search-button\"]",
+      "result_container": "[data-testid=\"results\"]",
+      "flight_cards": "[data-testid*=\"flight-card\"], .FlightCard, [class*=\"flight\"]",
+      "price": "[data-testid*=\"price\"], .BpkText_bpk-text__money, .price",
+      "airline": "[data-testid*=\"airline\"], .airline-name, [class*=\"airline\"]",
+      "times": "[data-testid*=\"time\"], .time, [class*=\"time\"]",
+      "duration": "[data-testid*=\"duration\"], .duration, [class*=\"duration\"]",
+      "stops": "[data-testid*=\"stops\"], .stops, [class*=\"stop\"]"
+    },
+    "wait_selectors": ["[data-testid=\"results\"]", ".FlightCard", "[class*=\"flight-card\"]"],
+    "anti_bot_indicators": ["please enable javascript", "security check", "blocked"],
+    "expected_min_results": 3
+  },
+  "kayak": {
+    "name": "Kayak",
+    "priority": 2,
+    "urls": [
+      "https://www.kayak.com/flights/{origin}-{dest}/{date}",
+      "https://www.kayak.co.uk/flights/{origin}-{dest}/{date}"
+    ],
+    "mobile_urls": [
+      "https://m.kayak.com/flights/{origin}-{dest}/{date}"
+    ],
+    "selectors": {
+      "search_form": ".Common-Booking-Search",
+      "origin_input": "[data-testid=\"origin-input\"]",
+      "dest_input": "[data-testid=\"destination-input\"]",
+      "date_input": "[data-testid=\"departure-date-input\"]",
+      "search_button": ".Common-Booking-Search-SearchButton",
+      "result_container": ".results-list, #searchResultsList",
+      "flight_cards": ".result-item, .Common-Booking-MultiBookProvider, [data-resultid]",
+      "price": ".price-text, .Common-Booking-MultiBookProvider-Display-price, [class*=\"price\"]",
+      "airline": ".codeshares, .airline-text, [class*=\"airline\"]",
+      "times": ".section.times .time, [class*=\"time\"]",
+      "duration": ".duration, [class*=\"duration\"]",
+      "stops": ".stops, [class*=\"stop\"]"
+    },
+    "wait_selectors": [".results-list", ".result-item", "[data-resultid]"],
+    "anti_bot_indicators": ["blocked", "captcha", "enable javascript"],
+    "expected_min_results": 2
+  },
+  "google_flights": {
+    "name": "Google Flights",
+    "priority": 3,
+    "urls": [
+      "https://www.google.com/travel/flights?q=Flights%20from%20{origin}%20to%20{dest}%20on%20{date}&curr=GBP"
+    ],
+    "selectors": {
+      "result_container": "[data-value*=\"GBP\"], .pIav2d",
+      "flight_cards": ".pIav2d, .yR1fYc",
+      "price": "[data-value*=\"GBP\"], .YMlIz, .U3gSDc",
+      "airline": ".sSHqwe, .Ir0Voe",
+      "times": ".wtdjmc .eoY5cb",
+      "duration": ".gvkrdb",
+      "stops": ".EfT7Ae .ogfYpf"
+    },
+    "wait_selectors": [".pIav2d", "[data-value*=\"GBP\"]", ".YMlIz"],
+    "anti_bot_indicators": ["unusual traffic", "captcha"],
+    "expected_min_results": 3
+  },
+  "expedia": {
+    "name": "Expedia",
+    "priority": 4,
+    "urls": [
+      "https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:{origin},to:{dest},departure:{date_slash}"
+    ],
+    "selectors": {
+      "result_container": "[data-test-id=\"listings\"]",
+      "flight_cards": "[data-test-id*=\"offer\"], .result-item",
+      "price": "[data-test-id*=\"price\"], .uitk-text-emphasis-theme",
+      "airline": "[data-test-id*=\"airline\"], .airline-name",
+      "times": "[data-test-id*=\"time\"], .time-picker",
+      "duration": "[data-test-id*=\"duration\"]",
+      "stops": "[data-test-id*=\"stops\"]"
+    },
+    "wait_selectors": ["[data-test-id=\"listings\"]", "[data-test-id*=\"offer\"]"],
+    "anti_bot_indicators": ["blocked", "robot"],
+    "expected_min_results": 2
+  },
+  "momondo": {
+    "name": "Momondo",
+    "priority": 5,
+    "urls": [
+      "https://www.momondo.com/flight-search/{origin}-{dest}/{date}",
+      "https://www.momondo.co.uk/flight-search/{origin}-{dest}/{date}"
+    ],
+    "selectors": {
+      "result_container": ".results-list",
+      "flight_cards": ".result-item, [data-testid*=\"result\"]",
+      "price": ".price, [data-testid*=\"price\"]",
+      "airline": ".airline-name, [data-testid*=\"airline\"]",
+      "times": ".time, [data-testid*=\"time\"]",
+      "duration": ".duration, [data-testid*=\"duration\"]",
+      "stops": ".stops, [data-testid*=\"stops\"]"
+    },
+    "wait_selectors": [".results-list", ".result-item"],
+    "anti_bot_indicators": ["blocked", "captcha"],
+    "expected_min_results": 2
+  }
+}

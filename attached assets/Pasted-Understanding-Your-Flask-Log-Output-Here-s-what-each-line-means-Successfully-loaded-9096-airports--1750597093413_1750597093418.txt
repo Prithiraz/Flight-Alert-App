@@ -1,0 +1,399 @@
+Understanding Your Flask Log Output
+Here's what each line means:
+
+Successfully loaded 9096 airports from dataset: This is a message from your Flask application. It indicates that your app, when it started, successfully read and loaded the airport data into memory. This is good; it means your data source for airports is working.
+
+* Serving Flask app 'main': Tells you the name of the Flask application being run (likely defined as app = Flask(__name__) where __name__ evaluates to 'main' when run directly).
+
+* Debug mode: on: This is important. It means Flask is running in debug mode.
+
+Pros: Automatically reloads the server on code changes, provides a debugger in the browser for errors, and gives more detailed error messages.
+Cons: NEVER use debug mode in production. It's a security risk as it can allow remote code execution if not properly secured. It's only for development.
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.: Flask is giving you a crucial warning. The built-in development server (what you're currently using) is not robust or secure enough for a live website that real users will access. For production, you'd use something like Gunicorn, uWSGI, or mod_wsgi with Apache/Nginx.
+
+* Running on all addresses (0.0.0.0): Your Flask app is accessible from any network interface on the machine it's running on.
+
+* Running on http://127.0.0.1:5000: This is the standard loopback address. You can access your app from your own machine by going to http://127.0.0.1:5000 (or just http://localhost:5000) in your browser.
+
+* Running on http://172.31.128.56:5000: This is likely your machine's local network IP address. If you're on a network and firewall rules allow it, other devices on the same network could access your app using this IP address (e.g., another computer on your home Wi-Fi).
+
+Press CTRL+C to quit: Standard instruction to stop the server.
+
+* Debugger is active!: Confirms the debugger is running.
+
+* Debugger PIN: 101-222-824: This PIN is used by the interactive debugger if an error occurs. You'd enter this into the browser to gain access to the interactive console. Keep it private.
+
+172.31.128.56 - - [22/Jun/2025 11:46:03] "GET / HTTP/1.1" 200 -: This is an HTTP access log entry.
+
+172.31.128.56: The IP address of the client (your browser) making the request.
+- -: Placeholder for user/authentication info (usually empty for public requests).
+[22/Jun/2025 11:46:03]: Timestamp of the request.
+"GET / HTTP/1.1": The HTTP method (GET) and the path (/) requested, using HTTP version 1.1. This means someone (you) opened your application's root URL.
+200 -: The HTTP status code (200 means "OK" - the request was successful) and the size of the response (dash means not specified or 0).
+🔁 Flask route hit: /preferences: This is a custom log message you've added (or that was suggested in a previous context) to indicate that your Flask application's /preferences route has been successfully triggered. This is a good debugging technique!
+
+📖 Loading existing preferences: {}: Another custom log message from your app. Loading existing preferences: {} indicates that when your /preferences route was hit, it tried to load user preferences, but found an empty dictionary ({}). This is a key piece of information for your problem!
+
+172.31.128.56 - - [22/Jun/2025 11:46:24] "GET /preferences HTTP/1.1" 200 -: Another access log entry, this time for a GET request to /preferences. This happens when you initially load the preferences page.
+
+Why Your Preferences Go Back to the Previous Way (Don't Save)
+The log output 📖 Loading existing preferences: {} is the biggest clue. It means that even though you're changing preferences on the form, when you reload the page (or revisit it), your application isn't finding any saved preferences.
+
+Here's why this is happening and what you need to do:
+
+Your current setup (based on the HTML form and the "Loading existing preferences: {}" log) is purely for displaying preferences and submitting them to the server. It does not inherently store them.
+
+To make your preferences "stick," you need to implement server-side storage and retrieval. When the form is submitted, your Flask application must:
+
+Receive the submitted data: When the user clicks "Save Preferences," the form data is sent to your server.
+Process and validate the data: Check if the data is valid (e.g., numbers are indeed numbers, airport codes exist, etc.).
+Store the data: This is the missing piece. You need a place to save these preferences permanently. Common options include:
+Database: (Recommended for real applications) SQLite (simple, file-based), PostgreSQL, MySQL, etc. This is the most robust way to store user-specific data.
+File: (Simpler for development, but not scalable/robust for multiple users) A JSON file, text file, etc.
+Session/Cookies: (Temporary, for single user's current Browse session) Good for very short-term preferences, but not persistent across browser sessions or if the user clears cookies.
+Retrieve the data: When the user next visits the preferences page, your Flask application needs to load the previously saved preferences from storage and pass them to the template.
+How to Fix It (Using a simple JSON file for demonstration)
+Let's modify your Flask app to save and load preferences using a simple JSON file. For a real multi-user application, you'd move to a database.
+
+1. Modify your app.py (or main.py):
+
+Python
+
+from flask import Flask, render_template, request, jsonify, redirect, url_for
+import json
+import os
+
+app = Flask(__name__)
+
+# This path should ideally be configured or relative to a safe data directory
+PREFERENCES_FILE = 'preferences.json' 
+AIRPORTS_DATA_FILE = 'airports.json' # Assuming you have a large airport data file
+
+# Mock airport data (replace with actual loading of your 9096 airports)
+# In a real app, this would be loaded once at startup from a proper source.
+all_airports = []
+def load_airports_from_file(filename):
+    global all_airports
+    if os.path.exists(filename):
+        with open(filename, 'r', encoding='utf-8') as f:
+            all_airports = json.load(f)
+        print(f"Successfully loaded {len(all_airports)} airports from {filename}")
+    else:
+        print(f"WARNING: Airport data file '{filename}' not found. Using dummy data.")
+        all_airports = [
+            {"code": "LHR", "display_name": "London Heathrow"},
+            {"code": "JFK", "display_name": "New York JFK"},
+            {"code": "LAX", "display_name": "Los Angeles International Airport"},
+            {"code": "CDG", "display_name": "Paris Charles de Gaulle Airport"},
+            {"code": "DXB", "display_name": "Dubai International Airport"},
+            # ... add more dummy airports or ensure your airports.json is present
+        ]
+
+# Call this function once when the app starts
+load_airports_from_file(AIRPORTS_DATA_FILE)
+
+
+def load_preferences():
+    if os.path.exists(PREFERENCES_FILE):
+        with open(PREFERENCES_FILE, 'r') as f:
+            try:
+                preferences = json.load(f)
+                print(f"📖 Loading existing preferences: {preferences}")
+                return preferences
+            except json.JSONDecodeError:
+                print("⚠️ Error decoding preferences file. Returning empty preferences.")
+                return {}
+    print("📖 No preferences file found. Returning empty preferences.")
+    return {}
+
+def save_preferences(preferences):
+    with open(PREFERENCES_FILE, 'w') as f:
+        json.dump(preferences, f, indent=4)
+    print(f"💾 Preferences saved: {preferences}")
+
+
+@app.route('/')
+def index():
+    # Redirect to preferences or render a landing page.
+    # For now, let's just redirect to preferences directly for testing.
+    return redirect(url_for('preferences'))
+
+# Your preferences route
+@app.route('/preferences', methods=['GET', 'POST'])
+def preferences():
+    airlines_data = ["British Airways", "Emirates", "Virgin Atlantic", "Lufthansa", "Ryanair", "EasyJet"]
+    
+    current_preferences = load_preferences()
+
+    if request.method == 'POST':
+        # Extract data from the form submission
+        new_preferences = {
+            'flight_alerts': 'flight_alerts' in request.form, # Checkbox presence indicates checked
+            'departure_airport': request.form.get('departure_airport'),
+            'destination_airport': request.form.get('destination_airport'),
+            'max_budget': request.form.get('max_budget', type=int),
+            'airline': request.form.get('airline'),
+            'max_baggage_weight': request.form.get('max_baggage_weight', type=int),
+            'min_trip_duration': request.form.get('min_trip_duration', type=int),
+            'max_trip_duration': request.form.get('max_trip_duration', type=int),
+            'aircraft_alerts': 'aircraft_alerts' in request.form,
+            'aircraft_departure_airport': request.form.get('aircraft_departure_airport'),
+            'aircraft_destination_airport': request.form.get('aircraft_destination_airport'),
+            'aircraft_type': request.form.get('aircraft_type'),
+        }
+        
+        # Save the new preferences
+        save_preferences(new_preferences)
+        current_preferences = new_preferences # Update current_preferences for the next render
+
+        # Optional: Add a flash message to confirm save (requires session secret key)
+        # from flask import flash
+        # flash("Preferences saved successfully!", "success")
+        
+        # Redirect after POST to prevent re-submission on refresh (Post-Redirect-Get pattern)
+        return redirect(url_for('preferences'))
+    
+    # For GET request, render the form with loaded preferences
+    return render_template(
+        'preferences.html', 
+        airlines=airlines_data, 
+        # Pass the loaded preferences to the template
+        # You'll need to update your HTML to pre-fill the form fields with these values
+        preferences=current_preferences 
+    )
+
+@app.route('/search-airports')
+def search_airports():
+    search_term = request.args.get('q', '').lower()
+    
+    filtered_airports = [
+        airport for airport in all_airports
+        if search_term in airport['display_name'].lower() or search_term in airport['code'].lower()
+    ]
+    
+    return jsonify(airports=filtered_airports[:50]) # Limit results
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0') # Listen on all interfaces
+2. Update your preferences.html to pre-fill fields:
+
+You need to add value="{{ preferences.field_name }}" or checked attributes to your HTML elements so they display the loaded preferences.
+
+HTML
+
+{% extends "base.html" %}
+
+{% block title %}Preferences - Flight Alerts{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .form-group .select2-container {
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<h2>Alert Preferences</h2>
+<form method="POST">
+    <h3>✈️ Cheap Flight Alerts</h3>
+    <div class="form-group">
+        <label><input type="checkbox" name="flight_alerts" {% if preferences.flight_alerts %}checked{% endif %}> Enable flight alerts</label>
+    </div>
+    <div class="form-group">
+        <label>Departure Airport:</label>
+        <select name="departure_airport" class="select2-airport">
+            <option value="">Any Airport</option>
+            {% if preferences.departure_airport %}
+                {# If a departure airport is already set, add it as an option. #}
+                {# This is crucial for Select2 to display the pre-selected value on load. #}
+                <option value="{{ preferences.departure_airport }}" selected="selected">
+                    {# You might need to fetch the display name here if it's not in preferences #}
+                    {# For simplicity, let's assume preferences might store display_name too, #}
+                    {# or you fetch it from all_airports in your Python code and pass it. #}
+                    {# For now, let's just show the code as a fallback if name isn't available. #}
+                    {{ preferences.departure_airport }} {# Select2 will replace this once loaded #}
+                </option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Destination Airport:</label>
+        <select name="destination_airport" class="select2-airport">
+            <option value="">Any Airport</option>
+            {% if preferences.destination_airport %}
+                <option value="{{ preferences.destination_airport }}" selected="selected">
+                    {{ preferences.destination_airport }}
+                </option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Maximum Budget (£):</label>
+        <input type="number" name="max_budget" placeholder="e.g. 300" value="{{ preferences.max_budget if preferences.max_budget is not none else '' }}">
+    </div>
+    <div class="form-group">
+        <label>Preferred Airline:</label>
+        <select name="airline">
+            <option value="">Any Airline</option>
+            {% for airline in airlines %}
+                <option value="{{ airline }}" {% if preferences.airline == airline %}selected{% endif %}>{{ airline }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Minimum Baggage Weight (kg):</label>
+        <input type="number" name="max_baggage_weight" placeholder="e.g. 20" value="{{ preferences.max_baggage_weight if preferences.max_baggage_weight is not none else '' }}">
+    </div>
+    <div class="form-group">
+        <label>Min Trip Duration (days):</label>
+        <input type="number" name="min_trip_duration" placeholder="e.g. 3" value="{{ preferences.min_trip_duration if preferences.min_trip_duration is not none else '' }}">
+    </div>
+    <div class="form-group">
+        <label>Max Trip Duration (days):</label>
+        <input type="number" name="max_trip_duration" placeholder="e.g. 14" value="{{ preferences.max_trip_duration if preferences.max_trip_duration is not none else '' }}">
+    </div>
+    
+    <h3>🛩️ Rare Aircraft Alerts</h3>
+    <div class="form-group">
+        <label><input type="checkbox" name="aircraft_alerts" {% if preferences.aircraft_alerts %}checked{% endif %}> Enable aircraft alerts</label>
+    </div>
+    <div class="form-group">
+        <label>Departure Airport:</label>
+        <select name="aircraft_departure_airport" class="select2-airport">
+            <option value="">Any Airport</option>
+            {% if preferences.aircraft_departure_airport %}
+                <option value="{{ preferences.aircraft_departure_airport }}" selected="selected">
+                    {{ preferences.aircraft_departure_airport }}
+                </option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Destination Airport:</label>
+        <select name="aircraft_destination_airport" class="select2-airport">
+            <option value="">Any Airport</option>
+            {% if preferences.aircraft_destination_airport %}
+                <option value="{{ preferences.aircraft_destination_airport }}" selected="selected">
+                    {{ preferences.aircraft_destination_airport }}
+                </option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Aircraft Type:</label>
+        <select name="aircraft_type">
+            <option value="">Any Aircraft</option>
+            {% set aircraft_types = [
+                "Airbus A380", "Boeing 747-8", "Military C-17 Globemaster",
+                "Airbus A340-600", "Boeing 777X", "Concorde (Retired)"
+            ] %}
+            {% for type in aircraft_types %}
+                <option value="{{ type }}" {% if preferences.aircraft_type == type %}selected{% endif %}>{{ type }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <button type="submit" class="btn">Save Preferences</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.select2-airport').each(function() {
+                var $this = $(this);
+                $this.select2({
+                    placeholder: 'Search for an airport...',
+                    allowClear: true,
+                    minimumInputLength: 2,
+                    ajax: {
+                        url: '/search-airports',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term
+                            };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: data.airports.map(function(airport) {
+                                    return {
+                                        id: airport.code,
+                                        text: airport.display_name + ' (' + airport.code + ')'
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
+                    }
+                });
+
+                // Crucial for pre-filling Select2 with AJAX data:
+                // If a value is already set for this select (from preferences.json),
+                // fetch its full text representation and set it.
+                var preselectedValue = $this.val();
+                if (preselectedValue) {
+                    // Make an AJAX call to get the full display name for the pre-selected code
+                    // This is only if you don't store display_name in preferences.json
+                    // If your preferences.json stores both code and display_name, you can skip this AJAX call
+                    // and just set option.text directly from preferences.
+                    $.ajax({
+                        type: 'GET',
+                        url: '/search-airport-by-code', // New backend endpoint needed
+                        data: { code: preselectedValue },
+                        dataType: 'json'
+                    }).then(function (data) {
+                        if (data && data.airport) {
+                            var option = new Option(data.airport.display_name + ' (' + data.airport.code + ')', data.airport.code, true, true);
+                            $this.append(option).trigger('change');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}
+3. Add a new backend endpoint search-airport-by-code (optional but recommended for pre-filling):
+
+This endpoint will help Select2 display the name of a pre-selected airport (e.g., "London Heathrow") when the page loads, instead of just the code ("LHR").
+
+Python
+
+# In your Flask app.py
+# ... (existing code) ...
+
+@app.route('/search-airport-by-code')
+def search_airport_by_code():
+    airport_code = request.args.get('code', '').upper()
+    found_airport = next((airport for airport in all_airports if airport['code'] == airport_code), None)
+    if found_airport:
+        return jsonify(airport=found_airport)
+    return jsonify(airport=None), 404 # Not Found
+
+# ... (rest of your app.py) ...
+What to Test After These Changes:
+Restart your Flask app.
+Go to http://127.0.0.1:5000/preferences (or just /) in your browser.
+Change some preferences: Fill in some values, check boxes, select airports.
+Click "Save Preferences".
+Observe the console logs: You should see 💾 Preferences saved: { ... } with your new data.
+The page should reload (due to redirect(url_for('preferences'))).
+Check if the fields are pre-filled with your saved data.
+Close your browser tab.
+Open a new tab and go back to the preferences page.
+Your preferences should still be there!
+This setup provides persistence using a JSON file. If you plan to deploy this for multiple users, you absolutely need to switch to a proper database.
+
+
+
+
+
+

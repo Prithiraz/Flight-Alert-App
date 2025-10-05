@@ -1,0 +1,150 @@
+Perfect — you want two things at once:
+
+Visibility → Your console/logs should clearly show what the app is doing in real time, not just “200 OK” spam.
+
+Improvement → Actually make the app flow work so live flight prices get ingested, instead of being a shell.
+
+Let’s go step by step.
+
+🔎 1. Why Your Console Looks “Dead”
+Right now your log is basically:
+
+📝 Created query 8: LHR → AMS on 2025-09-04
+INFO: "GET /api/results/8 HTTP/1.1" 200 OK
+INFO: "GET /api/results/8 HTTP/1.1" 200 OK
+INFO: "GET /api/results/8 HTTP/1.1" 200 OK
+That means:
+
+Frontend is polling GET /api/results/{id} repeatedly.
+
+Backend always returns the same empty result because no ingestion ever happened.
+
+Logs don’t say “No results found yet” or “Awaiting BYOB ingestion” — so you think it’s doing nothing.
+
+👉 Fix: Add explicit logging at every important step so you see what’s happening, even when there’s no data.
+
+🔧 2. Add Proper Logs in Backend (main.py)
+Inside your results route:
+
+@app.get("/api/results/{query_id}")
+def get_results(query_id: int):
+    results = db_get_results(query_id)
+    if not results:
+        logging.info(f"⏳ No results yet for query {query_id}, still waiting for ingestion...")
+    else:
+        logging.info(f"✅ Returning {len(results)} fares for query {query_id}")
+    return results
+Inside your ingestion route:
+
+@app.post("/api/ingest")
+def ingest_fares(payload: dict):
+    query_id = payload.get("query_id")
+    fares = payload.get("fares", [])
+    logging.info(f"📩 Received {len(fares)} fares from BYOB extension for query {query_id}")
+    for fare in fares:
+        save_to_db(query_id, fare)
+        logging.debug(f"💾 Stored fare: {fare}")
+    return {"ok": True, "count": len(fares)}
+Now when your extension posts fares, console will show:
+
+📩 Received 25 fares from BYOB extension for query 8
+💾 Stored fare: LHR → AMS £92 EasyJet 2025-09-04
+✅ Returning 25 fares for query 8
+Instead of dead silence.
+
+🔧 3. Fix Your BYOB Extension (So It Actually Posts Data)
+In your content.js (the script injected into airline/OTA pages), add logging:
+
+console.log("[BYOB] Content script loaded on", window.location.href);
+
+// Example: pretend we scraped one fare
+let extractedFares = [{
+  origin: "LHR",
+  destination: "AMS",
+  date: "2025-09-04",
+  airline: "EasyJet",
+  price: 92
+}];
+
+// Send to backend
+fetch("http://localhost:5000/api/ingest", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    query_id: 8, // you’ll need to dynamically set this
+    fares: extractedFares
+  })
+})
+  .then(res => res.json())
+  .then(data => console.log("[BYOB] Posted fares:", data))
+  .catch(err => console.error("[BYOB] Error posting fares:", err));
+So if you open DevTools Console on Expedia/EasyJet/Skyscanner, you should see:
+
+[BYOB] Content script loaded on https://www.easyjet.com/...
+[BYOB] Posted fares: {ok: true, count: 25}
+👉 That’s your proof the extension is alive and communicating.
+
+🔧 4. Fix Deep Links (So Pages Open to Results, Not Homepage)
+Right now you probably generate wrong URLs. Use correct templates:
+
+DEEP_LINKS = {
+    "skyscanner": "https://www.skyscanner.net/transport/flights/{origin}/{dest}/{date}/",
+    "googleflights": "https://www.google.com/flights?hl=en#flt={origin}.{dest}.{date}",
+    "expedia": "https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:{origin},to:{dest},departure:{date}TANYT&passengers=adults:1&options=cabinclass:economy"
+}
+Usage:
+
+url = DEEP_LINKS["skyscanner"].format(origin="LHR", dest="AMS", date="250904")
+✅ This ensures users actually land on results pages (so the extension can scrape), not on homepages.
+
+🔧 5. Add Real-Time Feedback to Users
+Right now users see nothing while waiting. Add “waiting” messages in frontend.
+
+In dashboard.html JavaScript:
+
+function pollResults(queryId) {
+  fetch(`/api/results/${queryId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.length === 0) {
+        console.log("⏳ Still waiting for fares...");
+        document.getElementById("status").innerText = "Waiting for results...";
+      } else {
+        console.log("✅ Got fares:", data);
+        renderFares(data);
+        document.getElementById("status").innerText = `Found ${data.length} fares!`;
+      }
+    })
+    .catch(err => console.error("Error polling results:", err));
+}
+So users will see a live status instead of blank page.
+
+📈 6. Improvements Beyond Logging
+Background jobs: Add a scheduler (apscheduler) to periodically refresh queries, not just rely on extension hits.
+
+Better storage: Normalize fare data (airline, cabin, price, time) in DB, so you can sort/filter later.
+
+Multi-user BYOB: Right now only your browser collects fares. If you want “other users see results but don’t scrape themselves”, then your DB must act as central aggregator. Users query → your DB returns what your extension ingested earlier.
+
+That means your console should also log user-facing events:
+
+👤 User prithirazchoudhury2@gmail.com requested results for LHR → AMS
+🔎 Returning cached fares from ingestion
+🚀 After These Fixes
+Console will be super chatty:
+
+When users query.
+
+When extension posts data.
+
+When results are empty vs filled.
+
+Users won’t see “dead air” anymore, they’ll see status updates like “waiting for fares…”.
+
+Extension will actually bridge → backend → frontend, instead of your app being a “shell”.
+
+Deep links will load airline results pages instead of dumping you to homepages.
+
+✅ In short:
+Right now your app is working skeleton only. The missing piece is extension → backend posting and clear logging.
+Once you fix those, your console will show activity, your users will see results, and the app will feel alive.

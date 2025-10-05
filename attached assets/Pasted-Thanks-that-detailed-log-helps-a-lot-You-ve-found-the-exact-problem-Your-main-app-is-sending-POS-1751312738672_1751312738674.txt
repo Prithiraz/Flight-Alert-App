@@ -1,0 +1,84 @@
+Thanks — that detailed log helps a lot. You've found the exact problem:
+Your main app is sending POST JSON payloads, but your microservice expects GET query parameters.
+
+🔍 Problem Summary:
+Your microservice docs show:
+
+json
+Copy
+Edit
+"usage_example": "/scrape?origin=LHR&dest=AMS"
+That means it expects a GET request like this:
+
+bash
+Copy
+Edit
+GET /scrape?origin=LHR&dest=AMS
+But your main app is doing something like:
+
+python
+Copy
+Edit
+requests.post(f"{url}/scrape", json={"origin": "LHR", "destination": "AMS"})
+This will never work — the microservice ignores the POST body, because it only reads query parameters.
+
+✅ Solution (Two Options)
+✅ Option A — Easiest Fix: Modify the Main App to Use GET Requests
+Go to your flight_scraper.py (or wherever you call the scraper service), and replace:
+
+python
+Copy
+Edit
+response = requests.post(f"{url}/scrape", json={
+    "origin": origin,
+    "destination": destination,
+    "date": flight_date
+})
+with:
+
+python
+Copy
+Edit
+params = {
+    "origin": origin,
+    "dest": destination,  # microservice uses 'dest', not 'destination'
+    "date": flight_date
+}
+response = requests.get(f"{url}/scrape", params=params, timeout=20)
+This will send:
+
+sql
+Copy
+Edit
+GET https://dynamic-flight-scraper-prithirazchoudh.replit.app/scrape?origin=LHR&dest=AMS&date=2025-07-07
+✅ That matches your microservice expectation.
+
+🛠 Option B — Change the Microservice to Accept POST JSON Instead
+In dynamic-flight-scraper/app.py, change the /scrape route like this:
+
+python
+Copy
+Edit
+@app.route("/scrape", methods=["GET", "POST"])
+def scrape():
+    if request.method == "POST":
+        data = request.json
+        origin = data.get("origin")
+        dest = data.get("destination") or data.get("dest")
+        date = data.get("date")
+    else:
+        origin = request.args.get("origin")
+        dest = request.args.get("dest")
+        date = request.args.get("date")
+
+    if not origin or not dest:
+        return jsonify({"error": "Missing origin or destination"}), 400
+
+    # continue scraping logic...
+This way you support both GET and POST, which is future-proof.
+
+✅ Recommendation:
+Use Option A right now — it's quicker and works without modifying the microservice.
+
+Then optionally apply Option B if you want your microservice to be more robust.
+

@@ -1,0 +1,112 @@
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.39:5000
+Press CTRL+C to quit
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Debugger is active!
+ * Debugger PIN: 142-408-305
+172.31.128.39 - - [01/Jul/2025 19:50:07] "GET / HTTP/1.1" 200 -
+172.31.128.39 - - [01/Jul/2025 19:50:08] "GET / HTTP/1.1" 200 -
+ * Detected change in '/home/runner/workspace/dynamic_scraper_service/app.py', reloading
+ * Restarting with stat
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Debugger is active!
+ * Debugger PIN: 149-446-861
+172.31.128.39 - - [01/Jul/2025 19:50:22] "GET /login HTTP/1.1" 200 -
+172.31.128.39 - - [01/Jul/2025 19:50:35] "POST /login HTTP/1.1" 302 -
+172.31.128.39 - - [01/Jul/2025 19:50:35] "GET /dashboard HTTP/1.1" 200 -
+172.31.128.39 - - [01/Jul/2025 19:50:37] "GET /api/flight_trivia HTTP/1.1" 200 -
+172.31.128.39 - - [01/Jul/2025 19:50:37] "GET /api/user_xp HTTP/1.1" 200 -
+172.31.128.39 - - [01/Jul/2025 19:50:37] "GET /api/trending_routes HTTP/1.1" 200 -
+✅ Playwright available for dynamic scraping
+🕷️ Scraping delay data for LHR
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: LHR → AMS on 2025-07-08
+============================================================
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-07-08
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/lhr/ams/250708/
+172.31.128.39 - - [01/Jul/2025 19:50:37] "GET /api/trending_routes HTTP/1.1" 200 -
+172.31.128.39 - - [01/Jul/2025 19:50:37] "GET /api/flight_trivia HTTP/1.1" 200 -
+🔍 Google Search: flights LHR to AMS 2025-07-08 price
+172.31.128.39 - - [01/Jul/2025 19:50:38] "GET /api/flight_stats HTTP/1.1" 200 -
+172.31.128.39 - - [01/Jul/2025 19:50:38] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+🔍 Google Search: cheap flights LHR AMS cost price
+172.31.128.39 - - [01/Jul/2025 19:50:40] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+🔍 Google Search: book flight LHR to AMS airline price
+🔍 Scraping Kayak: https://www.kayak.com/flights/LHR-AMS/2025-07-08
+🔍 Scraping Expedia: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:AMS,departure:07/08/2025
+🚀 Starting local microservice...
+🎯 SURPRISE ME: Scraping real prices under £50 from LHR
+🕷️ Scraping LHR → PRG for budget £50
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: LHR → PRG on 2025-07-08
+============================================================
+🚀 REAL FLIGHT SCRAPING: LHR → PRG on 2025-07-08
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/lhr/prg/250708/
+🔍 Google Search: flights LHR to PRG 2025-07-08 price
+✅ Found price: £38
+✅ Found price: £61
+✅ Found price: £499
+✅ Found price: £300
+✅ Found price: £316
+✅ Found price: £344
+✅ Found price: £76
+✅ Found price: £76
+✅ Found price: £135
+✅ Found price: £87
+✅ Found price: £142
+✅ Found price: £210
+✅ Found price: £75
+✅ Found price: £75
+✅ Found price: £37
+✅ Found price: £651
+✅ Found price: £207
+✅ Found price: £165
+✅ Found price: £86
+✅ Found price: £60
+✅ Found price: £92
+✅ Found price: £143
+⏳ Microservice starting...
+🌐 Calling microservice: https://dynamic-flight-scraper-prithirazchoudh.replit.app
+✅ Google Flights Search: 4 flights
+✅ Google Flights Search: 4 flights
+🔍 Scraping Kayak: https://www.kayak.com/flights/LHR-PRG/2025-07-08
+🔍 Scraping Expedia: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:PRG,departure:07/08/2025
+🚀 Starting local microservice...
+🔍 Microservice URL: https://dynamic-flight-scraper-prithirazchoudh.replit.app/scrape?origin=LHR&dest=AMS
+❌ All microservice endpoints failed
+❌ No real flight data found from any source
+❌ No real flight data available - scraping failed
+🕷️ Scraping delay data for CDG
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: CDG → AMS on 2025-07-08
+============================================================
+🚀 REAL FLIGHT SCRAPING: CDG → AMS on 2025-07-08
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/cdg/ams/250708/
+🔍 Google Search: flights CDG to AMS 2025-07-08 price
+⏳ Microservice starting...
+🌐 Calling microservice: https://dynamic-flight-scraper-prithirazchoudh.replit.app
+🔍 Google Search: cheap flights CDG AMS cost price
+🔍 Google Search: book flight CDG to AMS airline price
+🔍 Microservice URL: https://dynamic-flight-scraper-prithirazchoudh.replit.app/scrape?origin=LHR&dest=PRG
+❌ All microservice endpoints failed
+🎯 Processed 4 unique real flights
+
+✅ SUCCESS: Found 4 REAL flight options
+💰 Price range: £37 - £61
+🏆 Best deal: British Airways at £37
+📊 Sources: 1 different sites
+✅ REAL DEAL: Prague at £37 from British Airways
+🕷️ Scraping LHR → WAW for budget £50
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: LHR → WAW on 2025-07-08

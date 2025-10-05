@@ -1,0 +1,62 @@
+✅ Here's what could be causing the 404 error — and how to fix it:
+🧩 Most Likely Cause:
+easyJet uses dynamic session-based URLs or bot protection, and you're scraping a temporary link that's not valid outside that session.
+
+Many airline websites (like easyJet) generate URLs that expire quickly or are tied to session cookies, JavaScript rendering, or user agents. When you copy those links and try to open them in your browser or app later, they return a 404.
+
+✅ Step-by-Step Fixes:
+1. Avoid using session-based URLs
+Ensure you're not copying direct links to booking pages, which expire.
+
+Try to scrape static search result URLs (if any), or better: store flight data (price, date, airline, etc.) and redirect users to easyJet’s main search page with parameters.
+
+2. Redirect user to a valid base search page
+Instead of showing a broken link, generate a URL like:
+
+arduino
+Copy
+Edit
+https://www.easyjet.com/en
+Or attempt to construct a valid query-based URL like:
+
+ruby
+Copy
+Edit
+https://www.easyjet.com/en/book/search?origin=LHR&destination=AMS&departureDate=2025-07-18
+(You'll have to reverse-engineer the parameters if they exist; inspect network requests from the browser's DevTools when you use easyJet manually.)
+
+3. Mimic browser behavior using Playwright or Puppeteer
+If easyJet loads its content via JavaScript, you must use Playwright or Puppeteer to render the page and extract prices, because static HTTP requests or requests from microservices will miss dynamic content.
+
+You're already using Playwright:
+
+arduino
+Copy
+Edit
+✅ Playwright available for dynamic scraping
+So ensure your scraper is:
+
+Waiting for full page load (await page.waitForSelector(...))
+
+Mimicking a real user (use realistic user agent)
+
+Extracting data from rendered HTML, not from temporary redirect links
+
+4. Double-check scraped links
+From your logs:
+
+sql
+Copy
+Edit
+✅ REAL DEAL: Amsterdam at £63 from easyJet
+Make sure you’re not storing links like:
+
+arduino
+Copy
+Edit
+https://book.easyjet.com/xyz-sessiontoken123
+Instead:
+
+Either remove the link altogether
+
+Or link to https://www.easyjet.com/en with a flight search UI so the user can search manually

@@ -1,0 +1,96 @@
+✅ Working:
+Flask app starts properly.
+
+Static scraping (e.g., flightnetwork) runs and returns "no flights" — this is expected for sites with no matches under £50 or search mismatch.
+
+Dynamic scraping is attempted (Wizz Air, Cathay Pacific).
+
+❌ Failing:
+swift
+Copy
+Edit
+⚠️ Browser launch failed for cathay_pacific: BrowserType.launch: Executable doesn't exist at /home/runner/workspace/.cache/ms-playwright/chromium_headless_shell-1179/chrome-linux/headless_shell
+This means Playwright is not fully installed — it's missing the required Chromium browser to launch.
+
+✅ Fix 1: Install Playwright Browsers
+You must install the browser binaries Playwright needs.
+
+Run this once in your environment:
+
+bash
+Copy
+Edit
+playwright install
+If using Python:
+
+bash
+Copy
+Edit
+python -m playwright install
+This downloads the necessary Chromium/Firefox/WebKit binaries into Playwright’s cache folder.
+
+✅ Fix 2: Use chromium instead of chromium_headless_shell
+When launching Playwright in Python, explicitly specify a supported browser:
+
+python
+Copy
+Edit
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    # not p.chromium_headless_shell — that will fail
+✅ Fix 3: Avoid Crashing from Resource Overload
+You're scraping 47 sites with hybrid static+dynamic scraping. On a low-RAM environment, this will crash or timeout Playwright sessions.
+
+Solution:
+Throttle and batch your dynamic sites. Here’s how:
+
+python
+Copy
+Edit
+dynamic_sites = ["wizz_air", "easyjet", "cathay_pacific", "jet2", "norwegian", "aerlingus"]
+batch_size = 2  # max 2 at a time
+
+for i in range(0, len(dynamic_sites), batch_size):
+    current_batch = dynamic_sites[i:i+batch_size]
+    for site in current_batch:
+        scrape_dynamic_site(site)
+You can run these sequentially or with light concurrency, e.g., 2 tabs per batch.
+
+✅ Fix 4: Only Use Real Data
+Make sure your code does not call fallback methods like:
+
+python
+Copy
+Edit
+if not real_data:
+    real_data = get_fake_fallback_data()
+Instead, log and return:
+
+python
+Copy
+Edit
+if not real_data:
+    return jsonify({"results": [], "message": "No flights found from live sources."})
+✅ Fix 5: Limit Memory Use in Playwright
+Use headless=True
+
+Avoid opening too many tabs
+
+Close each browser/page explicitly:
+
+python
+Copy
+Edit
+page.close()
+browser.close()
+✅ Final: Summary Checklist
+✅ Fix	⚙️ Command or Code
+Install Playwright browsers	python -m playwright install
+Use chromium, not headless_shell	p.chromium.launch(headless=True)
+Throttle dynamic scrapes	Max 2 Playwright tabs at a time
+Disable fallbacks	Return empty JSON if no real data
+Free memory	Always page.close() and browser.close()
+Log failures	Log site: failed, don’t retry endlessly
+

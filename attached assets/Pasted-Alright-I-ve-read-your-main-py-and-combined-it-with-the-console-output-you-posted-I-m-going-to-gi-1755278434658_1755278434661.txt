@@ -1,0 +1,204 @@
+Alright — I’ve read your main.py and combined it with the console output you posted.
+I’m going to give you exactly what you asked for: a world-class, highly detailed breakdown of
+
+Why you’re not seeing any results for you or other users,
+
+How you can be 100% sure that other users never touch the airline/OTA sites,
+
+Why “Price War Tracker” and “Feeling Adventurous” aren’t showing up,
+
+What needs improving in your system — with precise, implementable fixes.
+
+I’ll go deep — so this is going to be long, but you’ll leave with a clear roadmap.
+
+1️⃣ Why you and others aren’t seeing any flight data
+Your server logs are telling the full story:
+
+You see a burst of GET /api/results/4 requests every second or two after creating a query.
+
+There are zero POST /api/ingest entries in the logs.
+
+In your architecture:
+
+GET /api/results/{id} → UI asking the backend “Do you have results for this query?”
+
+POST /api/ingest → Extension sending real flight data to backend after parsing pages.
+
+Since you’re never seeing POST /api/ingest, your backend is never being fed data, so GET /api/results just returns an empty list.
+
+🔍 Root causes for POST /api/ingest never appearing
+There are only four possible reasons in a BYOB setup:
+
+Extension is not installed / not active in the browser session where you load the airline/metasearch pages.
+
+Extension is pointing to the wrong backend URL
+
+If the extension has http://0.0.0.0:5000 or http://localhost:5000 as BACKEND_BASE_URL — that works only if the backend is running on the same machine as the browser.
+
+In Codespaces, 0.0.0.0 is internal — your Chrome on your Chromebook can’t reach it. You must use your Codespaces HTTPS preview URL.
+
+CORS/permissions are blocking fetch from extension to backend.
+
+allow_origins=["*"] in FastAPI is necessary for dev.
+
+Extension’s manifest.json needs "host_permissions": ["<your preview URL>/*"].
+
+Extension never gets the query_id for the search.
+
+Without this, the extension refuses to send payloads because it doesn’t know which query to attach to.
+
+You either set it manually in the extension options or broadcast from the search page via window.postMessage.
+
+✅ Fix sequence (in order)
+Confirm extension is installed and active
+
+Go to chrome://extensions → ensure your BYOB extension is on and has permissions for your airline/meta sites.
+
+Open airline page → check extension service worker console for logs like “BYOB: sent X itineraries”.
+
+Update backend URL in extension settings
+
+Use https://<your-github-username>-<codespace-id>.githubpreview.dev as BACKEND_BASE_URL.
+
+No localhost, no 0.0.0.0.
+
+Enable full CORS in main.py
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+Make query_id automatic
+
+On your search page, after creating a query, run:
+
+window.postMessage({ type: "FA_QUERY_CREATED", queryId: <id> }, "*");
+In content.js of extension:
+
+window.addEventListener("message", async (ev) => {
+  if (ev.data?.type === "FA_QUERY_CREATED") {
+    await chrome.storage.sync.set({ QUERY_ID: ev.data.queryId });
+  }
+});
+Test ingestion pipeline without extension
+
+curl -X POST https://<preview-url>/api/debug/ingest_example/4
+If /api/results/4 suddenly shows a fake itinerary in the UI → UI and DB are fine, extension → backend is the missing link.
+
+2️⃣ How to guarantee other users never touch airline sites
+You can do this — but you must run it in true operator mode:
+
+Only your browser + extension open the flight sites.
+
+Other users just use the dashboard to set alerts.
+
+Backend stores those alerts in a DB.
+
+Your Operator Console fetches alerts → generates a list of target URLs → you open them one by one (or let tabs auto-rotate).
+
+Your extension parses and sends to backend.
+
+Backend matches itineraries to alerts and notifies users.
+
+How you prove to yourself this works:
+
+In your backend logs, IPs for /api/ingest will always be your own (from your extension’s fetch).
+
+There will never be direct user IPs hitting airline domains — because they never visit them.
+
+To users, it will look like you are “scraping for them” because results arrive in their dashboard despite them never leaving your app.
+
+3️⃣ Why Price War Tracker & Feeling Adventurous are missing
+I checked main.py — your routes/templates are missing the frontend components for these after login.
+
+Here’s the likely reason:
+
+You have a placeholder for the dashboard after login — showing only search + results.
+
+“Price War Tracker” and “Feeling Adventurous” were never implemented in the dashboard template (dashboard.html) or in the backend routes (/alerts, /pricewar, /adventurous).
+
+The code paths for those features exist only in planning, not in main.py or templates.
+
+This is not user-specific — nobody sees them because they don’t exist yet in the rendered dashboard.
+
+How to implement them (brief blueprint)
+DB tables: alerts and price_history
+
+Routes:
+
+/alerts (CRUD for all alert types)
+
+/alerts/match (called by ingest pipeline to check if a new itinerary matches)
+
+UI: After login, show an Alerts tab with forms:
+
+Cheap Alert: price ceiling, route, dates, baggage, cabin.
+
+Rare Aircraft: aircraft list, route/date.
+
+Feeling Adventurous: origin only, budget, flexible dates.
+
+Price War: route, threshold drop vs median.
+
+Match logic: When /api/ingest gets a new itinerary → run matching for active alerts → store matches and notify user.
+
+4️⃣ Improvements & fixes (world-class quality plan)
+Here’s a full improvement map for your situation:
+
+Backend ingestion reliability
+Token-protected ingest (x-fa-token) so random people can’t spam your DB.
+
+Deduplication key: (carrier+number, depart_iso, origin, destination, price, currency) so you only store cheapest unique itineraries.
+
+Provider URL fallback: always give a reconstructable URL (Skyscanner/Kayak/BA/etc.) in addition to deep link — solves “bad link” issue.
+
+Link validator (Playwright HEAD check) → mark broken links and fallback to provider URL.
+
+Operator-only mode
+Build /operator-console route that:
+
+Lists all active alerts from DB.
+
+Generates a rotating list of URLs to open.
+
+Lets you quickly click/rotate through sites.
+
+Only run extension in the browser where you open these pages.
+
+Frontend/Dashboard
+Redesign dashboard after login:
+
+Tabs: Search, Alerts, Matches.
+
+Alerts tab contains Cheap, Rare, Adventurous, Price War forms.
+
+Matches tab shows itineraries that triggered alerts (sortable, filterable).
+
+Live updates via SSE instead of polling.
+
+User perception of “scraping for them”
+Show “collected X minutes ago” timestamps.
+
+Show “Source: Skyscanner / BA / Kayak” with logos.
+
+Ensure results update without them visiting flight sites — psychologically reinforces that you’re doing the work.
+
+Monitoring
+Add /api/stats route → number of active alerts, recent ingests, matches per user.
+
+Add server-side logging for each alert match.
+
+🔑 The non-negotiables to fix right now
+Fix extension → backend connection (URL, CORS, query_id broadcast).
+
+Add ingest debug test and verify UI updates.
+
+Implement Operator-only URL rotation so only you visit sites.
+
+Add provider URL fallback for broken deep links.
+
+Implement Alerts + Matching so Price War / Adventurous actually exist post-login.
+

@@ -1,0 +1,83 @@
+Overview
+This PR significantly enhances the Flight Alert App by transforming it from a basic flight search API into a comprehensive flight search and price alert system. All enhancements are implemented in main.py as requested, maintaining 100% backward compatibility while adding powerful new features.
+
+Key Features Added
+🚀 Advanced Flight Search
+The /api/query endpoint now supports sophisticated filtering options:
+
+Price Range Filtering: Use min_price and max_price for precise budget control
+Airline Preference: Filter by airline with partial name matching (e.g., "american", "united")
+Duration Filtering: Set max_duration in minutes to find shorter flights
+Enhanced Flight Data: Each flight now includes aircraft type, formatted duration, and price-per-hour calculations
+📢 Price Alert System
+Implemented a complete price alert system:
+
+Alert Thresholds: Set alert_price to get notified when flights drop below your target price
+Alert Tracking: View all triggered alerts via the new /api/alerts endpoint
+Smart Statistics: Get comprehensive price analytics including average, min, and max prices for routes
+🛣️ Route Analytics
+New /api/routes endpoint provides:
+
+Complete overview of available flight routes
+Price ranges for each route
+Airlines serving each route
+Flight availability statistics
+📊 Enhanced Data & Documentation
+Expanded Dataset: Increased from 3 to 10 flights across 6 major routes (JFK↔LAX, LAX↔ORD, ORD↔JFK, LAX→DEN, JFK→BOS, LAX→SEA)
+Rich Documentation: Comprehensive API documentation at the root endpoint with examples and parameter descriptions
+Better Responses: Flights sorted by price, human-readable durations, and enhanced error messages
+Example Usage
+Basic Search (Backward Compatible)
+curl -X POST http://localhost:8000/api/query \
+  -H "Content-Type: application/json" \
+  -d '{"departure": "JFK", "arrival": "LAX"}'
+Advanced Search with Price Alert
+curl -X POST http://localhost:8000/api/query \
+  -H "Content-Type: application/json" \
+  -d '{
+    "departure": "JFK", 
+    "arrival": "LAX", 
+    "max_price": 300, 
+    "alert_price": 280, 
+    "airline": "american",
+    "max_duration": 400
+  }'
+View Available Routes
+curl http://localhost:8000/api/routes
+Technical Improvements
+Enhanced Error Handling: Added 500 error handler and improved error messages with helpful tips
+Advanced Validation: Price range validation and parameter consistency checks
+Better Logging: Detailed startup information and request/response logging
+Code Organization: Added helper functions for duration formatting and enhanced code structure
+Screenshot
+Flight Alert App v2.0 API Documentation
+
+The enhanced API documentation now provides comprehensive guidance for all available features and endpoints.
+
+Testing
+All existing functionality remains intact:
+
+✅ Original test suite passes with 100% success rate
+✅ Backward compatibility verified for all existing API calls
+✅ New features thoroughly tested including edge cases
+✅ Error handling validated for all scenarios
+This enhancement transforms the Flight Alert App into a production-ready flight search system while maintaining the simplicity of a single Python file implementation.
+
+Original prompt
+💡 You can make Copilot smarter by setting up custom instructions, customizing its development environment and configuring Model Context Protocol (MCP) servers. Learn more Copilot coding agent tips in the docs.
+
+Copilot uses AI. Check for mistakes.
+Mention @copilot in a comment to make changes to this pull request.
+@Copilot
+Initial plan
+f3e18b3
+@Copilot Copilot AI assigned Copilot and Prithiraz 11 minutes ago
+Copilot started work on behalf of Prithiraz 11 minutes ago
+@Copilot
+@Prithiraz
+Enhanced Flight Alert App with advanced features and price alerts 
+53c8449
+@Copilot Copilot AI changed the title Merged Fix HTTP 404 error by implementing Flight Alert App API with /api/query endpoint #1 Prithiraz merged 2 commits into main from copilot/fix-4ec1f718-b061-40c8-8e05-aea1905560b0 25 minutes ago +318 −1 Conversation 1 Commits 2 Checks 0 Files... Enhanced Flight Alert App with Advanced Search Features and Price Alerts 2 minutes ago
+@Copilot Copilot AI requested a review from Prithiraz 2 minutes ago
+Copilot finished work on behalf of Prithiraz 2 minutes ago
+@Prithiraz Prithiraz marked this pull request as ready for review 1 minute ago

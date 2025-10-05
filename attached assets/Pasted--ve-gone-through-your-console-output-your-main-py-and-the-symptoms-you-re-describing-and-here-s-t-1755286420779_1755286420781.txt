@@ -1,0 +1,202 @@
+’ve gone through your console output, your main.py, and the symptoms you’re describing, and here’s the detailed, step-by-step truth of what’s going wrong, how to fix it, and how to make sure your system works for both your single-operator BYOB mode and your dashboard features (Price War, Adventurous, Cheap Alerts, etc.).
+
+1. What’s actually going wrong right now
+Your server is running fine — the logs prove:
+
+Uvicorn is starting without error.
+
+DB initializes.
+
+You can log in, create a query, and the /api/query endpoint responds with an ID (5 in your last run).
+
+But…
+You never see POST /api/ingest in the logs.
+
+That means:
+
+No data is coming from your browser extension into the backend.
+
+The backend never receives any itineraries, so GET /api/results/5 just returns empty arrays forever.
+
+💡 Key point:
+Without ingest calls, your UI will always look like “no results” — regardless of whether you’re the only operator or you have 1,000 users.
+
+2. Why your ingestion is broken
+From the symptoms and your setup, there are four hard blockers:
+
+A) Wrong backend URL in extension
+If your BACKEND_BASE_URL in the extension is http://0.0.0.0:5000 or http://localhost:5000:
+
+Your Chromebook’s Chrome browser will try to connect to itself, not to Codespaces.
+
+The extension must point to your Codespaces HTTPS preview URL (e.g., https://prithiraz-something-5000.githubpreview.dev).
+
+B) Extension permissions
+In your manifest.json, the "host_permissions" must include:
+
+"host_permissions": [
+  "https://*.githubpreview.dev/*",
+  "https://*.skyscanner.net/*",
+  "https://*.kayak.com/*",
+  "https://*.britishairways.com/*",
+  "https://*.google.com/travel/flights/*"
+]
+If the GitHub Preview domain isn’t listed, your fetch to /api/ingest will silently fail.
+
+C) CORS in main.py
+If your FastAPI doesn’t allow the Codespaces preview origin, the browser will block the extension fetch.
+
+Add at the top of main.py:
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Lock to preview domain later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+D) Extension doesn’t know query_id
+Right now, you create a search → backend returns query ID → extension never hears about it unless you manually type it into options.
+
+You need to broadcast query_id from your /search page:
+
+<script>
+fetch('/api/query', { method: 'POST', body: JSON.stringify(searchParams) })
+  .then(res => res.json())
+  .then(data => {
+    window.postMessage({ type: 'FA_QUERY_CREATED', queryId: data.id }, "*");
+  });
+</script>
+And in content.js:
+
+window.addEventListener("message", async (ev) => {
+  if (ev.data?.type === "FA_QUERY_CREATED") {
+    await chrome.storage.sync.set({ QUERY_ID: ev.data.queryId });
+    console.log("BYOB: QUERY_ID set to", ev.data.queryId);
+  }
+});
+3. How to be sure only YOU ever visit airline sites
+Once ingestion is fixed:
+
+Only you run the extension in a browser where you’re logged into flight sites.
+
+Your backend receives all itineraries from your session.
+
+Other users set alerts on your dashboard; they never visit airline sites.
+
+You know this because:
+
+Backend logs for /api/ingest will only ever show your IP.
+
+No other users’ browsers even have the extension installed.
+
+To users, it looks like your system is “scraping for them” — they set criteria and magically get results.
+
+4. Why “Price War” and “Feeling Adventurous” aren’t showing
+I looked through your main.py — those features are not coded into the post-login dashboard at all.
+
+They don’t have DB tables (alerts, price_history).
+
+They don’t have backend routes (/alerts, /pricewar, /adventurous).
+
+They don’t have HTML templates or forms in dashboard.html.
+
+So:
+
+No user sees them — not just you.
+
+You have to actually add them to the backend + frontend.
+
+How to add them
+DB schema (SQLite):
+
+CREATE TABLE alerts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    type TEXT,  -- 'cheap', 'rare', 'adventurous', 'pricewar'
+    origin TEXT,
+    destination TEXT,
+    one_way BOOLEAN,
+    depart_start TEXT,
+    depart_end TEXT,
+    return_start TEXT,
+    return_end TEXT,
+    min_bags INTEGER,
+    max_bags INTEGER,
+    cabin TEXT,
+    min_price REAL,
+    max_price REAL,
+    min_duration INTEGER,
+    max_duration INTEGER,
+    rare_aircraft TEXT,
+    created_at TEXT
+);
+Backend:
+
+/alerts (create/update/delete alerts)
+
+Matching logic in /api/ingest to check new itineraries against all active alerts.
+
+Frontend:
+
+After login, a tabbed “Alerts” page with forms for:
+
+Cheap Alerts: price ceiling, route, dates, baggage, cabin.
+
+Rare Aircraft: aircraft list + filters.
+
+Adventurous: origin only + budget + flexible dates.
+
+Price War: route + threshold drop from median.
+
+5. How to fix your “bad links” issue
+Right now, some deep links from metas break outside the active session.
+
+Fix:
+
+Always store two URLs per itinerary:
+
+deep_link: exact link found in page (may break).
+
+provider_url: reconstructed static URL based on origin/destination/date (never breaks).
+
+If deep_link fails Playwright validation, fall back to provider_url in UI.
+
+6. My recommended next steps (fix order)
+Step 1: Get ingestion working
+Update extension BACKEND_BASE_URL to your Codespaces HTTPS preview.
+
+Add "host_permissions" for the preview URL.
+
+Add full CORS in main.py.
+
+Add query_id broadcast in /search page + content.js listener.
+
+Test ingestion:
+
+curl -X POST https://<preview>/api/debug/ingest_example/5
+If results show in UI → extension is the last missing link.
+
+Step 2: Implement Operator-only mode
+Build /operator-console page showing all active alerts → generates list of airline/meta URLs.
+
+You keep that page open, clicking through results → extension ingests → backend matches → users get alerts.
+
+Step 3: Add alerts system
+Create alerts table.
+
+Add /alerts CRUD.
+
+Add match logic in /api/ingest.
+
+Step 4: Add Price War + Adventurous
+Create price_history table.
+
+Ingest pipeline logs every fare to history.
+
+Price War = alert when new fare < median by X%.
+
+Adventurous = origin-only + budget + date flexibility.
+

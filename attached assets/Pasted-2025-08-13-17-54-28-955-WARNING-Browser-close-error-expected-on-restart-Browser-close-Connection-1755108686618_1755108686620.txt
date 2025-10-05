@@ -1,0 +1,36 @@
+2025-08-13 17:54:28,955 WARNING Browser close error (expected on restart): Browser.close: Connection closed while reading from the driver
+INFO:     Application shutdown complete.
+INFO:     Finished server process [18250]
+INFO:     Stopping reloader process [15893]
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-13 17:54:30,525 INFO ✅ Loaded 9096 airport codes for validation
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [18555] using StatReload
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-13 17:54:31,840 INFO ✅ Loaded 9096 airport codes for validation
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-13 17:54:32,171 INFO ✅ Loaded 9096 airport codes for validation
+INFO:     Started server process [18604]
+INFO:     Waiting for application startup.
+2025-08-13 17:54:32,193 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-13 17:54:32,193 INFO ✅ Database initialized with BYOB architecture
+2025-08-13 17:54:32,194 INFO Starting Playwright for validation...
+2025-08-13 17:54:32,600 INFO ✅ Playwright ready for validation
+2025-08-13 17:54:32,600 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /login HTTP/1.1" 200 OK
+🔐 Login attempt for email: prithirazchoudhury2@gmail.com
+🔍 User lookup result: Not found
+❌ Invalid credentials for prithirazchoudhury2@gmail.com
+INFO:     87.80.49.90:0 - "POST /login HTTP/1.1" 200 OK

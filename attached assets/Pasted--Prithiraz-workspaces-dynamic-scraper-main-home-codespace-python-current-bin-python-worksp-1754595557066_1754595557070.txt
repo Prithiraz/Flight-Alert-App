@@ -1,0 +1,173 @@
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+✅ Playwright available for dynamic scraping
+⚠️ requests-html not available - using basic requests
+✈️ Successfully loaded 82808 airports from cache!
+🚀 Starting FlightAlert Pro with ENHANCED REAL Flight Scraping...
+✅ FlightAlert Pro with ENHANCED REAL Flight Scraping is ready!
+🎯 STRICT POLICY: Only real scraped flight data - NO fallbacks or fake prices
+🛡️ Enhanced bot protection evasion and multi-source scraping active
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.196:5000
+Press CTRL+C to quit
+ * Restarting with stat
+✅ Playwright available for dynamic scraping
+⚠️ requests-html not available - using basic requests
+✈️ Successfully loaded 82808 airports from cache!
+🚀 Starting FlightAlert Pro with ENHANCED REAL Flight Scraping...
+✅ FlightAlert Pro with ENHANCED REAL Flight Scraping is ready!
+🎯 STRICT POLICY: Only real scraped flight data - NO fallbacks or fake prices
+🛡️ Enhanced bot protection evasion and multi-source scraping active
+ * Debugger is active!
+ * Debugger PIN: 307-765-412
+127.0.0.1 - - [07/Aug/2025 19:30:30] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [07/Aug/2025 19:30:39] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [07/Aug/2025 19:30:41] "POST /login HTTP/1.1" 302 -
+127.0.0.1 - - [07/Aug/2025 19:30:41] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [07/Aug/2025 19:30:42] "GET /api/airport_delays HTTP/1.1" 200 -
+127.0.0.1 - - [07/Aug/2025 19:30:42] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+127.0.0.1 - - [07/Aug/2025 19:30:42] "GET /api/flight_stats HTTP/1.1" 200 -
+127.0.0.1 - - [07/Aug/2025 19:30:42] "GET /api/trending_routes HTTP/1.1" 200 -
+🔥 REAL PRICE WAR: LHR → AMS on 2025-08-26
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-08-26
+🎯 STRICT POLICY: Only real scraped data - ZERO fallbacks or fake prices
+   🔍 Skyscanner: LHR→AMS
+🎲 STRICT SURPRISE ME: Finding ONLY real destinations under £100
+🔍 Checking REAL prices for LHR → PRG
+🚀 REAL FLIGHT SCRAPING: LHR → PRG on 2025-08-21
+🎯 STRICT POLICY: Only real scraped data - ZERO fallbacks or fake prices
+     📄 Got 708 characters from Skyscanner
+     🔍 Debug HTML saved to debug_skyscanner_LHR_AMS.html
+     🤖 Skyscanner: Bot detection likely triggered
+     📊 Skyscanner: Found 0 unique prices, 0 airlines
+     ⚠️ Skyscanner: No REAL prices found - check debug file
+   🔍 Skyscanner: LHR→AMS
+     📄 Got 708 characters from Skyscanner
+     🔍 Debug HTML saved to debug_skyscanner_LHR_AMS.html
+     🤖 Skyscanner: Bot detection likely triggered
+     📊 Skyscanner: Found 0 unique prices, 0 airlines
+     ⚠️ Skyscanner: No REAL prices found - check debug file
+   🔍 Kayak: LHR→AMS
+     📄 Got 162534 characters from Kayak
+     🔍 Debug HTML saved to debug_kayak_LHR_AMS.html
+     💰 Regex found price: £73
+     💰 Context found price: £73
+     💰 Context found price: £90
+     📊 Kayak: Found 2 unique prices, 0 airlines
+     ✅ Kayak found 2 REAL prices
+     ✅ Added REAL flight: Verified Kayak Airline £73
+     ✅ Added REAL flight: Verified Kayak Airline £90
+   🔍 Momondo: LHR→AMS
+     📄 Got 155303 characters from Momondo
+     🔍 Debug HTML saved to debug_momondo_LHR_AMS.html
+     💰 Regex found price: £82
+     💰 Context found price: £82
+     💰 Context found price: £83
+     📊 Momondo: Found 2 unique prices, 0 airlines
+     ✅ Momondo found 2 REAL prices
+     ✅ Added REAL flight: Verified Momondo Airline £82
+     ✅ Added REAL flight: Verified Momondo Airline £83
+   🔍 Booking: LHR→AMS
+     📄 Got 118583 characters from Booking
+     🔍 Debug HTML saved to debug_booking_LHR_AMS.html
+     💰 Context found price: £22
+     💰 Context found price: £32
+     📊 Booking: Found 2 unique prices, 0 airlines
+     ✅ Booking found 2 REAL prices
+     ✅ Added REAL flight: Verified Booking Airline £22
+     ✅ Added REAL flight: Verified Booking Airline £32
+✅ Enhanced static scraping: 6 real flights
+     🔍 Google Flights Enhanced: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20AMS%20on%202025-08-26&curr=GBP
+     🔍 Expedia Enhanced: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:AMS,departure:08/26/2025
+     🔍 Kayak Enhanced: https://www.kayak.com/flights/LHR-AMS/2025-08-26
+     📱 Skyscanner Mobile: LHR→AMS
+       📄 Got 708 characters from Skyscanner Mobile
+       🔍 Mobile debug HTML saved to debug_mobile_skyscanner_mobile_LHR_AMS.html
+       📊 Skyscanner Mobile: Found 0 mobile prices
+       ⚠️ Skyscanner Mobile: No mobile prices found - check debug file
+     📱 Kayak Mobile: LHR→AMS
+       📄 Got 183252 characters from Kayak Mobile
+       🔍 Mobile debug HTML saved to debug_mobile_kayak_mobile_LHR_AMS.html
+       💰 Mobile regex found: £71
+       💰 Mobile broad search found: £71
+       📊 Kayak Mobile: Found 1 mobile prices
+       ✅ Kayak Mobile MOBILE REAL: £71
+     📱 Momondo Mobile: LHR→AMS
+       📄 Got 162702 characters from Momondo Mobile
+       🔍 Mobile debug HTML saved to debug_mobile_momondo_mobile_LHR_AMS.html
+       💰 Mobile regex found: £59
+       💰 Mobile broad search found: £59
+       📊 Momondo Mobile: Found 1 mobile prices
+       ✅ Momondo Mobile MOBILE REAL: £59
+✅ Enhanced mobile scraping: 2 real flights
+     ⚠️ No API keys available - skipping API scraping
+🔍 Processing 8 scraped flights with STRICT validation...
+✅ STRICT VALIDATION: 8 unique REAL flights confirmed
+🎯 FINAL RESULT: 8 REAL flights validated
+✅ Real price war data: 8 real flights
+127.0.0.1 - - [07/Aug/2025 19:32:00] "GET /api/price_war/LHR/AMS HTTP/1.1" 200 -
+   🔍 Skyscanner: LHR→PRG
+     📄 Got 708 characters from Skyscanner
+     🔍 Debug HTML saved to debug_skyscanner_LHR_PRG.html
+     🤖 Skyscanner: Bot detection likely triggered
+     📊 Skyscanner: Found 0 unique prices, 0 airlines
+     ⚠️ Skyscanner: No REAL prices found - check debug file
+   🔍 Skyscanner: LHR→PRG
+     📄 Got 708 characters from Skyscanner
+     🔍 Debug HTML saved to debug_skyscanner_LHR_PRG.html
+     🤖 Skyscanner: Bot detection likely triggered
+     📊 Skyscanner: Found 0 unique prices, 0 airlines
+     ⚠️ Skyscanner: No REAL prices found - check debug file
+   🔍 Kayak: LHR→PRG
+     📄 Got 162820 characters from Kayak
+     🔍 Debug HTML saved to debug_kayak_LHR_PRG.html
+     💰 Regex found price: £28
+     💰 Regex found price: £99
+     💰 Context found price: £28
+     💰 Context found price: £99
+     💰 Context found price: £91
+     📊 Kayak: Found 3 unique prices, 0 airlines
+     ✅ Kayak found 3 REAL prices
+     ✅ Added REAL flight: Verified Kayak Airline £28
+     ✅ Added REAL flight: Verified Kayak Airline £91
+     ✅ Added REAL flight: Verified Kayak Airline £99
+   🔍 Momondo: LHR→PRG
+     📄 Got 155348 characters from Momondo
+     🔍 Debug HTML saved to debug_momondo_LHR_PRG.html
+     📊 Momondo: Found 0 unique prices, 0 airlines
+     ⚠️ Momondo: No REAL prices found - check debug file
+   🔍 Momondo: LHR→PRG
+     📄 Got 155541 characters from Momondo
+     🔍 Debug HTML saved to debug_momondo_LHR_PRG.html
+     💰 Regex found price: £72
+     💰 Context found price: £72
+     📊 Momondo: Found 1 unique prices, 0 airlines
+     ✅ Momondo found 1 REAL prices
+     ✅ Added REAL flight: Verified Momondo Airline £72
+   🔍 Booking: LHR→PRG
+🎲 STRICT SURPRISE ME: Finding ONLY real destinations under £100
+🔍 Checking REAL prices for LHR → AMS
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-08-21
+🎯 STRICT POLICY: Only real scraped data - ZERO fallbacks or fake prices
+     📄 Got 118586 characters from Booking
+     🔍 Debug HTML saved to debug_booking_LHR_PRG.html
+     💰 Regex found price: £47
+     💰 Regex found price: £95
+     💰 Context found price: £47
+     💰 Context found price: £95
+     💰 Context found price: £49
+     💰 Context found price: £79
+     💰 Context found price: £92
+     📊 Booking: Found 5 unique prices, 0 airlines
+     ✅ Booking found 5 REAL prices
+     ✅ Added REAL flight: Verified Booking Airline £47
+     ✅ Added REAL flight: Verified Booking Airline £49
+     ✅ Added REAL flight: Verified Booking Airline £79
+✅ Enhanced static scraping: 7 real flights
+🔥 REAL PRICE WAR: LHR → AMS on 2025-08-16
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-08-16
+🎯 STRICT POLICY: Only real scraped data - ZERO fallbacks or fake prices
+     🔍 Google Flights Enhanced: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20PRG%20on%202025-08-21&curr=GBP

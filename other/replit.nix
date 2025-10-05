@@ -1,0 +1,36 @@
+{ pkgs }: {
+  deps = [
+    pkgs.python3
+    pkgs.python3Packages.pip
+    pkgs.chromium
+    pkgs.cups
+    pkgs.xorg.libxcb
+    pkgs.xorg.libXcomposite
+    pkgs.pango
+    pkgs.cairo
+    pkgs.glib
+    pkgs.gdk-pixbuf
+    pkgs.freetype
+    pkgs.fontconfig
+    pkgs.dbus
+    pkgs.xorg.libXdamage
+    pkgs.xorg.libXrandr
+    pkgs.gtk3
+    pkgs.atk
+    pkgs.xorg.libXext
+    pkgs.xorg.libXfixes
+    pkgs.xorg.libXrender
+    pkgs.xorg.libX11
+    pkgs.xorg.libXtst
+    pkgs.xorg.libXi
+    pkgs.nspr
+    pkgs.nss
+    pkgs.alsa-lib
+    pkgs.at-spi2-atk
+    pkgs.at-spi2-core
+    pkgs.expat
+    pkgs.libdrm
+    pkgs.libxkbcommon
+    pkgs.mesa
+  ];
+}

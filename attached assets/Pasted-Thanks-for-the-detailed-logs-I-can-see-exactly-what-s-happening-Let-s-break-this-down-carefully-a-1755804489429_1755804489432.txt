@@ -1,0 +1,148 @@
+Thanks for the detailed logs — I can see exactly what’s happening. Let’s break this down carefully and step-by-step so you have a world-class level diagnosis and solution path.
+
+🔎 What’s Happening Now
+Server is running fine
+
+✅ Playwright ready for validation means your backend is healthy.
+
+Airport search (/api/airports) and query creation (/api/query) work — they’re returning results from your CSV/database, not live flight data.
+
+Your app isn’t actually fetching live fares
+
+When you run a search like LHR → AMS, the backend just logs a query and polls /api/results/{id}.
+
+But nothing new ever shows up in results because the backend never gets real flight data.
+
+That’s why your console spam shows many 200 OK on /api/results/{id} with no changes.
+
+The BYOB extension isn’t posting data
+
+In your Chrome extension page you saw service worker (Inactive). That means the extension background script is not awake, or not running at all.
+
+Even if it is loaded, it may not be injecting into the airline/OTA pages properly. If no injection = no extraction = no prices posted to backend.
+
+Sites like Expedia, EasyJet, Skyscanner only open homepages
+
+That’s because your system is generating deep links incorrectly (wrong format).
+
+Most OTAs use dynamic session tokens in URLs, so simply constructing a link like expedia.com/LHR-AMS/2025-09-04 won’t work — you just land on their homepage.
+
+➝ That’s why your app reports “200 OK” (the homepage loads fine), but you don’t see the actual search results.
+
+🛠️ Problems Identified
+❌ Backend has no scraper / parser connected to queries.
+
+❌ BYOB extension isn’t sending extracted data to /api/results.
+
+❌ Deep links to airline/OTA sites are invalid.
+
+❌ No “price war tracker” or “feeling adventurous” features wired into dashboard yet (they’re placeholders in your HTML).
+
+✅ Step-by-Step Fixes
+1. Verify Extension is Actually Running
+Open Chrome DevTools → Console on an airline site (e.g., EasyJet search results page).
+
+If the BYOB bridge works, you should see console logs like:
+
+[BYOB] Extracted 25 fares, posting to backend...
+If you don’t see that, your extension’s content.js isn’t injecting.
+
+Check manifest.json has "matches": ["<all_urls>"] or specific airline domains.
+
+Ensure "background" script is properly set with "service_worker": "background.js".
+
+Make sure the service worker isn’t shutting down immediately (common in MV3).
+
+👉 Until extension posts data, your backend will always return empty /results.
+
+2. Fix Deep Linking
+Right now your backend may store airline base_url and try to construct URLs. For example:
+
+expedia_url = f"https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:{origin},to:{dest},departure:{date}"
+But these formats are outdated.
+
+🔧 Solution:
+
+Use real, static deep link formats. Many OTAs support them for marketing partners.
+
+Example (Skyscanner):
+
+https://www.skyscanner.net/transport/flights/lhr/ams/250904/
+Example (Google Flights):
+
+https://www.google.com/flights?hl=en#flt=LHR.AMS.2025-09-04
+You should maintain a JSON map like:
+
+{
+  "skyscanner": "https://www.skyscanner.net/transport/flights/{origin}/{dest}/{date}/",
+  "googleflights": "https://www.google.com/flights?hl=en#flt={origin}.{dest}.{date}"
+}
+And replace placeholders dynamically.
+
+3. Connect Extension → Backend
+In your extension’s content.js, make sure you’re actually doing something like:
+
+// Example inside extension when fares are detected
+fetch("http://localhost:5000/api/ingest", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    query_id: currentQueryId,
+    fares: extractedFares
+  })
+});
+Then in FastAPI (main.py):
+
+@app.post("/api/ingest")
+def ingest_fares(payload: dict):
+    query_id = payload.get("query_id")
+    fares = payload.get("fares", [])
+    # Store into DB so /api/results/{query_id} has data
+    for fare in fares:
+        save_to_db(query_id, fare)
+    return {"ok": True, "count": len(fares)}
+👉 This is the missing link right now. Your backend is ready, but the extension never posts fares.
+
+4. Dashboard Features (price war tracker, adventurous, rare aircraft)
+These are placeholders in your dashboard.html. You need:
+
+Database schema to store these alert types.
+
+Background jobs that trigger them (e.g., price drop detector, rare plane detection).
+
+UI controls (sliders, dropdowns) for trip duration, baggage, etc.
+
+Right now they’re not wired to backend logic, so they don’t appear post-login.
+
+🚀 Roadmap to Make It Actually Work
+Fix BYOB extension injection (verify console logs on airline pages).
+
+Add /api/ingest endpoint in FastAPI so extension can post real fares.
+
+Correct deep link templates for airlines/OTAs (so links open results, not homepages).
+
+Wire dashboard features:
+
+Add new alert types in DB.
+
+Create backend logic (e.g., nightly task checks if price dropped by >20%).
+
+Update frontend to show controls and results.
+
+🔥 What To Improve On
+Right now, your app is a shell: login, query creation, airport autocomplete all work — but the core engine (fare ingestion) is disconnected.
+
+Once you fix extension → backend posting, /api/results/{id} will finally show live data instead of empty arrays.
+
+Then, you can scale: one account (yours) fetches all sites, other users just see alerts (exactly as you described).
+
+✅ In short:
+
+Your backend is fine.
+
+Your frontend is fine.
+
+The BYOB bridge is NOT sending data, and your deep links are wrong.
+
+Fix those two, and you’ll start seeing real flight prices in your app.
+

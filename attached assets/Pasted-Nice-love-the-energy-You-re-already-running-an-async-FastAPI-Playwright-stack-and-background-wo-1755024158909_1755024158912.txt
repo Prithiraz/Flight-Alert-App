@@ -1,0 +1,365 @@
+Nice — love the energy. You’re already running an async FastAPI + Playwright stack and background workers, and the logs show the usual reality: bot-detection/timeouts and flaky selectors. Below I’ll give a focused, practical plan plus a ready-to-drop-in async Playwright worker pattern (complete with retries, UA rotation, per-domain rate-limits, proxy support, stealth scripts, and health signals). After that I’ll list higher-level hardening & monitoring ideas you can adopt.
+
+If you want, I can convert this into a PR/patch for your repo or paste a full file that integrates with your existing job queue.
+
+Quick summary (what to do)
+Move to an async Playwright pattern that launches one browser per worker process and reuses many contexts(fast, isolated, stealthy).
+
+Add robust retry/backoff and per-domain throttling to avoid rapid bot blocks.
+
+Rotate User-Agents, optionally use proxies (per-context), and inject an improved stealth init script.
+
+Use headless=false or headful with --autoplay-policy=no-user-gesture-required for best stealth when possible in production.
+
+Improve detection/mitigation of CAPTCHAs (2-step: detect & fallback to human or CAPTCHA-solving service).
+
+Continuous selector auto-update + site-change monitoring (you already have tools—wire them into the scraper).
+
+Add observability: per-job metrics, tracing, and alerts.
+
+Copy-paste-ready: async Playwright worker pattern
+This is a compact, production-oriented coroutine you can drop into an async worker process. It assumes you use an asyncio.Queue or similar job queue and that Playwright is available.
+
+Key features:
+
+Single browser instance per process (cheap to launch once).
+
+Reusable isolated contexts for different jobs; contexts get randomized UA, viewport, timezone, geolocation, and a stealth init script.
+
+Per-site semaphore (rate-limit), exponential backoff with jitter, and retry on network/timeouts.
+
+Proxy support (per-context).
+
+Simple CAPTCH A detection & logging hook.
+
+Health callbacks hooks you can attach.
+
+python
+Copy code
+# async_playwright_worker.py
+import asyncio
+import random
+import time
+import logging
+from typing import Optional
+from playwright.async_api import async_playwright, Browser, BrowserContext, Page, TimeoutError as PWTimeoutError
+
+LOG = logging.getLogger("async_scraper")
+LOG.setLevel(logging.INFO)
+
+# Configuration
+MAX_CONTEXTS = 6                  # concurrent contexts per process
+CONTEXT_IDLE_TTL = 60             # seconds to keep unused contexts before closing
+NAV_TIMEOUT = 60_000              # ms (Playwright timeout)
+MAX_RETRIES = 3
+BACKOFF_BASE = 1.0                # seconds
+PER_SITE_CONCURRENCY = 2          # concurrency per domain
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+]
+
+# simple domain -> semaphore map for rate-limiting
+site_semaphores = {}
+site_semaphores_lock = asyncio.Lock()
+
+async def get_site_semaphore(domain):
+    async with site_semaphores_lock:
+        sem = site_semaphores.get(domain)
+        if not sem:
+            sem = asyncio.Semaphore(PER_SITE_CONCURRENCY)
+            site_semaphores[domain] = sem
+        return sem
+
+# stealth init script (trimmed — expand as needed)
+STEALTH_SCRIPT = r"""
+// navigator.webdriver removal
+Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+// mock languages
+Object.defineProperty(navigator, 'languages', { get: () => ['en-US','en'] });
+// mock plugins
+Object.defineProperty(navigator, 'plugins', { get: () => [1,2,3] });
+"""
+
+class ContextPool:
+    """Pool of browser contexts, reusing when possible. Each context has a 'busy' flag."""
+    def __init__(self, browser: Browser, max_contexts=MAX_CONTEXTS):
+        self.browser = browser
+        self.max_contexts = max_contexts
+        self.pool = []
+        self.lock = asyncio.Lock()
+
+    async def acquire(self, proxy: Optional[str]=None):
+        async with self.lock:
+            # try to reuse an idle context
+            for entry in self.pool:
+                if not entry['busy']:
+                    entry['busy'] = True
+                    entry['last_used'] = time.time()
+                    return entry['context']
+
+            # create new if allowed
+            if len(self.pool) < self.max_contexts:
+                context = await self._create_context(proxy)
+                self.pool.append({'context': context, 'busy': True, 'last_used': time.time()})
+                return context
+
+            # otherwise wait for one to free up (simple FIFO wait)
+            # release lock while waiting
+        # wait outside lock for efficiency
+        while True:
+            await asyncio.sleep(0.2)
+            async with self.lock:
+                for entry in self.pool:
+                    if not entry['busy']:
+                        entry['busy'] = True
+                        entry['last_used'] = time.time()
+                        return entry['context']
+
+    async def release(self, context: BrowserContext):
+        async with self.lock:
+            for entry in self.pool:
+                if entry['context'] is context:
+                    entry['busy'] = False
+                    entry['last_used'] = time.time()
+                    return
+
+    async def _create_context(self, proxy: Optional[str]):
+        # randomize UA, viewport, timezone
+        ua = random.choice(USER_AGENTS)
+        viewport = {'width': random.randint(1200, 1920), 'height': random.randint(800, 1080)}
+        tz = random.choice(['Europe/London', 'America/New_York', 'Europe/Berlin'])
+        context_args = {
+            'user_agent': ua,
+            'viewport': viewport,
+            'locale': 'en-GB',
+            'timezone_id': tz,
+            'java_script_enabled': True,
+            'extra_http_headers': {
+                'accept-language': 'en-GB,en-US;q=0.9'
+            }
+        }
+        if proxy:
+            context_args['proxy'] = {'server': proxy}
+        context = await self.browser.new_context(**context_args)
+        await context.add_init_script(STEALTH_SCRIPT)
+        return context
+
+    async def cleanup_idle(self, ttl=CONTEXT_IDLE_TTL):
+        async with self.lock:
+            now = time.time()
+            to_remove = [e for e in self.pool if not e['busy'] and (now - e['last_used'] > ttl)]
+            for e in to_remove:
+                try:
+                    await e['context'].close()
+                except Exception:
+                    pass
+                self.pool.remove(e)
+
+async def navigate_with_retries(page: Page, url: str):
+    attempt = 0
+    while attempt < MAX_RETRIES:
+        attempt += 1
+        try:
+            await page.goto(url, wait_until='networkidle', timeout=NAV_TIMEOUT)
+            return True
+        except PWTimeoutError as e:
+            LOG.warning("Navigation timeout (attempt %d): %s", attempt, e)
+            # if last attempt, raise
+            if attempt >= MAX_RETRIES:
+                raise
+            # backoff with jitter
+            await asyncio.sleep(BACKOFF_BASE * (2 ** (attempt-1)) + random.random())
+        except Exception as e:
+            LOG.exception("Navigation error (attempt %d): %s", attempt, e)
+            if attempt >= MAX_RETRIES:
+                raise
+            await asyncio.sleep(BACKOFF_BASE * (2 ** (attempt-1)) + random.random())
+
+async def extract_prices_from_page(page: Page):
+    # lightweight extraction: try data attributes, then text selectors
+    # return list of dicts with price & meta
+    results = []
+    # try common data attributes
+    try:
+        # run small JS to extract numeric-like tokens near "£/$/€"
+        js = """
+        (() => {
+            const nodes = Array.from(document.querySelectorAll('body *')).slice(0, 400);
+            const found = [];
+            for (const n of nodes) {
+                const text = n.innerText || '';
+                if (/[£$€]\s*\\d{1,4}/.test(text)) {
+                    found.push({text: text.trim(), selector: n.tagName + (n.className ? '.'+n.className.split(' ').join('.') : '')});
+                }
+            }
+            return found.slice(0,10);
+        })();
+        """
+        items = await page.evaluate(js)
+        for it in items:
+            # extract numeric
+            import re
+            m = re.search(r'[£$€]\s*(\d{1,4})', it['text'])
+            if m:
+                results.append({'price': int(m.group(1)), 'raw': it['text'], 'selector_hint': it['selector']})
+    except Exception as e:
+        LOG.warning("Price extraction JS failed: %s", e)
+
+    return results
+
+async def process_job(job, context_pool: ContextPool, health_callback=None):
+    """
+    job: dict e.g. {'id':..., 'url':..., 'proxy': None}
+    health_callback: optional callable(status, job, meta)
+    """
+    url = job['url']
+    domain = url.split('/')[2]
+    proxy = job.get('proxy')
+    sem = await get_site_semaphore(domain)
+
+    async with sem:
+        ctx = await context_pool.acquire(proxy=proxy)
+        try:
+            page = await ctx.new_page()
+            # small viewport wait simulation
+            await page.wait_for_timeout(random.uniform(200, 700))
+            # navigate with retries/backoff
+            try:
+                ok = await navigate_with_retries(page, url)
+            except Exception as e:
+                LOG.warning("Failed to navigate %s: %s", url, e)
+                if health_callback:
+                    health_callback('navigation_failed', job, {'error': str(e)})
+                await page.close()
+                return {'status': 'failed', 'reason': 'navigation_failed'}
+
+            # detect bot block / captcha heuristics
+            content_lower = (await page.content()).lower()
+            bot_indicators = ['captcha', 'access denied', 'verify you are human', 'security check']
+            if any(k in content_lower for k in bot_indicators):
+                LOG.warning("Bot/CAPTCHA detected on %s", url)
+                if health_callback:
+                    health_callback('bot_detected', job, {})
+                await page.close()
+                return {'status': 'failed', 'reason': 'bot_detected'}
+
+            # extract prices
+            prices = await extract_prices_from_page(page)
+            if not prices:
+                # fallback: try some selectors if known
+                # examples: [data-testid*="price"], .price, [class*="price"]
+                candidates = await page.query_selector_all('[data-testid*="price"], .price, [class*="price"], [data-price]')
+                for c in candidates[:8]:
+                    try:
+                        txt = (await c.inner_text()).strip()
+                        import re
+                        m = re.search(r'[£$€]\s*(\d{1,4})', txt)
+                        if m:
+                            prices.append({'price': int(m.group(1)), 'raw': txt})
+                    except Exception:
+                        continue
+
+            if health_callback:
+                health_callback('success' if prices else 'no_prices', job, {'count': len(prices)})
+
+            await page.close()
+            return {'status': 'ok' if prices else 'no_prices', 'prices': prices}
+
+        finally:
+            await context_pool.release(ctx)
+How to integrate:
+
+Start async_playwright() once in your worker process (not per job).
+
+Create a ContextPool(browser) after launching the browser.
+
+Create N worker tasks that consume your job queue and call process_job(job, context_pool).
+
+Periodically call context_pool.cleanup_idle() in a background task.
+
+Production hardening checklist (detailed)
+Browser management
+
+Launch browser once per process: async_playwright().start(); browser = await p.chromium.launch(headless=False, args=[...]).
+
+Use persistent profiles when you need cookies to persist, but prefer short-lived contexts for isolation.
+
+Reuse contexts from a pool.
+
+Proxy & IP rotation
+
+Maintain a pool of reliable residential/ISP proxies (important for scale).
+
+Use one proxy per context; rotate by job or domain.
+
+Monitor proxy health; remove bad ones automatically.
+
+Stealth & fingerprinting
+
+Inject a robust init script (user agent, plugins, languages, webdriver removal).
+
+Randomize viewport, timezone, device memory, hardwareConcurrency, and navigator.languages.
+
+Inject a lightweight mouse/keyboard movement simulator for long pages.
+
+Retry/backoff & throttling
+
+Exponential backoff with jitter for navigation failures.
+
+Per-domain concurrency limits and request pacing (avoid hammering same site).
+
+Adaptive backoff if you detect bot blocks (increase wait for that domain).
+
+Headful vs headless
+
+When bot detection is high, run headless=False (headful), with a display (or a headless browser with many stealth adjustments). Headful is more detectable in infrastructure but often bypasses defenses.
+
+CAPTCHA handling
+
+Detect using heuristics. Options:
+
+If enterprise: integrate 3rd-party CAPTCHA solvers (2captcha, anti-captcha) as a fallback.
+
+Better: route to human-in-loop UI in your dashboard for high-value jobs.
+
+Selector auto-healing
+
+You already have selector-updater & baseline checker. Hook it so:
+
+When a page returns no_prices, take a debug HTML snapshot and feed to selector updater automatically.
+
+Use ML/heuristics (text near currency symbol, sibling tags) to suggest selectors.
+
+Observability
+
+Per-job metrics: request time, retries, reason for failure.
+
+Use Prometheus/Grafana or even simple logs + alerts.
+
+Track bot_detected counts by domain; auto-disable rapid retries for a domain.
+
+Queue & Workers
+
+For serious scale use Redis + Dramatiq or RQ; both can cooperate with async Playwright if workers are in separate processes.
+
+Keep job size small; split tasks (search -> expand -> scrape) as separate jobs if required.
+
+Testing
+
+Unit test selector extraction via saved debug HTMLs.
+
+Integration tests in CI that run one real Playwright job against a stable site.
+
+Canary jobs against known easy sites to detect infra issues.
+
+Monitoring & self-healing ideas
+Site-change monitor (you already have) triggered daily with diff + auto selector generation.
+
+Circuit breaker per site: if bot_detected > threshold in X minutes, mark site for cool-down and try mobile or alternate sources.
+
+Job prioritization: VIP customers/jobs get human-assisted CAPTCHAs and proxy prioritization.
+
+Metrics: track success rate and display in dashboard + Slack/email alerts
+

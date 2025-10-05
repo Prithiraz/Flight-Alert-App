@@ -1,0 +1,521 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - FlightAlert Pro{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Your Flight Alerts</h2>
+
+            {% if user_info %}
+            <div class="alert alert-info mb-4">
+                <strong>Account Status:</strong> 
+                {% if user_info[2] == 'premium' %}
+                    <span class="badge bg-success">Premium</span> - Unlimited alerts & notifications
+                {% else %}
+                    <span class="badge bg-secondary">Free</span> - {{user_info[1]}}/3 notifications used this month
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if alerts %}
+                <div class="row">
+                    {% for alert in alerts %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {% if alert.type == 'cheap' %}🎯 Cheap Flight Alert
+                                    {% elif alert.type == 'rare' %}✈️ Rare Aircraft Alert
+                                    {% elif alert.type == 'delay' %}⏰ Flight Delay Alert
+                                    {% else %}📊 Flight Alert{% endif %}
+                                    {% if alert.one_way %}
+                                        <span class="badge bg-warning ms-2">One Way</span>
+                                    {% else %}
+                                        <span class="badge bg-info ms-2">Round Trip</span>
+                                    {% endif %}
+                                </h5>
+                                <div class="card-text">
+                                    {% if alert.origin %}
+                                        {% set dep_airports = alert.origin.split(',') %}
+                                    {% else %}
+                                        {% set dep_airports = [] %}
+                                    {% endif %}
+
+                                    {% if alert.destination %}
+                                        {% set dest_airports = alert.destination.split(',') %}
+                                    {% else %}
+                                        {% set dest_airports = [] %}
+                                    {% endif %}
+
+                                    <p class="mb-2">
+                                        <strong>Route:</strong> 
+                                        {% if dep_airports %}
+                                            {% for dep in dep_airports %}
+                                                <span class="badge bg-primary me-1">{{ dep.strip() }}</span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">Any Origin</span>
+                                        {% endif %}
+                                        →
+                                        {% if dest_airports %}
+                                            {% for dest in dest_airports %}
+                                                <span class="badge bg-success me-1">{{ dest.strip() }}</span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">Any Destination</span>
+                                        {% endif %}
+                                    </p>
+
+                                    {% if alert.depart_start %}
+                                    <p class="mb-2">
+                                        <strong>Departure:</strong> {{ alert.depart_start }}
+                                        {% if alert.return_start %} - <strong>Return:</strong> {{ alert.return_start }}{% endif %}
+                                    </p>
+                                    {% endif %}
+
+                                    {% if alert.max_price %}
+                                    <p class="mb-2">
+                                        <strong>Max Price:</strong> £{{ "%.2f"|format(alert.max_price) }}
+                                    </p>
+                                    {% endif %}
+
+                                    {% if alert.rare_aircraft_list %}
+                                    <p class="mb-2">
+                                        <strong>Aircraft:</strong> <span class="badge bg-warning">{{ alert.rare_aircraft_list }}</span>
+                                    </p>
+                                    {% endif %}
+
+                                    <small class="text-muted">
+                                        Created: {{ alert.created_at[:10] }}
+                                        {% if alert.notes %} | {{ alert.notes }}{% endif %}
+                                    </small>
+                                </div>
+                                <div class="card-footer d-flex justify-content-end">
+                                    <button class="btn btn-sm btn-danger" onclick="deleteAlert('{{ alert.id }}')">
+                                        🗑️ Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <h4>No alerts created yet!</h4>
+                    <p>Create your first flight alert to get notified about deals, rare aircraft, and more.</p>
+                    <a href="/create_alert" class="btn btn-primary">Create Your First Alert</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/create_alert" class="btn btn-primary btn-block mb-2">
+                        ➕ Create New Alert
+                    </a>
+                    {% if session.subscription_type == 'premium' %}
+                    <a href="/map_3d" class="btn btn-success btn-block mb-2">
+                        🌍 Live 3D Flight Map
+                    </a>
+                    {% else %}
+                    <a href="/upgrade" class="btn btn-warning btn-block mb-2">
+                        ⭐ Upgrade to Premium
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mt-3" id="flightStats">
+                <div class="card-header">
+                    <h5>Live Flight Stats</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Flights tracked now:</strong> <span id="flights-count">7,669</span></p>
+                    <p><strong>Countries:</strong> <span id="countries-count">103</span></p>
+                    <p><strong>Avg altitude:</strong> <span id="avg-altitude">23,886ft</span></p>
+                    <small class="text-muted">Right now, <span id="flights-fact">7669</span> aircraft are being tracked worldwide! ✈️</small>
+                </div>
+            </div>
+
+            <div class="card mt-3" id="flightTrivia">
+                <div class="card-header">
+                    <h5>Aviation Trivia</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">The world's shortest commercial flight is just 90 seconds long! ⏱️</p>
+                    <small class="text-primary">FlightAlert Pro tracks over 200,000 flights daily!</small>
+                </div>
+            </div>
+
+            <!-- Gamification XP Card -->
+            <div class="card mt-3" id="userXP">
+                <div class="card-header">
+                    <h5>🏆 Deal Hunter Progress</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <span class="badge bg-secondary fs-6">Explorer Tier</span>
+                        <h4 class="mt-2">25 XP</h4>
+                    </div>
+                    <small class="text-muted">0% to next tier</small>
+                </div>
+            </div>
+
+            <!-- Price War Tracker -->
+            <div class="card mt-3" id="priceWar">
+                <div class="card-header">
+                    <h5>🔥 Price War Tracker</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <input type="text" id="priceWarRoute" class="form-control form-control-sm" 
+                               placeholder="e.g. LHR-AMS" maxlength="7" value="LHR-AMS">
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="checkPriceWar()">
+                        Check Route Battle
+                    </button>
+                    <div id="price-war-results" class="mt-2"></div>
+                </div>
+            </div>
+
+            <!-- Surprise Me Feature -->
+            <div class="card mt-3" id="surpriseMe">
+                <div class="card-header">
+                    <h5>🎲 Feeling Adventurous?</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label class="form-label">Budget (£)</label>
+                        <input type="number" id="surpriseBudget" class="form-control form-control-sm" 
+                               value="100" min="20" max="2000">
+                    </div>
+                    <button class="btn btn-sm btn-warning" onclick="surpriseMe()">
+                        ✨ Surprise Me!
+                    </button>
+                    <div id="surprise-results" class="mt-2"></div>
+                </div>
+            </div>
+
+            <!-- Live Airport Delays -->
+            <div class="card mt-3" id="airportDelays">
+                <div class="card-header">
+                    <h5>⏰ Live Airport Delays</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>LHR</strong></small>
+                        <span class="text-info">15 min</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>CDG</strong></small>
+                        <span class="text-warning">45 min</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>AMS</strong></small>
+                        <span class="text-danger">2 hours</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>FRA</strong></small>
+                        <span class="text-info">20 min</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>MAD</strong></small>
+                        <span class="text-warning">30 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rare Aircraft Spotted -->
+            <div class="card mt-3" id="rareAircraft">
+                <div class="card-header">
+                    <h5>✈️ Rare Aircraft Spotted</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <strong>Airbus A380</strong><br>
+                        <small class="text-muted">LHR-DXB - 2 hours ago</small>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Boeing 787 Dreamliner</strong><br>
+                        <small class="text-muted">LHR-NRT - 4 hours ago</small>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Airbus A350</strong><br>
+                        <small class="text-muted">CDG-SIN - 6 hours ago</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flight Route Popularity -->
+            <div class="card mt-3" id="routePopularity">
+                <div class="card-header">
+                    <h5>📈 Trending Routes</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>LHR-AMS</strong></small>
+                        <span class="text-success">15% 📈</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>LHR-CDG</strong></small>
+                        <span class="text-danger">8% 📉</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>LHR-BCN</strong></small>
+                        <span class="text-success">22% 📈</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>LHR-FCO</strong></small>
+                        <span class="text-danger">5% 📉</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>LHR-MAD</strong></small>
+                        <span class="text-success">12% 📈</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteAlert(alertId) {
+    // Ensure alertId is treated as integer
+    const id = parseInt(alertId, 10);
+    console.log('Deleting alert with ID:', id);
+    if (confirm('Are you sure you want to delete this alert?')) {
+        fetch('/api/alerts/' + id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(function(response) {
+            if (response.ok) {
+                // Try to parse JSON, but handle cases where there's no JSON response
+                return response.text().then(function(text) {
+                    try {
+                        return text ? JSON.parse(text) : { success: true };
+                    } catch (e) {
+                        return { success: true }; // Assume success if no valid JSON
+                    }
+                });
+            } else {
+                // For error responses, try to get JSON error details
+                return response.text().then(function(text) {
+                    try {
+                        const errorData = text ? JSON.parse(text) : {};
+                        throw new Error(errorData.detail || `HTTP ${response.status}`);
+                    } catch (e) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                });
+            }
+        })
+        .then(function(data) {
+            if (data.success !== false) {
+                location.reload();
+            } else {
+                alert('Error deleting alert: ' + (data.detail || 'Unknown error'));
+            }
+        })
+        .catch(function(error) {
+            alert('Error deleting alert: ' + error.message);
+        });
+    }
+}
+</script>
+
+<script>
+
+// Load flight stats
+function loadFlightStats() {
+    fetch('/api/flight_stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('flights-count').textContent = data.flights_tracked_now.toLocaleString();
+            document.getElementById('countries-count').textContent = data.countries_represented;
+            document.getElementById('avg-altitude').textContent = data.average_altitude_feet.toLocaleString() + 'ft';
+            document.getElementById('flights-fact').textContent = data.flights_tracked_now;
+        })
+        .catch(error => {
+            console.error('Flight stats error:', error);
+        });
+}
+
+// Price War Tracker - real functionality
+function checkPriceWar() {
+    const routeInput = document.getElementById('priceWarRoute');
+    const resultsDiv = document.getElementById('price-war-results');
+
+    if (routeInput && resultsDiv) {
+        const route = routeInput.value.toUpperCase();
+        const parts = route.split('-');
+
+        if (parts.length !== 2) {
+            resultsDiv.innerHTML = '<small class="text-danger">Please use format: LHR-AMS</small>';
+            return;
+        }
+
+        const departure = parts[0];
+        const destination = parts[1];
+
+        resultsDiv.innerHTML = '<small class="text-info"><i class="fas fa-spinner fa-spin"></i> Checking price war...</small>';
+
+        fetch(`/api/price_war/${departure}/${destination}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.airlines && data.airlines.length > 0) {
+                    let html = `<div class="mt-2"><strong>${data.price_drop_alert}</strong><br>`;
+                    data.airlines.slice(0, 3).forEach((airline, index) => {
+                        const icon = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+                        html += `<small>${icon} ${airline.airline}: £${airline.price}</small><br>`;
+                    });
+                    html += '</div>';
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = '<small class="text-warning">No price data available for this route</small>';
+                }
+            })
+            .catch(error => {
+                console.error('Price war error:', error);
+                resultsDiv.innerHTML = '<small class="text-danger">Error loading price data</small>';
+            });
+    }
+}
+
+// Surprise Me Feature - real functionality
+function surpriseMe() {
+    const budgetInput = document.getElementById('surpriseBudget');
+    const resultsDiv = document.getElementById('surprise-results');
+
+    if (budgetInput && resultsDiv) {
+        const budget = budgetInput.value;
+        resultsDiv.innerHTML = '<small class="text-info"><i class="fas fa-spinner fa-spin"></i> Finding destinations under £' + budget + '...</small>';
+
+        fetch(`/api/surprise_me?budget=${budget}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.destinations && data.destinations.length > 0) {
+                    let html = `<div class="mt-2"><strong>${data.message}</strong><br>`;
+                    data.destinations.slice(0, 2).forEach(dest => {
+                        html += `<small>✈️ ${dest.city}: £${dest.price}</small><br>`;
+                    });
+                    html += '</div>';
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = '<small class="text-warning">No destinations found within budget</small>';
+                }
+            })
+            .catch(error => {
+                console.error('Surprise me error:', error);
+                resultsDiv.innerHTML = '<small class="text-danger">Error finding destinations</small>';
+            });
+    }
+}
+
+// Load initial data
+document.addEventListener('DOMContentLoaded', function() {
+    loadFlightStats();
+
+    // Initialize other data loads if needed
+    if (typeof loadRareAircraft === 'function') {
+        loadRareAircraft();
+    }
+    if (typeof loadTrendingRoutes === 'function') {
+        loadTrendingRoutes();
+    }
+    if (typeof loadAirportDelays === 'function') {
+        loadAirportDelays();
+    }
+});
+
+function loadRareAircraft() {
+    fetch('/api/rare_aircraft_spotted')
+        .then(response => response.json())
+        .then(data => {
+            let html = '';
+            data.sightings.forEach(aircraft => {
+                html += `
+                    <div class="mb-2">
+                        <strong>${aircraft.type}</strong><br>
+                        <small class="text-muted">${aircraft.route} - ${aircraft.time}</small>
+                    </div>
+                `;
+            });
+            const targetElement = document.getElementById('rareAircraft').querySelector('.card-body');
+            if (targetElement) {
+                targetElement.innerHTML = html || 'No rare aircraft spotted recently';
+            }
+        })
+        .catch(() => {
+            const targetElement = document.getElementById('rareAircraft').querySelector('.card-body');
+            if (targetElement) {
+                targetElement.innerHTML = 'Unable to load aircraft data';
+            }
+        });
+}
+
+function loadTrendingRoutes() {
+    fetch('/api/trending_routes')
+        .then(response => response.json())
+        .then(data => {
+            let html = '';
+            data.routes.forEach((route, index) => {
+                const trend = route.change > 0 ? '📈' : '📉';
+                const color = route.change > 0 ? 'success' : 'danger';
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>${route.route}</strong></small>
+                        <span class="text-${color}">${Math.abs(route.change)}% ${trend}</span>
+                    </div>
+                `;
+            });
+            const targetElement = document.getElementById('routePopularity').querySelector('.card-body');
+            if (targetElement) {
+                targetElement.innerHTML = html || 'No trending data available';
+            }
+        })
+        .catch(() => {
+            const targetElement = document.getElementById('routePopularity').querySelector('.card-body');
+            if (targetElement) {
+                targetElement.innerHTML = 'Unable to load trending data';
+            }
+        });
+}
+
+function loadAirportDelays() {
+    fetch('/api/airport_delays')
+        .then(response => response.json())
+        .then(data => {
+            let html = '';
+            data.delays.forEach(delay => {
+                const badgeColor = delay.severity === 'major' ? 'danger' : (delay.severity === 'moderate' ? 'warning' : 'info');
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><strong>${delay.airport}</strong></small>
+                        <span class="text-${badgeColor}">${delay.delay}</span>
+                    </div>
+                `;
+            });
+            const targetElement = document.getElementById('airportDelays').querySelector('.card-body');
+            if (targetElement) {
+                targetElement.innerHTML = html || 'No delay data available';
+            }
+        })
+        .catch(() => {
+            const targetElement = document.getElementById('airportDelays').querySelector('.card-body');
+            if (targetElement) {
+                targetElement.innerHTML = 'Unable to load delay data';
+            }
+        });
+}
+</script>
+{% endblock %}

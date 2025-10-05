@@ -1,0 +1,189 @@
+/home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+✅ Playwright available for dynamic scraping
+⚠️ requests-html not available - using basic requests
+✈️ Successfully loaded 82808 airports from cache!
+🚀 Starting FlightAlert Pro with Real Flight Scraping...
+✅ FlightAlert Pro with Real Flight Scraping is ready!
+🎯 Policy: Only real scraped flight data - no fake/fallback prices
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.123:5000
+Press CTRL+C to quit
+ * Restarting with stat
+✅ Playwright available for dynamic scraping
+⚠️ requests-html not available - using basic requests
+✈️ Successfully loaded 82808 airports from cache!
+🚀 Starting FlightAlert Pro with Real Flight Scraping...
+✅ FlightAlert Pro with Real Flight Scraping is ready!
+🎯 Policy: Only real scraped flight data - no fake/fallback prices
+ * Debugger is active!
+ * Debugger PIN: 131-611-511
+127.0.0.1 - - [06/Aug/2025 16:03:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2025 16:04:02] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2025 16:04:04] "POST /login HTTP/1.1" 302 -
+127.0.0.1 - - [06/Aug/2025 16:04:04] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2025 16:04:04] "GET /api/airport_delays HTTP/1.1" 404 -
+127.0.0.1 - - [06/Aug/2025 16:04:05] "GET /api/trending_routes HTTP/1.1" 404 -
+127.0.0.1 - - [06/Aug/2025 16:04:05] "GET /api/rare_aircraft_spotted HTTP/1.1" 404 -
+127.0.0.1 - - [06/Aug/2025 16:04:05] "GET /api/flight_stats HTTP/1.1" 404 -
+🔥 PRICE WAR: LHR → AMS on 2025-08-26
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-08-26
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Skyscanner: LHR→AMS
+🎲 SURPRISE ME: Finding real destinations under £100
+🔍 Checking real prices for LHR → AMS
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-08-20
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Kayak: LHR→AMS
+   🔍 Momondo: LHR→AMS
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20AMS%20on%202025-08-26&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:AMS,departure:08/26/2025
+     📱 Skyscanner Mobile: LHR→AMS
+     📱 Kayak Mobile: LHR→AMS
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+127.0.0.1 - - [06/Aug/2025 16:04:52] "GET /api/price_war/LHR/AMS HTTP/1.1" 200 -
+   🔍 Skyscanner: LHR→AMS
+   🔍 Kayak: LHR→AMS
+   🔍 Momondo: LHR→AMS
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20AMS%20on%202025-08-20&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:AMS,departure:08/20/2025
+     📱 Skyscanner Mobile: LHR→AMS
+     📱 Kayak Mobile: LHR→AMS
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+❌ No real prices found for AMS
+🔍 Checking real prices for LHR → PRG
+🚀 REAL FLIGHT SCRAPING: LHR → PRG on 2025-08-20
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Skyscanner: LHR→PRG
+   🔍 Kayak: LHR→PRG
+   🔍 Momondo: LHR→PRG
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20PRG%20on%202025-08-20&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:PRG,departure:08/20/2025
+     📱 Skyscanner Mobile: LHR→PRG
+     📱 Kayak Mobile: LHR→PRG
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+❌ No real prices found for PRG
+🔍 Checking real prices for LHR → VIE
+🚀 REAL FLIGHT SCRAPING: LHR → VIE on 2025-08-20
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Skyscanner: LHR→VIE
+   🔍 Kayak: LHR→VIE
+   🔍 Momondo: LHR→VIE
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20VIE%20on%202025-08-20&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:VIE,departure:08/20/2025
+     📱 Skyscanner Mobile: LHR→VIE
+     📱 Kayak Mobile: LHR→VIE
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+❌ No real prices found for VIE
+🔍 Checking real prices for LHR → FCO
+🚀 REAL FLIGHT SCRAPING: LHR → FCO on 2025-08-20
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Skyscanner: LHR→FCO
+   🔍 Kayak: LHR→FCO
+   🔍 Momondo: LHR→FCO
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20FCO%20on%202025-08-20&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:FCO,departure:08/20/2025
+     📱 Skyscanner Mobile: LHR→FCO
+     📱 Kayak Mobile: LHR→FCO
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+❌ No real prices found for FCO
+127.0.0.1 - - [06/Aug/2025 16:06:41] "GET /api/surprise_me?budget=100 HTTP/1.1" 200 -
+^C/home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+✅ Playwright available for dynamic scraping
+⚠️ requests-html not available - using basic requests
+✈️ Successfully loaded 82808 airports from cache!
+🚀 Starting FlightAlert Pro with Real Flight Scraping...
+✅ FlightAlert Pro with Real Flight Scraping is ready!
+🎯 Policy: Only real scraped flight data - no fake/fallback prices
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.123:5000
+Press CTRL+C to quit
+ * Restarting with stat
+✅ Playwright available for dynamic scraping
+⚠️ requests-html not available - using basic requests
+✈️ Successfully loaded 82808 airports from cache!
+🚀 Starting FlightAlert Pro with Real Flight Scraping...
+✅ FlightAlert Pro with Real Flight Scraping is ready!
+🎯 Policy: Only real scraped flight data - no fake/fallback prices
+ * Debugger is active!
+ * Debugger PIN: 131-611-511
+127.0.0.1 - - [06/Aug/2025 16:24:37] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2025 16:24:44] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2025 16:24:46] "POST /login HTTP/1.1" 302 -
+127.0.0.1 - - [06/Aug/2025 16:24:46] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [06/Aug/2025 16:24:47] "GET /api/airport_delays HTTP/1.1" 404 -
+127.0.0.1 - - [06/Aug/2025 16:24:47] "GET /api/trending_routes HTTP/1.1" 404 -
+127.0.0.1 - - [06/Aug/2025 16:24:47] "GET /api/rare_aircraft_spotted HTTP/1.1" 404 -
+127.0.0.1 - - [06/Aug/2025 16:24:47] "GET /api/flight_stats HTTP/1.1" 404 -
+🎲 SURPRISE ME: Finding real destinations under £100
+🔍 Checking real prices for LHR → VIE
+🚀 REAL FLIGHT SCRAPING: LHR → VIE on 2025-08-20
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Skyscanner: LHR→VIE
+🔥 PRICE WAR: LHR → AMS on 2025-08-26
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-08-26
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Kayak: LHR→VIE
+   🔍 Momondo: LHR→VIE
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20VIE%20on%202025-08-20&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:VIE,departure:08/20/2025
+     📱 Skyscanner Mobile: LHR→VIE
+     📱 Kayak Mobile: LHR→VIE
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+❌ No real prices found for VIE
+🔍 Checking real prices for LHR → MAD
+🚀 REAL FLIGHT SCRAPING: LHR → MAD on 2025-08-20
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Skyscanner: LHR→MAD
+   🔍 Kayak: LHR→MAD
+   🔍 Momondo: LHR→MAD
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20MAD%20on%202025-08-20&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:MAD,departure:08/20/2025
+     📱 Skyscanner Mobile: LHR→MAD
+     📱 Kayak Mobile: LHR→MAD
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+❌ No real prices found for MAD
+🔍 Checking real prices for LHR → PRG
+🚀 REAL FLIGHT SCRAPING: LHR → PRG on 2025-08-20
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Skyscanner: LHR→PRG
+   🔍 Kayak: LHR→PRG
+   🔍 Momondo: LHR→PRG
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20PRG%20on%202025-08-20&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:PRG,departure:08/20/2025
+     📱 Skyscanner Mobile: LHR→PRG
+     📱 Kayak Mobile: LHR→PRG
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+❌ No real prices found for PRG
+🔍 Checking real prices for LHR → AMS
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-08-20
+🎯 POLICY: Only real scraped data - NO fallbacks or fake prices
+   🔍 Skyscanner: LHR→AMS
+   🔍 Kayak: LHR→AMS
+   🔍 Momondo: LHR→AMS
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20AMS%20on%202025-08-26&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:AMS,departure:08/26/2025
+     📱 Skyscanner Mobile: LHR→AMS
+     📱 Kayak Mobile: LHR→AMS
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+127.0.0.1 - - [06/Aug/2025 16:26:42] "GET /api/price_war/LHR/AMS HTTP/1.1" 200 -
+   🔍 Skyscanner: LHR→AMS
+   🔍 Kayak: LHR→AMS
+   🔍 Momondo: LHR→AMS
+     🔍 Google Flights Dynamic: https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20AMS%20on%202025-08-20&curr=GBP
+     🔍 Expedia Dynamic: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:AMS,departure:08/20/2025
+     📱 Skyscanner Mobile: LHR→AMS
+     📱 Kayak Mobile: LHR→AMS
+❌ NO REAL FLIGHTS FOUND - Returning empty (no fake data)
+❌ No real prices found for AMS
+127.0.0.1 - - [06/Aug/2025 16:27:09] "GET /api/surprise_me?budget=100 HTTP/1.1" 200 -
+ * Detected change in '/workspaces/dynamic-scraper/main.py', reloading

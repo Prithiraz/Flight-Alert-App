@@ -1,0 +1,397 @@
+/home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+^CTraceback (most recent call last):
+  File "/workspaces/dynamic-scraper/main.py", line 31, in <module>
+    from playwright.sync_api import sync_playwright
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/playwright/sync_api/__init__.py", line 25, in <module>
+    import playwright.sync_api._generated
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 990, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1086, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1186, in get_data
+KeyboardInterrupt
+/home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+✅ Playwright available for dynamic scraping
+⚠️ requests-html not available - using basic requests
+✈️ Successfully loaded 82808 airports from cache!
+🚀 Starting FlightAlert Pro with ENHANCED REAL Flight Scraping...
+✅ FlightAlert Pro with ENHANCED REAL Flight Scraping is ready!
+🎯 STRICT POLICY: Only real scraped flight data - NO fallbacks or fake prices
+🛡️ Enhanced bot protection evasion and multi-source scraping active
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.1.35:5000
+Press CTRL+C to quit
+ * Restarting with stat
+✅ Playwright available for dynamic scraping
+⚠️ requests-html not available - using basic requests
+✈️ Successfully loaded 82808 airports from cache!
+🚀 Starting FlightAlert Pro with ENHANCED REAL Flight Scraping...
+✅ FlightAlert Pro with ENHANCED REAL Flight Scraping is ready!
+🎯 STRICT POLICY: Only real scraped flight data - NO fallbacks or fake prices
+🛡️ Enhanced bot protection evasion and multi-source scraping active
+ * Debugger is active!
+ * Debugger PIN: 107-586-606
+127.0.0.1 - - [08/Aug/2025 13:43:05] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [08/Aug/2025 13:43:07] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [08/Aug/2025 13:43:09] "POST /login HTTP/1.1" 302 -
+127.0.0.1 - - [08/Aug/2025 13:43:09] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [08/Aug/2025 13:43:10] "GET /api/trending_routes HTTP/1.1" 200 -
+127.0.0.1 - - [08/Aug/2025 13:43:10] "GET /api/flight_stats HTTP/1.1" 200 -
+127.0.0.1 - - [08/Aug/2025 13:43:10] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+127.0.0.1 - - [08/Aug/2025 13:43:10] "GET /api/airport_delays HTTP/1.1" 200 -
+🔥 REAL PRICE WAR: LHR → AMS on 2025-08-16
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-08-16
+🎯 STRICT POLICY: Only real scraped data - ZERO fallbacks or fake prices
+   🔍 Skyscanner: LHR→AMS
+🎲 STRICT SURPRISE ME: Finding ONLY real destinations under £100
+🔍 Checking REAL prices for LHR → AMS
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-08-22
+🎯 STRICT POLICY: Only real scraped data - ZERO fallbacks or fake prices
+     📄 Got 708 characters from Skyscanner
+     🔍 Debug HTML saved to debug_skyscanner_LHR_AMS.html
+     🤖 Skyscanner: Bot detection likely triggered
+     📊 Skyscanner: Found 0 unique prices, 0 airlines
+     ⚠️ Skyscanner: No REAL prices found - check debug file
+   🔍 Skyscanner: LHR→AMS
+     📄 Got 708 characters from Skyscanner
+     🔍 Debug HTML saved to debug_skyscanner_LHR_AMS.html
+     🤖 Skyscanner: Bot detection likely triggered
+     📊 Skyscanner: Found 0 unique prices, 0 airlines
+     ⚠️ Skyscanner: No REAL prices found - check debug file
+   🔍 Kayak: LHR→AMS
+     📄 Got 162525 characters from Kayak
+     🔍 Debug HTML saved to debug_kayak_LHR_AMS.html
+     💰 Regex found price: £28
+     💰 Context found price: £28
+     💰 Context found price: £77
+     💰 Context found price: £19
+     📊 Kayak: Found 3 unique prices, 0 airlines
+     ✅ Kayak found 3 REAL prices
+     ✅ Added REAL flight: Verified Kayak Airline £19
+     ✅ Added REAL flight: Verified Kayak Airline £28
+     ✅ Added REAL flight: Verified Kayak Airline £77
+   🔍 Momondo: LHR→AMS
+     📄 Got 155407 characters from Momondo
+     🔍 Debug HTML saved to debug_momondo_LHR_AMS.html
+     💰 Regex found price: £68
+     💰 Context found price: £68
+     💰 Context found price: £52
+     📊 Momondo: Found 2 unique prices, 0 airlines
+     ✅ Momondo found 2 REAL prices
+     ✅ Added REAL flight: Verified Momondo Airline £52
+     ✅ Added REAL flight: Verified Momondo Airline £68
+   🔍 Booking: LHR→AMS
+     📄 Got 118472 characters from Booking
+     🔍 Debug HTML saved to debug_booking_LHR_AMS.html
+     💰 Regex found price: £67
+     💰 Context found price: £67
+     💰 Context found price: £66
+     💰 Context found price: £40
+     📊 Booking: Found 3 unique prices, 0 airlines
+     ✅ Booking found 3 REAL prices
+     ✅ Added REAL flight: Verified Booking Airline £40
+     ✅ Added REAL flight: Verified Booking Airline £66
+     ✅ Added REAL flight: Verified Booking Airline £67
+   🔍 Ryanair: LHR→AMS
+     📄 Got 3223 characters from Ryanair
+     🔍 Debug HTML saved to debug_ryanair_LHR_AMS.html
+     📊 Ryanair: Found 0 unique prices, 0 airlines
+     ⚠️ Ryanair: No REAL prices found - check debug file
+   🔍 Wizz Air: LHR→AMS
+     📄 Got 1571379 characters from Wizz Air
+     🔍 Debug HTML saved to debug_wizz air_LHR_AMS.html
+     🤖 Wizz Air: Bot detection likely triggered
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £200
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £500
+     💰 Regex found price: £100
+     💰 Regex found price: £100
+     💰 Regex found price: £29
+     💰 Regex found price: £19
+     💰 Regex found price: £19
+     💰 Regex found price: £500
+     💰 Regex found price: £200
+     💰 Regex found price: £19
+     💰 Regex found price: £19
+     💰 Regex found price: £896
+     💰 Regex found price: £1500
+     💰 Regex found price: £1500
+     💰 Regex found price: £1500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £250
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £896
+     💰 Regex found price: £896
+     💰 Regex found price: £50
+     💰 Regex found price: £50
+     💰 Regex found price: £50
+     💰 Regex found price: £50
+     💰 Regex found price: £50
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £500
+     💰 Regex found price: £1500
+     💰 Regex found price: £500
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £200
+     💰 Regex found price: £50
+     💰 Regex found price: £50
+     💰 Context found price: £500
+     💰 Context found price: £100
+     💰 Context found price: £100
+     💰 Context found price: £29
+     💰 Context found price: £19
+     💰 Context found price: £19
+     💰 Context found price: £500
+     💰 Context found price: £200
+     💰 Context found price: £19
+     💰 Context found price: £19
+     💰 Context found price: £896
+     💰 Context found price: £1500
+     💰 Context found price: £1500
+     💰 Context found price: £1500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £250
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £896
+     💰 Context found price: £896
+     💰 Context found price: £50
+     💰 Context found price: £50
+     💰 Context found price: £50
+     💰 Context found price: £50
+     💰 Context found price: £50
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £500
+     💰 Context found price: £1500
+     💰 Context found price: £500
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £200
+     💰 Context found price: £50
+     💰 Context found price: £50
+     📊 Wizz Air: Found 9 unique prices, 1 airlines
+     ✅ Wizz Air found 9 REAL prices
+     ✅ Added REAL flight: Something went wrong at our end £19
+     ✅ Added REAL flight: Verified Wizz Air Airline £29
+     ✅ Added REAL flight: Verified Wizz Air Airline £50
+   🔍 easyJet: LHR→AMS
+     📄 Got 285534 characters from easyJet
+     🔍 Debug HTML saved to debug_easyjet_LHR_AMS.html
+     📊 easyJet: Found 0 unique prices, 0 airlines
+     ⚠️ easyJet: No REAL prices found - check debug file
+   🔍 Vueling: LHR→AMS
+     ❓ Vueling: Page not found (404) - endpoint changed
+   🔍 Eurowings: LHR→AMS
+     ❓ Eurowings: Page not found (404) - endpoint changed
+   🔍 British Airways: LHR→AMS
+     📄 Got 105832 characters from British Airways
+     🔍 Debug HTML saved to debug_british airways_LHR_AMS.html
+     🤖 British Airways: Bot detection likely triggered
+     📊 British Airways: Found 0 unique prices, 1 airlines
+     ⚠️ British Airways: No REAL prices found - check debug file
+   🔍 KLM: LHR→AMS
+     ⏰ KLM: Re

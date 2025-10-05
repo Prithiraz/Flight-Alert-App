@@ -1,0 +1,79 @@
+You must add name="csrf_token" or disable CSRF if you're using Flask-WTF or similar. But assuming you're just using basic Flask, your HTML is mostly fine.
+
+🔍 Most Likely Problem: Flask Backend Is Not Saving Preferences
+You need to ensure that your Flask route correctly processes the POST data from your form.
+
+✅ Your Flask Route Must Look Like This:
+python
+Copy
+Edit
+@app.route('/preferences', methods=['GET', 'POST'])
+@login_required
+def preferences():
+    if request.method == 'POST':
+        # Cheap flight alerts
+        flight_alerts = 'flight_alerts' in request.form
+        departure_airport = request.form.get('departure_airport')
+        destination_airport = request.form.get('destination_airport')
+        max_budget = request.form.get('max_budget')
+        airline = request.form.get('airline')
+        max_baggage_weight = request.form.get('max_baggage_weight')
+        min_trip_duration = request.form.get('min_trip_duration')
+        max_trip_duration = request.form.get('max_trip_duration')
+
+        # Aircraft alerts
+        aircraft_alerts = 'aircraft_alerts' in request.form
+        aircraft_departure_airport = request.form.get('aircraft_departure_airport')
+        aircraft_destination_airport = request.form.get('aircraft_destination_airport')
+        aircraft_type = request.form.get('aircraft_type')
+
+        # Save these to database (assuming you have a User or Preference model)
+        user = current_user
+        user.flight_alerts = flight_alerts
+        user.departure_airport = departure_airport
+        user.destination_airport = destination_airport
+        user.max_budget = max_budget
+        user.airline = airline
+        user.max_baggage_weight = max_baggage_weight
+        user.min_trip_duration = min_trip_duration
+        user.max_trip_duration = max_trip_duration
+
+        user.aircraft_alerts = aircraft_alerts
+        user.aircraft_departure_airport = aircraft_departure_airport
+        user.aircraft_destination_airport = aircraft_destination_airport
+        user.aircraft_type = aircraft_type
+
+        db.session.commit()
+
+        flash('Preferences updated successfully.', 'success')
+        return redirect(url_for('preferences'))
+
+    # For GET request - show form with existing preferences
+    airports = get_airports_list()  # Should return list of airport dicts
+    airlines = get_airlines_list()  # Should return list of airline names
+    return render_template('preferences.html', airports=airports, airlines=airlines)
+✅ Also Confirm You Have These:
+get_airports_list() returns list like:
+
+python
+Copy
+Edit
+[{'code': 'LHR', 'display_name': 'London Heathrow'}, ...]
+get_airlines_list() returns list like:
+
+python
+Copy
+Edit
+['British Airways', 'Ryanair', 'Emirates']
+Your template is saved as templates/preferences.html.
+
+The base.html template has a {% block content %} somewhere.
+
+⚠️ Debug Tip:
+Add this in the POST section temporarily to debug:
+
+python
+Copy
+Edit
+print(request.form.to_dict())
+This will let you see in the terminal exactly what values are coming through from the form.

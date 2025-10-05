@@ -1,0 +1,125 @@
+Right now your app is already doing a good job scraping real prices and refusing fake/fallback data, but there are several ways you can improve it so that more airline & travel sites give you usable real prices.
+
+Here’s a step-by-step improvement plan.
+
+1️⃣ Strengthen Anti-Bot Evasion
+Some sites like Skyscanner are already blocking you (“Bot detection likely triggered”).
+You can improve the success rate by:
+
+Rotating User Agents (pretend to be different browsers/devices each request).
+
+Random Delays between requests to avoid patterns.
+
+Proxy Rotation (services like Bright Data, ScraperAPI, or self-hosted proxies).
+
+Stealth Browser Plugins for Playwright (playwright-stealth equivalent) to mask automation signals.
+
+Mimic Human Interaction — scroll, click, and wait for JS events before reading the page.
+
+2️⃣ Expand Supported Sources
+Right now you have:
+
+Skyscanner
+
+Kayak
+
+Momondo
+
+Booking
+
+Google Flights (link-only)
+
+Expedia
+
+Cheapflights (partially)
+
+You could add:
+
+Direct Airline Sites (e.g. easyJet, Ryanair, British Airways, Emirates, Qatar Airways).
+
+Other Meta Search Engines like:
+
+Hopper
+
+Trip.com
+
+Opodo
+
+Wego
+
+Kiwi.com
+
+CheapOair
+
+Flight APIs that still return real prices (even though you don’t allow fallbacks, you can use their live mode only).
+
+3️⃣ Separate “Price Fetch” and “Data Fetch” Modes
+Some sites might allow:
+
+Live prices but not rich flight details (times, durations).
+
+Rich flight details but not prices without login.
+
+You could:
+
+Scrape prices from one source and
+
+Scrape timings/airline names from another
+→ Then merge results only if both are real.
+
+4️⃣ Detect and Retry When Blocked
+When you hit:
+
+nginx
+Copy code
+Bot detection likely triggered
+Instead of skipping, you could:
+
+Retry with a different proxy/IP.
+
+Retry with Playwright headful mode (looks more like a human browser).
+
+Retry with mobile browser emulation (sites often have weaker bot protection on mobile).
+
+5️⃣ Store “Source Health” Metrics
+Keep a small SQLite/JSON log of:
+
+Which sites failed due to bot detection.
+
+Which returned valid prices.
+
+Average response time.
+
+Time of last success.
+
+Then:
+
+Prioritize healthy sources first.
+
+Rotate weaker ones with extra anti-bot measures.
+
+6️⃣ Spread Requests Across Time
+Some sites rate-limit heavily (Expedia → HTTP 429).
+You could:
+
+Space out requests to each site.
+
+Queue scrapes in batches (e.g., scrape Kayak now, Momondo after 3s, Booking after 6s).
+
+7️⃣ Add More Playwright Strategies
+Headless vs Headful toggle — some sites detect headless instantly.
+
+Random viewport sizes.
+
+JS injection to remove “webdriver” flags.
+
+Full cookie/session reuse for logged-in scraping (some airlines show prices only when logged in).
+
+8️⃣ Run a Scrape-Validation Pipeline
+You already do strict validation, but you can improve it by:
+
+Checking prices against multiple sources for the same route/date to confirm realism.
+
+Discarding outliers (e.g., £1 flight on BA → likely scraping error).
+
+Tagging prices with timestamp + source URL so you can verify later.

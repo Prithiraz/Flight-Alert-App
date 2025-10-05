@@ -1,0 +1,381 @@
+[{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"fastapi\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 25,
+	"startColumn": 6,
+	"endLineNumber": 25,
+	"endColumn": 13,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"fastapi.responses\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 26,
+	"startColumn": 6,
+	"endLineNumber": 26,
+	"endColumn": 23,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"fastapi.staticfiles\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 27,
+	"startColumn": 6,
+	"endLineNumber": 27,
+	"endColumn": 25,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"fastapi.templating\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 28,
+	"startColumn": 6,
+	"endLineNumber": 28,
+	"endColumn": 24,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"fastapi.middleware.cors\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 29,
+	"startColumn": 6,
+	"endLineNumber": 29,
+	"endColumn": 29,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"pydantic\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 30,
+	"startColumn": 6,
+	"endLineNumber": 30,
+	"endColumn": 14,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"aiohttp\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 33,
+	"startColumn": 8,
+	"endLineNumber": 33,
+	"endColumn": 15,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingModuleSource",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingModuleSource.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"bs4\" could not be resolved from source",
+	"source": "Pylance",
+	"startLineNumber": 34,
+	"startColumn": 6,
+	"endLineNumber": 34,
+	"endColumn": 9,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingModuleSource",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingModuleSource.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"pandas\" could not be resolved from source",
+	"source": "Pylance",
+	"startLineNumber": 38,
+	"startColumn": 8,
+	"endLineNumber": 38,
+	"endColumn": 14,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"werkzeug.security\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 39,
+	"startColumn": 6,
+	"endLineNumber": 39,
+	"endColumn": 23,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingModuleSource",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingModuleSource.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"dateutil\" could not be resolved from source",
+	"source": "Pylance",
+	"startLineNumber": 40,
+	"startColumn": 6,
+	"endLineNumber": 40,
+	"endColumn": 14,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingModuleSource",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingModuleSource.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"dateutil.parser\" could not be resolved from source",
+	"source": "Pylance",
+	"startLineNumber": 40,
+	"startColumn": 22,
+	"endLineNumber": 40,
+	"endColumn": 28,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingModuleSource",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingModuleSource.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"pytz\" could not be resolved from source",
+	"source": "Pylance",
+	"startLineNumber": 41,
+	"startColumn": 8,
+	"endLineNumber": 41,
+	"endColumn": 12,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingModuleSource",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingModuleSource.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"requests\" could not be resolved from source",
+	"source": "Pylance",
+	"startLineNumber": 42,
+	"startColumn": 8,
+	"endLineNumber": 42,
+	"endColumn": 16,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"playwright.async_api\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 46,
+	"startColumn": 10,
+	"endLineNumber": 46,
+	"endColumn": 30,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"fastapi.responses\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 1129,
+	"startColumn": 18,
+	"endLineNumber": 1129,
+	"endColumn": 35,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"fastapi.responses\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 1203,
+	"startColumn": 14,
+	"endLineNumber": 1203,
+	"endColumn": 31,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"fastapi.responses\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 1221,
+	"startColumn": 10,
+	"endLineNumber": 1221,
+	"endColumn": 27,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportMissingImports",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportMissingImports.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "Import \"uvicorn\" could not be resolved",
+	"source": "Pylance",
+	"startLineNumber": 1291,
+	"startColumn": 12,
+	"endLineNumber": 1291,
+	"endColumn": 19,
+	"origin": "extHost2"
+}]

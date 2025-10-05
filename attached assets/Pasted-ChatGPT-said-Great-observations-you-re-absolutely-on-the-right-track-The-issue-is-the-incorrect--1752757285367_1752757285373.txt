@@ -1,0 +1,99 @@
+ChatGPT said:
+Great observations — you’re absolutely on the right track. The issue is the incorrect use of browser.launch() with user_data_dir. Playwright requires launch_persistent_context() when you want to specify a profile directory.
+
+✅ How to Fix Your Code (Step by Step):
+1. Correct Playwright Browser Launch
+If you want persistent sessions (cookies, logins), you should switch from:
+
+python
+Copy
+Edit
+browser = await playwright.chromium.launch(user_data_dir="some/path")
+TO THIS:
+
+python
+Copy
+Edit
+browser_context = await playwright.chromium.launch_persistent_context(
+    user_data_dir="some/path",
+    headless=True,
+    args=["--disable-blink-features=AutomationControlled"]
+)
+page = await browser_context.new_page()
+✅ This will prevent crashes related to user_data_dir.
+
+2. Updated Working Example Code (Cleaner & Robust):
+python
+Copy
+Edit
+from playwright.async_api import async_playwright
+import asyncio
+
+async def scrape_real_prices(url):
+    async with async_playwright() as p:
+        user_data_dir = "./browser_profile"
+        context = await p.chromium.launch_persistent_context(
+            user_data_dir=user_data_dir,
+            headless=True,
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--disable-gpu",
+                "--no-sandbox"
+            ]
+        )
+        page = await context.new_page()
+        try:
+            await page.goto(url, timeout=60000)
+            await page.wait_for_timeout(3000)  # give it time to load
+
+            # ✅ Extract real prices (adapt CSS selector to your site)
+            prices = await page.locator(".price-text").all_text_contents()
+            print(f"✅ Found prices: {prices}")
+
+        except Exception as e:
+            print(f"❌ Scraping failed: {e}")
+        finally:
+            await context.close()
+
+asyncio.run(scrape_real_prices("https://www.skyscanner.net/transport/flights/lhr/ams/20250723"))
+3. Key Rules to Keep Only Real Flight Data:
+Always Wait for Price Selectors to Appear:
+
+python
+Copy
+Edit
+await page.wait_for_selector(".price-text", timeout=15000)
+Skip Sponsored Results:
+
+python
+Copy
+Edit
+prices = await page.locator(".price-text").all_text_contents()
+real_prices = [p for p in prices if "£" in p]
+Ignore Ads/Banners: Use proper selectors targeting only the flight result blocks (e.g., .flight-card, .result).
+
+4. How to Handle the 149 Websites:
+Loop your URLs like this:
+
+python
+Copy
+Edit
+routes = [
+    "https://www.skyscanner.net/transport/flights/lhr/ams/20250723",
+    "https://www.kayak.com/flights/LHR-AMS/2025-07-23",
+    "https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:AMS,departure:07/23/2025",
+    # ... continue up to 149
+]
+
+async def scrape_multiple():
+    for route in routes:
+        print(f"🚀 Scraping {route}")
+        await scrape_real_prices(route)
+
+asyncio.run(scrape_multiple())
+✅ Final Summary:
+Issue	Fix
+❌ browser.launch() crash with user_data_dir	✅ Use launch_persistent_context()
+❌ Getting invalid results / fallback spam	✅ Filter only valid .price-text or .flight-card results
+❌ Too many tabs	✅ Loop with one browser context and re-use it per scrape
+❌ Ads/banners polluting data	✅ Use CSS selectors to ignore ads

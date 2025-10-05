@@ -1,0 +1,149 @@
+0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.19:5000
+Press CTRL+C to quit
+ * Restarting with stat
+✅ Playwright available for dynamic scraping
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Debugger is active!
+ * Debugger PIN: 139-748-776
+172.31.128.19 - - [18/Jul/2025 11:52:10] "GET / HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:52:43] "GET /login HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:52:56] "POST /login HTTP/1.1" 302 -
+172.31.128.19 - - [18/Jul/2025 11:52:56] "GET /dashboard HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:52:58] "GET /api/flight_trivia HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:52:58] "GET /api/user_xp HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:52:58] "GET /api/trending_routes HTTP/1.1" 200 -
+🕷️ Scraping delay data for LHR
+🚀 COMPREHENSIVE FLIGHT SCRAPING: LHR → AMS on 2025-08-01
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+172.31.128.19 - - [18/Jul/2025 11:52:58] "GET /api/flight_trivia HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:52:58] "GET /api/trending_routes HTTP/1.1" 200 -
+❌ Browser error: 
+╔══════════════════════════════════════════════════════╗
+║ Host system is missing dependencies to run browsers. ║
+║ Please install them with the following command:      ║
+║                                                      ║
+║     sudo playwright install-deps                     ║
+║                                                      ║
+║ Alternatively, use apt:                              ║
+║     sudo apt-get install libcups2\                   ║
+║         libxcb1\                                     ║
+║         libxcomposite1\                              ║
+║         libpango-1.0-0\                              ║
+║         libcairo2                                    ║
+║                                                      ║
+║ <3 Playwright Team                                   ║
+╚══════════════════════════════════════════════════════╝
+🕷️ Scraping delay data for CDG
+🚀 COMPREHENSIVE FLIGHT SCRAPING: CDG → AMS on 2025-08-01
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+172.31.128.19 - - [18/Jul/2025 11:52:59] "GET /api/flight_stats HTTP/1.1" 200 -
+❌ Browser error: 
+╔══════════════════════════════════════════════════════╗
+║ Host system is missing dependencies to run browsers. ║
+║ Please install them with the following command:      ║
+║                                                      ║
+║     sudo playwright install-deps                     ║
+║                                                      ║
+║ Alternatively, use apt:                              ║
+║     sudo apt-get install libcups2\                   ║
+║         libxcb1\                                     ║
+║         libxcomposite1\                              ║
+║         libpango-1.0-0\                              ║
+║         libcairo2                                    ║
+║                                                      ║
+║ <3 Playwright Team                                   ║
+╚══════════════════════════════════════════════════════╝
+🕷️ Scraping delay data for FRA
+🚀 COMPREHENSIVE FLIGHT SCRAPING: FRA → AMS on 2025-08-01
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+172.31.128.19 - - [18/Jul/2025 11:52:59] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+❌ Browser error: 
+╔══════════════════════════════════════════════════════╗
+║ Host system is missing dependencies to run browsers. ║
+║ Please install them with the following command:      ║
+║                                                      ║
+║     sudo playwright install-deps                     ║
+║                                                      ║
+║ Alternatively, use apt:                              ║
+║     sudo apt-get install libcups2\                   ║
+║         libxcb1\                                     ║
+║         libxcomposite1\                              ║
+║         libpango-1.0-0\                              ║
+║         libcairo2                                    ║
+║                                                      ║
+║ <3 Playwright Team                                   ║
+╚══════════════════════════════════════════════════════╝
+172.31.128.19 - - [18/Jul/2025 11:53:00] "GET /api/airport_delays HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:53:00] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+🎯 SURPRISE ME: Scraping ONLY REAL prices under £100 from LHR on 2025-07-27
+🕷️ Scraping LHR → AMS for budget £100
+🚀 COMPREHENSIVE FLIGHT SCRAPING: LHR → AMS on 2025-08-01
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+❌ Browser error: 
+╔══════════════════════════════════════════════════════╗
+║ Host system is missing dependencies to run browsers. ║
+║ Please install them with the following command:      ║
+║                                                      ║
+║     sudo playwright install-deps                     ║
+║                                                      ║
+║ Alternatively, use apt:                              ║
+║     sudo apt-get install libcups2\                   ║
+║         libxcb1\                                     ║
+║         libxcomposite1\                              ║
+║         libpango-1.0-0\                              ║
+║         libcairo2                                    ║
+║                                                      ║
+║ <3 Playwright Team                                   ║
+╚══════════════════════════════════════════════════════╝
+❌ No real flights found for Amsterdam - skipping
+🕷️ Scraping LHR → BCN for budget £100
+🚀 COMPREHENSIVE FLIGHT SCRAPING: LHR → BCN on 2025-08-01
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+❌ Browser error: 
+╔══════════════════════════════════════════════════════╗
+║ Host system is missing dependencies to run browsers. ║
+║ Please install them with the following command:      ║
+║                                                      ║
+║     sudo playwright install-deps                     ║
+║                                                      ║
+║ Alternatively, use apt:                              ║
+║     sudo apt-get install libcups2\                   ║
+║         libxcb1\                                     ║
+║         libxcomposite1\                              ║
+║         libpango-1.0-0\                              ║
+║         libcairo2                                    ║
+║                                                      ║
+║ <3 Playwright Team                                   ║
+╚══════════════════════════════════════════════════════╝
+❌ No real flights found for Barcelona - skipping
+🕷️ Scraping LHR → FCO for budget £100
+🚀 COMPREHENSIVE FLIGHT SCRAPING: LHR → FCO on 2025-08-01
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+❌ Browser error: 
+╔══════════════════════════════════════════════════════╗
+║ Host system is missing dependencies to run browsers. ║
+║ Please install them with the following command:      ║
+║                                                      ║
+║     sudo playwright install-deps                     ║
+║                                                      ║
+║ Alternatively, use apt:                              ║
+║     sudo apt-get install libcups2\                   ║
+║         libxcb1\                                     ║
+║         libxcomposite1\                              ║
+║         libpango-1.0-0\                              ║
+║         libcairo2                                    ║
+║                                                      ║
+║ <3 Playwright Team                                   ║
+╚══════════════════════════════════════════════════════╝
+❌ No real flights found for Rome - skipping
+172.31.128.19 - - [18/Jul/2025 11:54:17] "GET /api/surprise_me?budget=100 HTTP/1.1" 200 -

@@ -1,0 +1,105 @@
+
+✅ 1. Get the Full Airport Dataset
+A comprehensive source: the public airport-codes CSV from OurAirports/DataHub—containing thousands of airports worldwide, with IATA/ICAO codes, names, cities, countries 
+github.com
++4
+ourairports.com
++4
+github.com
++4
+.
+
+Download: https://datahub.io/core/airport-codes/r/airport-codes.csv
+Save it as airport-codes.csv in your project folder.
+
+🐍 2. Load Airports in Python (main.py)
+python
+Copy
+Edit
+from flask import Flask, render_template, request
+import pandas as pd
+
+app = Flask(__name__)
+
+# Load and filter for international airports (entries with IATA code)
+df = pd.read_csv("airport-codes.csv", dtype=str)
+df = df[df["iata_code"].notna() & (df["iata_code"].str.strip() != "")]
+airports = df[["iata_code","name","municipality","iso_country"]] \
+    .drop_duplicates(subset="iata_code") \
+    .sort_values("iata_code") \
+    .rename(columns={
+        "iata_code":"code",
+        "name":"name",
+        "municipality":"city",
+        "iso_country":"country"
+    }).to_dict(orient="records")
+
+@app.route('/')
+def index():
+    return render_template("preferences.html", airports=airports)
+
+@app.route('/preferences', methods=['POST'])
+def preferences():
+    data = request.form.to_dict()
+    print("Preferences:", data)
+    return f"<h3>Received!</h3><pre>{data}</pre>"
+📝 3. Update Template (templates/preferences.html)
+html
+Copy
+Edit
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flight Preferences</title>
+</head>
+<body>
+  <h2>Flight Search</h2>
+  <form method="POST" action="/preferences">
+    <label>Departure Airport:</label>
+    <select name="departure">
+      {% for ap in airports %}
+      <option value="{{ ap.code }}">
+        {{ ap.name }} ({{ ap.code }}) — {{ ap.city }}, {{ ap.country }}
+      </option>
+      {% endfor %}
+    </select><br><br>
+
+    <label>Destination Airport:</label>
+    <select name="destination">
+      {% for ap in airports %}
+      <option value="{{ ap.code }}">
+        {{ ap.name }} ({{ ap.code }}) — {{ ap.city }}, {{ ap.country }}
+      </option>
+      {% endfor %}
+    </select><br><br>
+
+    <label>Airline (optional):</label>
+    <input type="text" name="airline"><br><br>
+
+    <label>Max Price ($):</label>
+    <input type="number" name="price"><br><br>
+
+    <label>Max Baggage (kg):</label>
+    <input type="number" name="baggage"><br><br>
+
+    <label>Trip Start:</label>
+    <input type="date" name="start_date"><br><br>
+
+    <label>Trip End:</label>
+    <input type="date" name="end_date"><br><br>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
+🛠️ 4. Run the App
+bash
+Copy
+Edit
+pip install flask pandas
+python main.py
+Visit http://127.0.0.1:5000/
+
+You'll see dropdowns for Departure & Destination with the full list of international airports.
+
+Form submission shows your selections.

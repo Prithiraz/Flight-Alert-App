@@ -1,0 +1,139 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-crown me-2"></i>Upgrade to Pro</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Monthly Pro - £5.99/month</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>Unlimited flight alerts</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>3D live flight map</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>All fun features</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Priority support</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Advanced filters</li>
+                                </ul>
+                                <button class="btn btn-primary w-100" onclick="startPayment('monthly')">
+                                    <i class="fas fa-credit-card me-2"></i>Subscribe Monthly
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card border-warning">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0">Lifetime Pro - £59.99 <span class="badge bg-success">Save 83%!</span></h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>Everything in Monthly Pro</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Lifetime access</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Future features included</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>No recurring charges</li>
+                                    <li><i class="fas fa-star text-warning me-2"></i>Best value ever!</li>
+                                </ul>
+                                <button class="btn btn-warning w-100" onclick="startPayment('lifetime')">
+                                    <i class="fas fa-infinity me-2"></i>Buy Lifetime Access
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <p class="text-muted">
+                        <i class="fas fa-lock me-2"></i>Secure payment powered by Stripe
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Complete Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="payment-form">
+                    <div id="payment-element">
+                        <!-- Stripe Elements will create form elements here -->
+                    </div>
+                    <div id="payment-message" class="mt-3"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="submit-payment" class="btn btn-primary">
+                    <i class="fas fa-credit-card me-2"></i>Pay Now
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const stripe = Stripe('{{ stripe_key }}');
+let elements;
+let currentSubscriptionType;
+
+async function startPayment(subscriptionType) {
+    currentSubscriptionType = subscriptionType;
+    
+    // Create payment intent
+    const response = await fetch('/create_payment_intent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            subscription_type: subscriptionType
+        })
+    });
+    
+    const { client_secret } = await response.json();
+    
+    // Initialize Stripe Elements
+    elements = stripe.elements({
+        clientSecret: client_secret
+    });
+    
+    const paymentElement = elements.create('payment');
+    paymentElement.mount('#payment-element');
+    
+    // Show modal
+    new bootstrap.Modal(document.getElementById('paymentModal')).show();
+}
+
+document.getElementById('submit-payment').addEventListener('click', async () => {
+    const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+            return_url: `${window.location.origin}/payment_success?type=${currentSubscriptionType}`
+        }
+    });
+    
+    if (error) {
+        document.getElementById('payment-message').innerHTML = 
+            `<div class="alert alert-danger">${error.message}</div>`;
+    }
+});
+</script>
+{% endblock %}

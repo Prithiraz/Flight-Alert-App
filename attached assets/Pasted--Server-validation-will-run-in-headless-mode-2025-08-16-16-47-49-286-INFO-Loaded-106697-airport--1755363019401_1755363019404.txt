@@ -1,0 +1,58 @@
+🤖 Server validation will run in headless mode
+2025-08-16 16:47:49,286 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+✅ All required packages imported successfully
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [22628] using StatReload
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 16:47:50,720 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 16:47:51,185 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+INFO:     Started server process [22654]
+INFO:     Waiting for application startup.
+2025-08-16 16:47:51,211 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-16 16:47:51,211 INFO ✅ Database initialized with BYOB architecture
+2025-08-16 16:47:51,212 INFO Starting Playwright for validation...
+2025-08-16 16:47:51,712 INFO ✅ Playwright ready for validation
+2025-08-16 16:47:51,712 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /login HTTP/1.1" 200 OK
+🔐 Login attempt for email: prithirazchoudhury2@gmail.com
+🔍 User lookup result: Found
+✅ Login successful for prithirazchoudhury2@gmail.com
+INFO:     87.80.49.90:0 - "POST /login HTTP/1.1" 302 Found
+INFO:     87.80.49.90:0 - "GET /search HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /create_alert HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/airlines?q= HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/airlines?q=B HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/airlines?q=QA HTTP/1.1" 200 OK
+2025-08-16 16:48:35,371 INFO Found 2 airports matching 'LHR' from CSV
+INFO:     87.80.49.90:0 - "GET /api/airports?q=LHR HTTP/1.1" 200 OK
+2025-08-16 16:48:40,430 INFO Found 100 airports matching 'LG' from CSV
+INFO:     87.80.49.90:0 - "GET /api/airports?q=LG HTTP/1.1" 200 OK
+2025-08-16 16:48:41,358 INFO Found 1 airports matching 'LGW' from CSV
+INFO:     87.80.49.90:0 - "GET /api/airports?q=LGW HTTP/1.1" 200 OK
+2025-08-16 16:48:45,676 INFO Found 100 airports matching 'LS' from CSV
+INFO:     87.80.49.90:0 - "GET /api/airports?q=LS HTTP/1.1" 200 OK
+2025-08-16 16:48:48,943 INFO Found 79 airports matching 'LSA' from CSV
+INFO:     87.80.49.90:0 - "GET /api/airports?q=LSA HTTP/1.1" 200 OK
+2025-08-16 16:48:53,390 INFO Found 100 airports matching 'LS' from CSV
+INFO:     87.80.49.90:0 - "GET /api/airports?q=LS HTTP/1.1" 200 OK
+2025-08-16 16:48:55,760 INFO Found 100 airports matching 'STA' from CSV
+INFO:     87.80.49.90:0 - "GET /api/airports?q=STA HTTP/1.1" 200 OK
+2025-08-16 16:48:57,550 INFO Found 100 airports matching 'ST' from CSV
+INFO:     87.80.49.90:0 - "GET /api/airports?q=ST HTTP/1.1" 200 OK
+2025-08-16 16:49:02,038 INFO Found 3 airports matching 'Dhaka' from CSV
+INFO:     87.80.49.90:0 - "GET /api/airports?q=Dhaka HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "POST /create_alert HTTP/1.1" 405 Method Not Allowed

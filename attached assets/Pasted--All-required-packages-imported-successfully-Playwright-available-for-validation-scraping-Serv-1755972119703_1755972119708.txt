@@ -1,0 +1,397 @@
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-23 17:50:08,679 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+✅ All required packages imported successfully
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/home/runner/workspace']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [3335] using StatReload
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-23 17:50:10,093 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-23 17:50:10,458 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+INFO:     Started server process [3364]
+INFO:     Waiting for application startup.
+2025-08-23 17:50:10,483 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-23 17:50:10,483 INFO ✅ Database initialized with BYOB architecture
+2025-08-23 17:50:10,484 INFO Starting Playwright for validation...
+2025-08-23 17:50:11,132 INFO ✅ Playwright ready for validation
+2025-08-23 17:50:11,132 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+INFO:     172.31.98.2:38128 - "GET / HTTP/1.1" 200 OK
+INFO:     172.31.98.2:59984 - "GET /login HTTP/1.1" 200 OK
+🔐 Login attempt for email: prithirazchoudhury2@gmail.com
+🔍 User lookup result: Found
+✅ Login successful for prithirazchoudhury2@gmail.com
+INFO:     172.31.98.2:43402 - "POST /login HTTP/1.1" 302 Found
+INFO:     172.31.98.2:43402 - "GET /search HTTP/1.1" 200 OK
+2025-08-23 17:53:26,404 INFO Found 2 airports matching 'lhr' from CSV
+INFO:     172.31.98.2:45806 - "GET /api/airports?q=lhr HTTP/1.1" 200 OK
+2025-08-23 17:54:00,985 INFO Found 14 airports matching 'amsterda' from CSV
+INFO:     172.31.98.2:50730 - "GET /api/airports?q=amsterda HTTP/1.1" 200 OK
+2025-08-23 17:54:01,902 INFO Found 14 airports matching 'amsterdam' from CSV
+INFO:     172.31.98.2:50730 - "GET /api/airports?q=amsterdam HTTP/1.1" 200 OK
+2025-08-23 17:54:10,505 INFO 📝 Created query 6: LHR → AMS on 2025-09-06
+INFO:     172.31.98.2:53106 - "POST /api/query HTTP/1.1" 200 OK
+2025-08-23 17:54:11,698 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:13,694 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:15,787 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:16,682 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:16,827 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:19,328 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:20,159 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:20,359 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:20,531 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:21,061 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:22,096 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:22,684 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:22,852 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:23,024 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:25,046 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:25,680 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:25,829 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:26,007 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:28,109 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:29,140 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:29,332 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:29,548 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:31,037 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:31,696 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:31,840 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:31,985 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:34,088 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:34,684 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:34,826 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:35,000 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:37,068 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:37,687 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:37,850 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:38,123 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:40,507 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:40,683 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:40,828 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:40,993 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:43,035 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:43,693 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:43,835 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:43,981 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:46,109 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:46,690 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:46,951 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:49,054 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:50,108 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:52,901 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:55,701 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:54:58,699 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:02,117 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:04,689 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:07,689 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:10,699 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:14,288 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:16,685 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:19,689 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:23,234 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:25,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:28,689 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:31,689 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:35,130 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:37,687 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:40,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:44,186 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:46,694 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:49,694 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:53,304 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:55,699 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:55:58,699 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:01,690 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:05,178 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:07,691 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:10,704 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:14,160 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:16,686 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:19,695 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:22,702 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:26,193 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:29,041 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:31,693 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:34,693 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:38,228 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:40,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:43,687 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:47,210 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:49,693 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:52,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:55,687 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:56:59,186 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:01,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:04,694 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:08,119 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:10,696 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:13,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:16,686 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:20,100 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:22,697 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:25,695 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:29,185 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:31,694 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:34,699 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:37,699 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:41,207 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:43,049 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:44,061 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:44,220 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:46,704 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:46,854 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:50,045 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:50,244 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:52,045 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:53,040 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:53,238 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:53,395 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:55,795 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:55,938 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:56,088 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:56,797 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:57,790 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:58,375 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:58,684 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:57:58,845 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:01,401 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:01,610 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:01,761 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:01,905 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:03,793 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:04,375 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:04,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:04,888 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:06,789 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:07,388 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:07,684 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:07,843 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:09,793 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:10,823 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:10,971 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:11,117 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:12,792 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:13,377 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:13,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:15,801 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:16,375 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:16,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:18,805 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:19,385 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:19,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:22,400 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:22,686 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:24,797 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:25,690 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:28,688 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:32,217 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:34,689 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:37,685 INFO ⏳ Query 6: No results yet (DB has 0 total for this query)
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:38,077 INFO 📩 Received 2 fares from extension for query 6 from debug.example
+2025-08-23 17:58:38,137 INFO 🆕 Auto-registered site: debug.example
+2025-08-23 17:58:38,172 INFO ✅ Processed 2 new fares from debug.example
+2025-08-23 17:58:38,172 INFO ✅ Debug test successful: {'ok': True, 'count': 2}
+INFO:     172.31.98.2:53106 - "POST /api/debug/ingest_example/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:40,518 INFO 📊 Query 6: 2 results from sources: {'Debug.Example': 2}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:40,778 INFO 📊 Query 6: 2 results from sources: {'Debug.Example': 2}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:43,699 INFO 📩 Received 2 fares from extension for query 6 from debug.example
+2025-08-23 17:58:43,729 INFO ✅ Processed 2 new fares from debug.example
+2025-08-23 17:58:43,729 INFO ✅ Debug test successful: {'ok': True, 'count': 2}
+INFO:     172.31.98.2:53106 - "POST /api/debug/ingest_example/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:43,868 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:46,046 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:46,693 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:47,253 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:49,698 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:53,319 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:55,690 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:58:58,686 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:59:01,684 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:59:05,199 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:59:07,696 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:59:10,684 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:59:14,210 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /api/results/6 HTTP/1.1" 200 OK
+2025-08-23 17:59:16,686 INFO 📊 Query 6: 4 results from sources: {'Debug.Example': 4}
+INFO:     172.31.98.2:53106 - "GET /a

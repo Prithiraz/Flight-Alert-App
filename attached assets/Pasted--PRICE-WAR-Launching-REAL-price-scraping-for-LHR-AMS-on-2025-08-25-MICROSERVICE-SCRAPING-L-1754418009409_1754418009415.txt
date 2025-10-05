@@ -1,0 +1,142 @@
+🕷️ PRICE WAR: Launching REAL price scraping for LHR → AMS on 2025-08-25
+🚀 MICROSERVICE SCRAPING: LHR → AMS on 2025-08-25
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=AMS&date=2025-08-25
+❌ Microservice returned status 404: 
+🔍 SCRAPED RESULTS: Found 0 flights
+❌ All real pricing failed - NO FALLBACKS, returning empty
+127.0.0.1 - - [05/Aug/2025 17:48:20] "GET /api/price_war/LHR/AMS HTTP/1.1" 200 -
+🎲 SURPRISE ME: Finding destinations under £100
+🔍 Checking REAL prices for LHR → AMS
+🚀 MICROSERVICE SCRAPING: LHR → AMS on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=AMS&date=2025-08-12
+❌ Microservice returned status 404: 
+❌ No real prices found for AMS
+🔍 Checking REAL prices for LHR → MAD
+🚀 MICROSERVICE SCRAPING: LHR → MAD on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=MAD&date=2025-08-12
+❌ Microservice returned status 404: 
+❌ No real prices found for MAD
+🔍 Checking REAL prices for LHR → CDG
+🚀 MICROSERVICE SCRAPING: LHR → CDG on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=CDG&date=2025-08-12
+❌ Microservice returned status 404: 
+❌ No real prices found for CDG
+🔍 Checking REAL prices for LHR → WAW
+🚀 MICROSERVICE SCRAPING: LHR → WAW on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=WAW&date=2025-08-12
+❌ Microservice returned status 404: 
+❌ No real prices found for WAW
+🔍 Checking REAL prices for LHR → FCO
+🚀 MICROSERVICE SCRAPING: LHR → FCO on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=FCO&date=2025-08-12
+❌ Microservice returned status 404: 
+❌ No real prices found for FCO
+🔍 Checking REAL prices for LHR → VIE
+🚀 MICROSERVICE SCRAPING: LHR → VIE on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=VIE&date=2025-08-12
+❌ Microservice returned status 404: 
+❌ No real prices found for VIE
+❌ No affordable destinations found with real prices
+127.0.0.1 - - [05/Aug/2025 17:48:45] "GET /api/surprise_me?budget=100 HTTP/1.1" 200 -
+ * Detected change in '/workspaces/dynamic-scraper/app.py', reloading
+ * Restarting with stat
+⚠️ requests-html not available - using basic requests
+✅ Playwright available for dynamic scraping
+✈️ Successfully loaded 5165 airports from cache!
+🚀 Starting FlightAlert Pro...
+✅ FlightAlert Pro is ready!
+ * Debugger is active!
+ * Debugger PIN: 950-557-586
+^C/home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+⚠️ requests-html not available - using basic requests
+✅ Playwright available for dynamic scraping
+✈️ Successfully loaded 5165 airports from cache!
+🚀 Starting FlightAlert Pro...
+✅ FlightAlert Pro is ready!
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.1.162:5000
+Press CTRL+C to quit
+ * Restarting with stat
+⚠️ requests-html not available - using basic requests
+✅ Playwright available for dynamic scraping
+✈️ Successfully loaded 5165 airports from cache!
+🚀 Starting FlightAlert Pro...
+✅ FlightAlert Pro is ready!
+ * Debugger is active!
+ * Debugger PIN: 950-557-586
+127.0.0.1 - - [05/Aug/2025 18:18:03] "GET / HTTP/1.1" 200 -
+^C/home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+⚠️ requests-html not available - using basic requests
+✅ Playwright available for dynamic scraping
+✈️ Successfully loaded 5165 airports from cache!
+🚀 Starting FlightAlert Pro...
+✅ FlightAlert Pro is ready!
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.1.162:5000
+Press CTRL+C to quit
+ * Restarting with stat
+⚠️ requests-html not available - using basic requests
+✅ Playwright available for dynamic scraping
+✈️ Successfully loaded 5165 airports from cache!
+🚀 Starting FlightAlert Pro...
+✅ FlightAlert Pro is ready!
+ * Debugger is active!
+ * Debugger PIN: 950-557-586
+127.0.0.1 - - [05/Aug/2025 18:18:31] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [05/Aug/2025 18:18:34] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [05/Aug/2025 18:18:36] "POST /login HTTP/1.1" 302 -
+127.0.0.1 - - [05/Aug/2025 18:18:36] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [05/Aug/2025 18:18:37] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+127.0.0.1 - - [05/Aug/2025 18:18:37] "GET /api/airport_delays HTTP/1.1" 200 -
+127.0.0.1 - - [05/Aug/2025 18:18:37] "GET /api/trending_routes HTTP/1.1" 200 -
+127.0.0.1 - - [05/Aug/2025 18:18:38] "GET /api/flight_stats HTTP/1.1" 200 -
+🎲 SURPRISE ME: Finding destinations under £100
+🔍 Checking REAL prices for LHR → BCN
+🚀 MICROSERVICE SCRAPING: LHR → BCN on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=BCN&date=2025-08-12
+❌ Microservice scraping failed: Expecting value: line 1 column 1 (char 0)
+❌ No real prices found for BCN
+🔍 Checking REAL prices for LHR → FCO
+🚀 MICROSERVICE SCRAPING: LHR → FCO on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=FCO&date=2025-08-12
+❌ Microservice scraping failed: Expecting value: line 1 column 1 (char 0)
+❌ No real prices found for FCO
+🔍 Checking REAL prices for LHR → LIS
+🚀 MICROSERVICE SCRAPING: LHR → LIS on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=LIS&date=2025-08-12
+❌ Microservice scraping failed: Expecting value: line 1 column 1 (char 0)
+❌ No real prices found for LIS
+🔍 Checking REAL prices for LHR → CDG
+🚀 MICROSERVICE SCRAPING: LHR → CDG on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=CDG&date=2025-08-12
+❌ Microservice scraping failed: Expecting value: line 1 column 1 (char 0)
+❌ No real prices found for CDG
+🔍 Checking REAL prices for LHR → BUD
+🚀 MICROSERVICE SCRAPING: LHR → BUD on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=BUD&date=2025-08-12
+❌ Microservice scraping failed: Expecting value: line 1 column 1 (char 0)
+❌ No real prices found for BUD
+🔍 Checking REAL prices for LHR → VIE
+🚀 MICROSERVICE SCRAPING: LHR → VIE on 2025-08-12
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=VIE&date=2025-08-12
+❌ Microservice scraping failed: Expecting value: line 1 column 1 (char 0)
+❌ No real prices found for VIE
+❌ No affordable destinations found with real prices
+127.0.0.1 - - [05/Aug/2025 18:18:45] "GET /api/surprise_me?budget=100 HTTP/1.1" 200 -
+🕷️ PRICE WAR: Launching REAL price scraping for LHR → AMS on 2025-08-23
+🚀 MICROSERVICE SCRAPING: LHR → AMS on 2025-08-23
+📡 Calling microservice directly: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?departure=LHR&destination=AMS&date=2025-08-23
+❌ Microservice scraping failed: Expecting value: line 1 column 1 (char 0)
+🔍 SCRAPED RESULTS: Found 0 flights
+❌ All real pricing failed - NO FALLBACKS, returning empty
+127.0.0.1 - - [05/Aug/2025 18:18:46] "GET /api/price_war/LHR/AMS HTTP/1.1" 200 -

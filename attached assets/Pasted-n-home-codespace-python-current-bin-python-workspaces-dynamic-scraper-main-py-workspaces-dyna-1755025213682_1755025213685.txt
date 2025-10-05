@@ -1,0 +1,52 @@
+n) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+/workspaces/dynamic-scraper/main.py:262: SyntaxWarning: invalid escape sequence '\s'
+  js_extractor = """
+✅ Playwright available for production scraping
+🚀 Starting FlightAlert Pro with uvicorn...
+🎯 Async FastAPI + Playwright + Job Queue System
+📡 Server will be available at: http://0.0.0.0:5000
+🏥 Health Monitoring + Production Setup
+✅ Non-blocking Request Handlers + Background Workers
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [45361] using StatReload
+/workspaces/dynamic-scraper/main.py:262: SyntaxWarning: invalid escape sequence '\s'
+  js_extractor = """
+✅ Playwright available for production scraping
+✅ Playwright available for production scraping
+INFO:     Started server process [45366]
+INFO:     Waiting for application startup.
+2025-08-12 18:53:26,383 INFO 🚀 Starting FlightAlert Pro with async Playwright...
+2025-08-12 18:53:26,736 INFO ✈️ Loaded 82808 airports from database
+2025-08-12 18:53:26,775 INFO Starting Playwright...
+2025-08-12 18:53:27,275 ERROR ❌ Playwright startup failed: BrowserType.launch: Target page, context or browser has been closed
+Browser logs:
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════╗
+║ Looks like you launched a headed browser without having a XServer running.                     ║
+║ Set either 'headless: true' or use 'xvfb-run <your-playwright-app>' before running Playwright. ║
+║                                                                                                ║
+║ <3 Playwright Team                                                                             ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════╝
+Call log:
+  - <launching> /home/codespace/.cache/ms-playwright/chromium-1181/chrome-linux/chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AcceptCHFrame,AutoExpandDetailsElement,AvoidUnnecessaryBeforeUnloadCheckSync,CertificateTransparencyComponentUpdater,DestroyProfileOnBrowserClose,DialMediaRouteProvider,ExtensionManifestV2Disabled,GlobalMediaControls,HttpsUpgrades,ImprovedCookieControls,LazyFrameLoading,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --no-sandbox --no-sandbox --disable-dev-shm-usage --disable-blink-features=AutomationControlled --disable-web-security --disable-features=VizDisplayCompositor --autoplay-policy=no-user-gesture-required --user-data-dir=/tmp/playwright_chromiumdev_profile-l7baj8 --remote-debugging-pipe --no-startup-window
+  - <launched> pid=45387
+  - [pid=45387][err] [45387:45400:0812/185327.256234:ERROR:dbus/bus.cc:408] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+  - [pid=45387][err] [45387:45387:0812/185327.258251:ERROR:ui/ozone/platform/x11/ozone_platform_x11.cc:249] Missing X server or $DISPLAY
+  - [pid=45387][err] [45387:45387:0812/185327.258267:ERROR:ui/aura/env.cc:257] The platform failed to initialize.  Exiting.
+
+2025-08-12 18:53:27,275 INFO 🎯 FlightAlert Pro startup complete!
+INFO:     Application startup complete.
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /login HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "POST /login HTTP/1.1" 302 Found
+INFO:     87.80.49.90:0 - "GET /dashboard HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/rare_aircraft_spotted HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/trending_routes HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/airport_delays HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/flight_stats HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/price_war/LHR/AMS HTTP/1.1" 404 Not Found
+2025-08-12 18:53:41,947 INFO 📝 Job f31a0da5-b7cd-44f7-8f4d-3cd50670aea7 queued: LHR → AMS
+2025-08-12 18:53:41,947 INFO 📝 Job 49a48dff-fd6c-4365-b395-5dabede044e5 queued: LHR → VIE
+2025-08-12 18:53:41,947 INFO 📝 Job e106ebab-48a9-4b48-b6ac-07c08ebfacac queued: LHR → MAD
+INFO:     87.80.49.90:0 - "GET /api/surprise_me?budget=100 HTTP/1.1" 200 OK

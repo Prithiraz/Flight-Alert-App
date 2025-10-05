@@ -1,0 +1,80 @@
+ Features to Add
+Airport Selection
+
+Include major international airports.
+
+Include some important domestic airports (you can define which ones).
+
+Airlines
+
+Dropdown or multi-select for available airlines.
+
+Airline Prices
+
+Display or filter flights based on price ranges.
+
+Maximum Baggage Allowed
+
+Show allowed baggage per airline or flight.
+
+Date Range
+
+Allow users to specify how long they’ll stay at the destination (start date & end date or duration in days).
+
+🧩 Example Flask + HTML Integration
+1. Update your Flask route (main.py):
+python
+Copy
+Edit
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/preferences', methods=['GET', 'POST'])
+def preferences():
+    if request.method == 'POST':
+        data = request.form
+        # Process user input here (airports, airlines, price range, baggage, etc.)
+        print(data)
+    return render_template('preferences.html')
+2. HTML Form (templates/preferences.html):
+html
+Copy
+Edit
+<form method="POST" action="/preferences">
+  <label for="airport">Select Airport:</label>
+  <select name="airport" id="airport">
+    <option value="JFK">JFK - New York</option>
+    <option value="LHR">LHR - London Heathrow</option>
+    <option value="DEL">DEL - Delhi</option>
+    <option value="LAX">LAX - Los Angeles</option>
+    <!-- Add more airports as needed -->
+  </select><br>
+
+  <label for="airline">Preferred Airline:</label>
+  <select name="airline" id="airline">
+    <option value="delta">Delta</option>
+    <option value="emirates">Emirates</option>
+    <option value="lufthansa">Lufthansa</option>
+    <option value="air_india">Air India</option>
+    <!-- Add more airlines -->
+  </select><br>
+
+  <label for="price">Max Price ($):</label>
+  <input type="number" name="price" id="price"><br>
+
+  <label for="baggage">Max Baggage Allowed (kg):</label>
+  <input type="number" name="baggage" id="baggage"><br>
+
+  <label for="start_date">Trip Start Date:</label>
+  <input type="date" name="start_date" id="start_date"><br>
+
+  <label for="end_date">Trip End Date:</label>
+  <input type="date" name="end_date" id="end_date"><br>
+
+  <input type="submit" value="Submit Preferences">
+</form>

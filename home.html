@@ -1,0 +1,171 @@
+
+{% extends "base.html" %}
+
+{% block title %}FlightAlert Pro - Smart Flight Deals & Alerts{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center text-white py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-plane-departure me-3"></i>FlightAlert Pro
+                </h1>
+                <p class="lead mb-4">
+                    Get instant alerts for flight deals, rare aircraft, and delays. 
+                    Never miss a great flight deal again!
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    {% if session.user_id %}
+                        <a href="/dashboard" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                        <a href="/create_alert" class="btn btn-outline-light btn-lg px-4">
+                            <i class="fas fa-plus me-2"></i>Create Alert
+                        </a>
+                    {% else %}
+                        <a href="/signup" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-user-plus me-2"></i>Get Started Free
+                        </a>
+                        <a href="/login" class="btn btn-outline-light btn-lg px-4">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-primary text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-search fa-lg"></i>
+                    </div>
+                    <h5 class="card-title">Smart Flight Search</h5>
+                    <p class="card-text">
+                        Search across 100+ airlines and booking sites to find the best deals.
+                        Our AI-powered system tracks prices 24/7.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-success text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-bell fa-lg"></i>
+                    </div>
+                    <h5 class="card-title">Instant Alerts</h5>
+                    <p class="card-text">
+                        Get notified immediately when flight prices drop, rare aircraft are spotted,
+                        or your flight is delayed.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-info text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-globe fa-lg"></i>
+                    </div>
+                    <h5 class="card-title">Live Flight Tracking</h5>
+                    <p class="card-text">
+                        Track flights in real-time with our 3D map. Monitor delays,
+                        airport conditions, and trending routes.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="display-6 fw-bold mb-4">Why Choose FlightAlert Pro?</h2>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Real-time price monitoring</strong> across 100+ booking sites
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Instant notifications</strong> via email and push alerts
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Advanced filters</strong> for airlines, airports, and budgets
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>Premium features</strong> including 3D flight maps
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Live Flight Stats</h5>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <h3 class="text-primary">12,847</h3>
+                                <small class="text-muted">Flights Tracked</small>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="text-success">195</h3>
+                                <small class="text-muted">Countries</small>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="text-info">37,000ft</h3>
+                                <small class="text-muted">Avg Altitude</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="text-center">
+        <h2 class="display-6 fw-bold mb-4">Ready to Start Saving?</h2>
+        <p class="lead mb-4">Join thousands of travelers who save money with FlightAlert Pro</p>
+        {% if not session.user_id %}
+        <a href="/signup" class="btn btn-primary btn-lg">
+            <i class="fas fa-rocket me-2"></i>Start Free Trial
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+</style>
+{% endblock %}

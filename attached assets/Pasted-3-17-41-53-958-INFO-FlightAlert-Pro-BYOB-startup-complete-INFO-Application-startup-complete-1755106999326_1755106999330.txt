@@ -1,0 +1,117 @@
+3 17:41:53,958 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+^CINFO:     Shutting down
+/home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+INFO:     Waiting for application shutdown.
+2025-08-13 17:42:21,138 INFO Shutting down...
+2025-08-13 17:42:21,141 ERROR Error closing Playwright: Browser.close: Connection closed while reading from the driver
+Traceback (most recent call last):
+  File "/workspaces/dynamic-scraper/main.py", line 677, in lifespan
+    await BROWSER.close()
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 14226, in close
+    return mapping.from_maybe_impl(await self._impl_obj.close(reason=reason))
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/playwright/_impl/_browser.py", line 241, in close
+    raise e
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/playwright/_impl/_browser.py", line 238, in close
+    await self._channel.send("close", None, {"reason": reason})
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 558, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+Exception: Browser.close: Connection closed while reading from the driver
+INFO:     Application shutdown complete.
+INFO:     Finished server process [12623]
+INFO:     Stopping reloader process [10380]
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /home/codespace/.python/current/bin/python /workspaces/dynamic-scraper/main.py
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-13 17:42:22,649 INFO ✅ Loaded 9096 airport codes for validation
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [12977] using StatReload
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-13 17:42:23,917 INFO ✅ Loaded 9096 airport codes for validation
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-13 17:42:24,349 INFO ✅ Loaded 9096 airport codes for validation
+INFO:     Started server process [13001]
+INFO:     Waiting for application startup.
+2025-08-13 17:42:24,393 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-13 17:42:24,394 INFO ✅ Database initialized with BYOB architecture
+2025-08-13 17:42:24,394 INFO Starting Playwright for validation...
+2025-08-13 17:42:24,798 INFO ✅ Playwright ready for validation
+2025-08-13 17:42:24,798 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/routing.py", line 75, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/fastapi/routing.py", line 302, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/fastapi/routing.py", line 213, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/main.py", line 819, in home
+    return templates.TemplateResponse("home.html", {
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/templating.py", line 210, in TemplateResponse
+    return _TemplateResponse(
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/starlette/templating.py", line 41, in __init__
+    content = template.render(context)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "templates/home.html", line 2, in top-level template code
+    {% extends "base.html" %}
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "templates/base.html", line 120, in template
+    <title>{% block title %}FlightAlert Pro{% endblock %}</title>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'title' defined twice

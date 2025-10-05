@@ -1,0 +1,82 @@
+ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:27:19,875 INFO ✅ Loaded 9096 airport codes for validation
+✅ All required packages imported successfully
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [4674] using StatReload
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:27:21,399 INFO ✅ Loaded 9096 airport codes for validation
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:27:21,962 INFO ✅ Loaded 9096 airport codes for validation
+INFO:     Started server process [4732]
+INFO:     Waiting for application startup.
+2025-08-16 11:27:22,002 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-16 11:27:22,006 INFO ✅ Database initialized with BYOB architecture
+2025-08-16 11:27:22,009 INFO Starting Playwright for validation...
+2025-08-16 11:27:33,896 INFO ✅ Playwright ready for validation
+2025-08-16 11:27:33,897 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2025-08-16 11:32:56,312 INFO Shutting down...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [4732]
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:32:58,817 INFO ✅ Loaded 16856 airport codes for validation from CSV
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:32:59,177 INFO ✅ Loaded 16856 airport codes for validation from CSV
+INFO:     Started server process [7137]
+INFO:     Waiting for application startup.
+2025-08-16 11:32:59,197 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-16 11:32:59,198 INFO ✅ Database initialized with BYOB architecture
+2025-08-16 11:32:59,199 INFO Starting Playwright for validation...
+^C2025-08-16 11:32:59,430 WARNING ⚠️ Playwright startup failed: Connection closed while reading from the driver
+2025-08-16 11:32:59,430 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+INFO:     Stopping reloader process [4674]
+/workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:33:00,611 INFO ✅ Loaded 16856 airport codes for validation from CSV
+✅ All required packages imported successfully
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [7196] using StatReload
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:33:02,080 INFO ✅ Loaded 16856 airport codes for validation from CSV
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:33:02,378 INFO ✅ Loaded 16856 airport codes for validation from CSV
+INFO:     Started server process [7215]
+INFO:     Waiting for application startup.
+2025-08-16 11:33:02,396 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-16 11:33:02,397 INFO ✅ Database initialized with BYOB architecture
+2025-08-16 11:33:02,398 INFO Starting Playwright for validation...
+2025-08-16 11:33:02,938 INFO ✅ Playwright ready for validation
+2025-08-16 11:33:02,938 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.

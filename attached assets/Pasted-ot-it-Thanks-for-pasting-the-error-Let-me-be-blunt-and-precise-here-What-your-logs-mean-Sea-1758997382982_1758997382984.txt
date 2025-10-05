@@ -1,0 +1,157 @@
+ot it 👍 Thanks for pasting the error. Let me be blunt and precise here.
+
+🔎 What your logs mean
+Search failed: HTTP 404: Not Found
+
+Your frontend (dashboard) is calling /api/query
+
+But your backend (FastAPI) doesn’t have a matching route, so it throws 404 Not Found.
+
+Basically → you’re asking the server to do something it doesn’t know how to do.
+
+INFO: ... "POST /api/query HTTP/1.1" 404 Not Found
+
+Confirms the same thing: you’re sending a POST request to /api/query but that endpoint doesn’t exist in main.py.
+
+🛠 How to Fix It
+Check your backend main.py. You need a FastAPI route like this:
+
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+# Example query storage (replace with SQLite/DB later)
+queries = []
+
+@app.post("/api/query")
+async def create_query(request: Request):
+    body = await request.json()
+    from_airport = body.get("from")
+    to_airport = body.get("to")
+    date = body.get("date")
+
+    if not from_airport or not to_airport or not date:
+        return JSONResponse({"error": "Missing required fields"}, status_code=400)
+
+    query_id = len(queries) + 1
+    queries.append({
+        "id": query_id,
+        "from": from_airport,
+        "to": to_airport,
+        "date": date,
+        "status": "pending",
+        "results": []
+    })
+
+    return {"message": "Query created", "query_id": query_id}
+And you also need a GET route for results, otherwise the dashboard will keep polling forever:
+
+@app.get("/api/results/{query_id}")
+async def get_results(query_id: int):
+    query = next((q for q in queries if q["id"] == query_id), None)
+    if not query:
+        return JSONResponse({"error": "Query not found"}, status_code=404)
+
+    return {"query": query}
+✅ After you add this:
+Restart your server (CTRL+C then python main.py).
+
+Go to the dashboard and try again.
+
+Submitting a flight search → should return {"message": "Query created", "query_id": X}.
+
+Then the dashboard polling /api/results/{id} → should return the query object (with empty results until your scraper/extension fills it).
+
+👉 Blunt truth: your frontend is already built, but your backend is missing the /api/query logic. Add the route, test again, and the 404 will disappear.
+
+Do you want me to rewrite your main.py with proper /api/query and /api/results routes so it’s plug-and-play?
+
+You said:
+And yh
+ChatGPT said:
+Perfect — let’s fix this properly. 🚀
+I’ll give you a full working main.py that includes the missing routes so your frontend stops throwing 404s.
+
+✅ Fixed main.py
+import logging
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+import uvicorn
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+
+app = FastAPI()
+
+# In-memory "database" (replace later with SQLite if needed)
+queries = []
+
+@app.post("/api/query")
+async def create_query(request: Request):
+    """Create a new flight search query"""
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse({"error": "Invalid JSON"}, status_code=400)
+
+    from_airport = body.get("from")
+    to_airport = body.get("to")
+    date = body.get("date")
+
+    if not from_airport or not to_airport or not date:
+        return JSONResponse({"error": "Missing required fields"}, status_code=400)
+
+    query_id = len(queries) + 1
+    query = {
+        "id": query_id,
+        "from": from_airport,
+        "to": to_airport,
+        "date": date,
+        "status": "pending",   # will be "complete" once prices scraped
+        "results": []          # list of flight prices
+    }
+    queries.append(query)
+
+    logging.info(f"📝 Created query {query_id}: {from_airport} → {to_airport} on {date}")
+
+    return {"message": "Query created", "query_id": query_id}
+
+
+@app.get("/api/results/{query_id}")
+async def get_results(query_id: int):
+    """Get results for a given query"""
+    query = next((q for q in queries if q["id"] == query_id), None)
+    if not query:
+        return JSONResponse({"error": "Query not found"}, status_code=404)
+
+    logging.info(f"⏳ Query {query_id}: Returning {len(query['results'])} results (status: {query['status']})")
+    return {"query": query}
+
+
+@app.get("/")
+async def home():
+    return {"message": "FlightAlertPro API is running!"}
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)
+🔎 What Changed
+Added POST /api/query → lets the frontend create a flight search query.
+
+Added GET /api/results/{id} → lets the frontend poll for results.
+
+Added logging → so your console will show what’s happening (📝 Created query, ⏳ Query etc).
+
+Added a simple / root endpoint to confirm the API is running.
+
+🛠 Next Steps
+Save this as main.py.
+
+Run with:
+
+python main.py
+Open your app → now when you search flights, the 404 will be gone.
+
+The results will still be empty until you hook up real scraping / API integration, but at least your pipeline will be working
+

@@ -1,0 +1,64 @@
+📍 Route: LHR → AMS on 2025-07-22
+============================================================
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-07-22
+🌐 Calling Fly.dev microservice for LHR → AMS
+📡 Microservice URL: https://dynamic-scraper-empty-wind-2301.fly.dev/scrape?origin=LHR&dest=AMS
+🔁 Microservice status code: 404
+❌ Microservice returned status 404
+   Response: {"count":0,"error":"No real flight data could be scraped","flights":[],"message":"Real data scraping failed - NO FALLBACK DATA PROVIDED","route":"LHR \u2192 AMS","scraped_at":"2025-07-15T18:55:39.2806...
+⚠️ Fly.dev microservice failed, trying local scraping methods...
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/lhr/ams/250722/
+🔍 Scraping Kayak: https://www.kayak.com/flights/LHR-AMS/2025-07-22
+🔍 Google Search: flights LHR to AMS 2025-07-22 price
+🔍 Scraping Expedia: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:AMS,departure:07/22/2025
+❌ No real flight data available - scraping failed
+🕷️ Scraping delay data for CDG
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: CDG → AMS on 2025-07-22
+============================================================
+🚀 REAL FLIGHT SCRAPING: CDG → AMS on 2025-07-22
+🌐 Calling Fly.dev microservice for CDG → AMS
+📡 Microservice URL: https://dynamic-scraper-empty-wind-2301.fly.dev/scrape?origin=CDG&dest=AMS
+🔁 Microservice status code: 404
+❌ Microservice returned status 404
+   Response: {"count":0,"error":"No real flight data could be scraped","flights":[],"message":"Real data scraping failed - NO FALLBACK DATA PROVIDED","route":"CDG \u2192 AMS","scraped_at":"2025-07-15T18:55:41.5668...
+⚠️ Fly.dev microservice failed, trying local scraping methods...
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/cdg/ams/250722/
+🔍 Google Search: cheap flights LHR AMS cost price
+🔍 Google Search: flights CDG to AMS 2025-07-22 price
+🔍 Google Search: book flight LHR to AMS airline price
+🔍 Google Search: cheap flights CDG AMS cost price
+🔍 Scraping Kayak: https://www.kayak.com/flights/LHR-AMS/2025-07-22
+🔍 Google Search: book flight CDG to AMS airline price
+🔍 Scraping Expedia: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:AMS,departure:07/22/2025
+❌ No real flight data available - scraping failed
+❌ No real flights found for Amsterdam - skipping
+🕷️ Scraping LHR → BCN for budget £100
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: LHR → BCN on 2025-07-22
+============================================================
+🚀 REAL FLIGHT SCRAPING: LHR → BCN on 2025-07-22
+🌐 Calling Fly.dev microservice for LHR → BCN
+📡 Microservice URL: https://dynamic-scraper-empty-wind-2301.fly.dev/scrape?origin=LHR&dest=BCN
+🔁 Microservice status code: 404
+❌ Microservice returned status 404
+   Response: {"count":0,"error":"No real flight data could be scraped","flights":[],"message":"Real data scraping failed - NO FALLBACK DATA PROVIDED","route":"LHR \u2192 BCN","scraped_at":"2025-07-15T18:55:48.0915...
+⚠️ Fly.dev microservice failed, trying local scraping methods...
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/lhr/bcn/250722/
+🔍 Scraping Kayak: https://www.kayak.com/flights/CDG-AMS/2025-07-22
+🔍 Google Search: flights LHR to BCN 2025-07-22 price
+🔍 Scraping Expedia: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:CDG,to:AMS,departure:07/22/2025
+❌ No real flight data available - scraping failed
+🕷️ Scraping delay data for FRA
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: FRA → AMS on 2025-07-22
+============================================================
+🚀 REAL FLIGHT SCRAPING: FRA → AMS on 2025-07-22
+🌐 Calling Fly.dev microservice for FRA → AMS
+📡 Microservice URL: https://dynamic-scraper-empty-wind-2301.fly.dev/scrape?origin=FRA&dest=AMS
+🔁 Microservice status code: 404
+❌ Microservice returned status 404
+   Response: {"count":0,"error":"No real flight data could be scraped","flights":[],"message":"Real data scraping failed - NO FALLBACK DATA PROVIDED","route":"FRA \u2192 AMS","scraped_at":"2025-07-15T18:55:50.1144...
+⚠️ Fly.dev microservice failed, trying local scraping methods...
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/fra/ams/250722/
+🔍 Google Search: flights

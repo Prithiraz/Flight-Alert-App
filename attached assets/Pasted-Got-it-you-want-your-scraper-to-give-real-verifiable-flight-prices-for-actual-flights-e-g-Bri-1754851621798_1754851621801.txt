@@ -1,0 +1,83 @@
+Got it — you want your scraper to give real, verifiable flight prices for actual flights (e.g., “British Airways flight from LHR to AMS at £150”), not just numbers pulled from anywhere on the page.
+
+Right now, your logs show two main issues:
+
+1. You’re getting prices from regex but not linking them to flights
+Your regex searches (£\d+) are catching numbers in the HTML, but:
+
+Many of them are not in the same element as the airline or route info.
+
+The scraper is often detecting bot protection before it can parse the actual flight list.
+
+That’s why you see things like:
+
+yaml
+Copy code
+💰 Regex found price: £54
+💰 Regex found price: £74
+💰 Regex found price: £99
+…without “Verified Airline” in many cases.
+
+2. Airlines’ sites are blocking or changing selectors
+From your logs:
+
+pgsql
+Copy code
+🤖 Skyscanner: Bot detection triggered
+🔍 Found 0 flight containers with selector '.result-inner'
+❓ eDreams: Page not found (404) - endpoint changed
+This means:
+
+The scraper can’t locate the HTML elements holding flight data because CSS selectors are outdated.
+
+Even when it does get HTML, the site may have hidden the real content behind JavaScript or bot checks.
+
+What you need to change to get real flight prices tied to the flight info
+Update the selectors for each site
+
+Each airline/aggregator (Kayak, Momondo, BA, Ryanair, etc.) needs correct CSS/XPath selectors to extract:
+
+Airline name
+
+Departure + arrival airports
+
+Date/time
+
+Price
+
+This avoids “regex price only” issues.
+
+Use Playwright more aggressively when bot detection triggers
+
+Instead of falling back to regex right away, launch a Playwright session with:
+
+Headless off (sometimes helps with anti-bot)
+
+Randomized User-Agent
+
+Small wait between page load & scraping
+
+Link regex results to flight blocks
+
+If regex finds £199, confirm it’s inside or near a .flight-item or .result-inner container with an airline name before saving.
+
+Currency handling
+
+Instead of £\d+, use a universal pattern for multi-currency:
+
+regex
+Copy code
+(?:£|\$|€|¥|₹)\s?\d+(?:[.,]\d{2})?
+This covers GBP, USD, EUR, JPY, INR, etc.
+
+Fail fast on “bot detected” HTML
+
+If HTML contains captcha or bot text, skip regex so you don’t record fake prices from placeholders.
+
+✅ If you want, I can rewrite your scraper logic so each “real price” line is linked with airline, route, date, and currency, even if regex is used — making your logs look like:
+
+yaml
+Copy code
+✅ Added REAL flight: British Airways LHR → AMS 2025-08-27 £150
+✅ Added REAL flight: Ryanair STN → BCN 2025-08-29 €29
+That would solve the “price without flight info” problem completely.

@@ -1,0 +1,35 @@
+🔍 Google Flights Direct (url): LHR→BCN
+✅ Flight-Specific Sites: 1 actual flights
+🔍 METHOD 2: Mobile app scraping
+📱 Skyscanner Mobile: LHR→BCN
+📱 Kayak Mobile: LHR→BCN
+   ✅ Mobile found: British Airways £526
+   ✅ Mobile found: easyJet £528
+📱 Expedia Mobile: LHR→BCN
+   ⚠️ Mobile site 3 error: HTTPSConnectionPool(host='mobile.expedia.com', port=443): Max retries exceeded with url: /Flights-Search?trip=oneway&leg1=from:LHR,to:BCN,departure:2025/07/24 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f7962819ed0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+✅ Mobile Apps: 2 flights
+🔍 METHOD 3: Real flight APIs
+⚠️ Scraper error: name 'AVIATIONSTACK_API_KEY' is not defined
+🕷️ Scraping LHR → FCO for budget £100
+🚀 ENHANCED COMPREHENSIVE FLIGHT SCRAPING
+📍 Specific Route: LHR → FCO on 2025-07-24
+🎯 Target: Real prices for actual flights on this specific route
+======================================================================
+🔍 METHOD 1: Flight-specific direct scraping
+🔍 Skyscanner Specific (url): LHR→FCO
+🔍 Skyscanner Specific (mobile_url): LHR→FCO
+🔍 Kayak Route (url): LHR→FCO
+   ✅ Found specific: British Airways £83
+🔍 Google Flights Direct (url): LHR→FCO
+✅ Flight-Specific Sites: 1 actual flights
+🔍 METHOD 2: Mobile app scraping
+📱 Skyscanner Mobile: LHR→FCO
+📱 Kayak Mobile: LHR→FCO
+   ✅ Mobile found: British Airways £526
+   ✅ Mobile found: easyJet £528
+📱 Expedia Mobile: LHR→FCO
+   ⚠️ Mobile site 3 error: HTTPSConnectionPool(host='mobile.expedia.com', port=443): Max retries exceeded with url: /Flights-Search?trip=oneway&leg1=from:LHR,to:FCO,departure:2025/07/24 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f79624dd810>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+✅ Mobile Apps: 2 flights
+🔍 METHOD 3: Real flight APIs
+⚠️ Scraper error: name 'AVIATIONSTACK_API_KEY' is not defined
+172.31.128.11 - - [17/Jul/2025 12:39:09] "GET /api/surprise_me?budget=100 HTTP/1.1" 200 -

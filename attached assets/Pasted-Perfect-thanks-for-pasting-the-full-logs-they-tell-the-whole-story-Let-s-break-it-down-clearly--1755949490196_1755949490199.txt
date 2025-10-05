@@ -1,0 +1,147 @@
+Perfect — thanks for pasting the full logs, they tell the whole story. Let’s break it down clearly.
+
+🔎 What’s Happening Right Now
+✅ Backend boots fine
+
+DB initialized, Playwright validation ready, BYOB mode running.
+
+GET /api/airports works (you can search “lhr” → results come back).
+
+POST /api/query works (Query 1 created: LHR → AMS).
+
+🔄 Frontend polls for results
+
+Every second it calls /api/results/1.
+
+Logs show:
+
+⏳ Query 1: No results yet (DB has 0 total for this query)
+This means your database never received any fares.
+
+❌ Extension never ingested fares
+
+The missing piece: your Chrome extension is supposed to scrape (or stub) fares and POST them to /api/ingest.
+
+That post never happens → DB empty → frontend loops forever.
+
+🚨 Why It’s Not Working
+Extension is installed (you saw “FlightAlert BYOB Bridge” in Extensions), but:
+
+It isn’t actually injecting content.js into flight sites (wrong manifest.json host permissions).
+
+Or content.js loads but has no code to scrape/post results to backend.
+
+Or it tries to post but hits a CORS/network error.
+
+👉 The backend is working. The frontend is working. Only the extension → ingestion link is missing.
+
+🛠 How to Confirm
+Open Chrome DevTools on Skyscanner / Expedia / EasyJet page after clicking the links from your dashboard:
+
+Look for console logs like:
+
+[BYOB] Content script loaded: https://www.skyscanner.net/...
+[BYOB] Extracted fares: [...]
+[BYOB] Posted to backend: {ok: true, count: 3}
+If you see nothing → content script not injected.
+
+If you see [BYOB] Extracted fares but then Error posting → network/CORS issue.
+
+✅ How to Fix
+1. Fix manifest.json
+Make sure it has correct matches:
+
+{
+  "manifest_version": 3,
+  "name": "FlightAlert BYOB Bridge",
+  "version": "0.1.0",
+  "permissions": ["scripting", "activeTab"],
+  "host_permissions": [
+    "*://*.skyscanner.net/*",
+    "*://*.expedia.*/*",
+    "*://*.easyjet.com/*",
+    "*://*.kayak.*/*",
+    "*://*.ryanair.com/*",
+    "*://*.ba.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.skyscanner.net/*",
+        "*://*.expedia.*/*",
+        "*://*.easyjet.com/*",
+        "*://*.kayak.*/*",
+        "*://*.ryanair.com/*",
+        "*://*.ba.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}
+2. Add Logging + Dummy Ingestion in content.js
+Paste this inside content.js:
+
+console.log("[BYOB] Content script loaded on:", window.location.href);
+
+// Fake scraped fares (to prove end-to-end works)
+const fakeFares = [
+  {
+    origin: "LHR",
+    destination: "AMS",
+    date: "2025-09-06",
+    airline: "easyJet",
+    price: Math.floor(Math.random() * 200) + 50
+  }
+];
+
+console.log("[BYOB] Extracted fares:", fakeFares);
+
+// Post to backend
+fetch("http://localhost:5000/api/ingest", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ query_id: 1, fares: fakeFares })
+})
+  .then(res => res.json())
+  .then(data => console.log("[BYOB] Posted to backend:", data))
+  .catch(err => console.error("[BYOB] Error posting fares:", err));
+3. Add /api/ingest in Backend
+In main.py:
+
+@app.post("/api/ingest")
+def ingest(payload: dict):
+    query_id = payload.get("query_id")
+    fares = payload.get("fares", [])
+    logging.info(f"📩 Received {len(fares)} fares for query {query_id}")
+    for fare in fares:
+        save_to_db(query_id, fare)
+        logging.debug(f"💾 Stored fare: {fare}")
+    return {"ok": True, "count": len(fares)}
+4. Test the Flow
+Start backend.
+
+Open dashboard → create a query.
+
+Click “Skyscanner” link → open in new tab.
+
+In Chrome DevTools console, you should see [BYOB] Extracted fares.
+
+Backend log should show:
+
+📩 Received 1 fares for query 1
+💾 Stored fare: {...}
+Dashboard should update:
+
+✅ Found 1 fares!
+Success: 20%
+🚀 Improvements
+Debug Mode: Add console.log at every extension step.
+
+CORS Headers: Make sure FastAPI allows requests from chrome-extension://*.
+
+Stub First, Scrape Later: Prove ingestion works with dummy fares before writing real scrapers.
+
+UI Feedback: Show “⚠️ No fares received from extension yet. Did you open the flight site?”
+
+👉 Right now the system is looping forever because ingestion is missing. Fixing manifest.json + adding dummy ingestion will make it work end-to-end. Then you can swap the dummy fares for real scraped ones.
+

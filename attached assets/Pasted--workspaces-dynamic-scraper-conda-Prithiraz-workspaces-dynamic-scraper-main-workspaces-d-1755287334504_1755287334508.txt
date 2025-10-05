@@ -1,0 +1,96 @@
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+^CTraceback (most recent call last):
+  File "/workspaces/dynamic-scraper/main.py", line 10, in <module>
+    import uvicorn
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/uvicorn/__init__.py", line 1, in <module>
+    from uvicorn.config import Config
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/uvicorn/config.py", line 7, in <module>
+    import logging.config
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/logging/config.py", line 30, in <module>
+    import logging.handlers
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1032, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1131, in get_data
+KeyboardInterrupt
+
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+^CTraceback (most recent call last):
+  File "/workspaces/dynamic-scraper/main.py", line 14, in <module>
+    import pandas
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/__init__.py", line 49, in <module>
+    from pandas.core.api import (
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/core/api.py", line 28, in <module>
+    from pandas.core.arrays import Categorical
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/core/arrays/__init__.py", line 1, in <module>
+    from pandas.core.arrays.arrow import ArrowExtensionArray
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/core/arrays/arrow/__init__.py", line 5, in <module>
+    from pandas.core.arrays.arrow.array import ArrowExtensionArray
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/core/arrays/arrow/array.py", line 62, in <module>
+/workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+    from pandas.core.arrays.base import (
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1032, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1131, in get_data
+KeyboardInterrupt
+
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-15 19:47:17,443 INFO ✅ Loaded 9096 airport codes for validation
+✅ All required packages imported successfully
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [4941] using StatReload
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-15 19:47:18,992 INFO ✅ Loaded 9096 airport codes for validation
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-15 19:47:19,565 INFO ✅ Loaded 9096 airport codes for validation
+INFO:     Started server process [4974]
+INFO:     Waiting for application startup.
+2025-08-15 19:47:19,591 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-15 19:47:19,595 INFO ✅ Database initialized with BYOB architecture
+2025-08-15 19:47:19,596 INFO Starting Playwright for validation...
+2025-08-15 19:47:33,217 INFO ✅ Playwright ready for validation
+2025-08-15 19:47:33,217 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /login HTTP/1.1" 200 OK
+🔐 Login attempt for email: prithirazchoudhury2@gmail.com
+🔍 User lookup result: Found
+✅ Login successful for prithirazchoudhury2@gmail.com
+INFO:     87.80.49.90:0 - "POST /login HTTP/1.1" 302 Found
+INFO:     87.80.49.90:0 - "GET /search HTTP/1.1" 200 OK
+2025-08-15 19:47:49,256 INFO 📝 Created query 6: LHR → AMS on 2025-08-29
+INFO:     87.80.49.90:0 - "POST /api/query HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET / HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /create_alert HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /dashboard HTTP/1.1" 404 Not Found
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /logout HTTP/1.1" 405 Method Not Allowed
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK
+INFO:     87.80.49.90:0 - "GET /api/results/6 HTTP/1.1" 200 OK

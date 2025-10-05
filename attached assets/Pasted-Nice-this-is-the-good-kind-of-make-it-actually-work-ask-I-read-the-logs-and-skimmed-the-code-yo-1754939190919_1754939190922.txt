@@ -1,0 +1,290 @@
+Nice — this is the good kind of “make it actually work” ask. I read the logs and skimmed the code you pasted (great, a massive, well-structured scraper). You already have Playwright, health checks, selector-updater scaffolding, and lots of site configs — good foundation. Below I’ll give a prioritized, concrete plan plus ready-to-drop-in techniques and code snippets (Playwright + requests + heuristics) to push your real success rate toward ≥60% and make the system production-ready for paying customers.
+
+I’ll be direct: there’s no single magic patch. Improve success rate by combining infrastructure (proxies, headful browsers, orchestration), engineering (retries, backoff, selector fuzzing), extraction intelligence (multi-selector strategy, structured itinerary validation), and observability (metrics + automated selector updates). I’ll give you what to add, why, how, and concrete code/algorithms you can paste in.
+
+1) High-level prioritized plan (do these in order)
+Proxy + IP diversity (residential if possible). Many sites block datacenter IPs — use rotating residential or ISP proxies with health checks.
+
+Reliable Playwright orchestration — run headful Chromium with stealth context, human-like pacing, mouse/scroll simulation, and per-site context configs. Use a pool of browser contexts.
+
+Robust retry/backoff + strategy pipeline. For each site try: (a) static requests + parsed HTML, (b) mobile UA static, (c) Playwright headful with stealth, (d) fallback to alternate meta-search site or mobile site — but do not produce fake prices (your code respects that). Use exponential backoff + jitter + limit attempts.
+
+Structured extraction engine (not regex-only). For each flight card extract structured fields (airline, flight number, dep/arr airports, times, duration, stops, fare class, taxes). Use prioritized selector lists, heuristic parsing, and confidence scoring.
+
+Validation & normalization: map airlines to canonical names/IATA, normalize currencies and pricing, validate that airports/times make sense (e.g., origin/destination match requested route; duration consistent with times). Discard low-confidence records.
+
+Selector discovery & auto-update: keep your SelectorUpdater, but make it automatically attempt top candidate selectors in live scraping (A/B test selectors and log success).
+
+Observability & automation: metrics (Prometheus), logs + traces, health dashboard, automated alerts when success rate < threshold.
+
+CI, tests & production deployment: containerize, run Playwright in sidecar pattern, run scraping workers in Kubernetes, use job queues (Redis/RQ or Celery) and rate-limit queues.
+
+2) Concrete infrastructure & ops recommendations (must-haves)
+Proxies: rotate through a pool. Use health-checked residential proxies (or a high-quality provider). Keep probe latency and success metrics.
+
+Browser hosts: run Playwright in containers with GPUs disabled but not fully headless detection mode — often headful with --start-maximized reduces detection. Use playwright bundled browsers or pinned versions.
+
+Queueing & rate-limit: use a job queue to throttle requests per domain (leaky-bucket).
+
+DB & dedupe: store raw dumps + parsed records. Use dedupe by (airline+flight_number+dep_date+dep_time+arr_time+price) fuzzy hash.
+
+Captcha handling: integrate 3rd-party CAPTCHA solvers only if lawful and you accept TOS risk. Better: avoid triggering CAPTCHAs via proxy rotation, lower concurrency, and human-like behavior.
+
+Monitoring: Prometheus metrics for scrapes_total, scrape_success, scrape_failures_by_site, avg_response_time. Grafana dashboards & alerts.
+
+Secrets: store API keys and proxy credentials in Vault or cloud secrets manager.
+
+3) Concrete code improvements & snippets
+Below are safe, pragmatic code snippets to integrate into your RealFlightScraper (or similar). They focus on: Playwright stealth context improvements, robust scraping pipeline, selector fallback engine, structured extraction with confidence scoring, and backoff/retry.
+
+Note: adapt variable names to match your codebase. These are minimal but production-capable patterns.
+
+A) Playwright stealth context + human-like behaviour (replace / augment get_stealth_context)
+python
+Copy code
+# Add this to your Playwright helper module
+import random, time
+from playwright.sync_api import Browser, Page
+
+def create_stealth_context(browser: Browser, user_agent: str=None, viewport=(1200, 800)):
+    ua = user_agent or (
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+        '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    )
+    ctx = browser.new_context(
+        user_agent=ua,
+        viewport={'width': viewport[0], 'height': viewport[1]},
+        locale='en-GB',
+        timezone_id='Europe/London',
+        java_script_enabled=True,
+        bypass_csp=True,
+    )
+    # inject stealth script
+    ctx.add_init_script("""() => {
+        Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+        Object.defineProperty(navigator, 'plugins', { get: () => [1,2,3,4,5] });
+        Object.defineProperty(navigator, 'languages', { get: () => ['en-GB','en-US']});
+    }""")
+    return ctx
+
+def human_like_page_actions(page: Page):
+    # Small helper to simulate human actions after navigation
+    page.wait_for_timeout(random.uniform(800, 1700))
+    try:
+        # move mouse in a few steps
+        w, h = page.viewport_size['width'], page.viewport_size['height']
+        for _ in range(random.randint(3,6)):
+            x = random.randint(int(w*0.1), int(w*0.9))
+            y = random.randint(int(h*0.1), int(h*0.9))
+            page.mouse.move(x, y, steps=random.randint(10, 30))
+            page.wait_for_timeout(random.uniform(100, 500))
+        # slight scroll
+        page.keyboard.press('PageDown')
+        page.wait_for_timeout(random.uniform(300, 900))
+    except Exception:
+        pass
+Use this when doing Playwright scraping. It reduces bot detection.
+
+B) Retry/backoff wrapper (use backoff you installed)
+python
+Copy code
+import backoff
+import requests
+
+# Exponential backoff for network calls & Playwright navigation
+def is_retryable_exception(e):
+    return isinstance(e, (requests.exceptions.RequestException, TimeoutError, RuntimeError))
+
+@backoff.on_exception(backoff.expo,
+                      (requests.exceptions.RequestException, RuntimeError),
+                      max_time=60,
+                      jitter=backoff.full_jitter)
+def requests_get_with_retry(session, url, **kwargs):
+    return session.get(url, **kwargs)
+For Playwright navigation you can wrap navigation call similarly with custom exceptions.
+
+C) Multi-selector, prioritized extraction pipeline
+Create a robust extractor that tries multiple selectors, heuristics, regexes and returns a confidence score.
+
+python
+Copy code
+from bs4 import BeautifulSoup
+import re
+from typing import List, Dict
+
+def try_selectors_and_patterns(soup, selector_list: List[str], text_patterns: List[str]=None):
+    """Return first non-empty finds and matches with source info."""
+    results = []
+    for sel in selector_list:
+        el = soup.select_one(sel)
+        if el:
+            text = el.get_text(" ", strip=True)
+            results.append({'selector': sel, 'text': text})
+            # prefer full element with children for structured parsing
+            break
+    if not results and text_patterns:
+        txt = soup.get_text(" ", strip=True)
+        for pat in text_patterns:
+            m = re.search(pat, txt)
+            if m:
+                results.append({'selector': None, 'text': m.group(0)})
+                break
+    return results
+
+def extract_flight_card(card_soup) -> Dict:
+    """Given a BeautifulSoup element representing a flight card, parse structured fields."""
+    # prioritized selectors for common fields
+    selectors = {
+        'price': ['[data-testid*="price"]', '.price', '.fare', '[class*="price"]', '[data-price]'],
+        'airline': ['[data-testid*="airline"]', '.airline', '.carrier', '.operated-by'],
+        'times': ['.departure-time', '.arrival-time', '.times', '.flight-times', '.time'],
+        'stops': ['.stops', '.segments', '.stops-text'],
+        'duration': ['.duration', '.flight-duration'],
+        'flight_number': ['.flight-number', '.flightNo', '[data-flight-number]'],
+    }
+
+    out = {'confidence': 0.0}
+    # price
+    p = try_selectors_and_patterns(card_soup, selectors['price'],
+                                   text_patterns=[r'[£$€]\s*\d{1,5}', r'\d{2,4}\s*GBP'])
+    if p:
+        price_text = p[0]['text']
+        m = re.search(r'([£$€])\s*([\d,]+)', price_text)
+        if m:
+            currency = m.group(1)
+            price = int(m.group(2).replace(',', ''))
+            out.update({'price': price, 'currency': currency})
+            out['confidence'] += 0.25
+
+    # airline
+    a = try_selectors_and_patterns(card_soup, selectors['airline'])
+    if a:
+        out['airline'] = a[0]['text']
+        out['confidence'] += 0.15
+
+    # times (try to parse two times)
+    t = try_selectors_and_patterns(card_soup, ['.times', '.flight-times', '.times-row'])
+    if t:
+        txt = t[0]['text']
+        times = re.findall(r'\b\d{1,2}:\d{2}\b', txt)
+        if len(times) >= 2:
+            out['dep_time'], out['arr_time'] = times[0], times[1]
+            out['confidence'] += 0.2
+
+    # stops & duration
+    s = try_selectors_and_patterns(card_soup, selectors['stops'])
+    if s:
+        out['stops'] = s[0]['text']
+        out['confidence'] += 0.05
+
+    d = try_selectors_and_patterns(card_soup, selectors['duration'])
+    if d:
+        out['duration'] = d[0]['text']
+        out['confidence'] += 0.05
+
+    # flight number
+    fno = try_selectors_and_patterns(card_soup, selectors['flight_number'], [r'\b[A-Z]{2}\s*\d{2,4}\b'])
+    if fno:
+        out['flight_number'] = fno[0]['text']
+        out['confidence'] += 0.1
+
+    # final confidence normalization
+    out['confidence'] = min(1.0, out['confidence'])
+    return out
+Use BeautifulSoup on page.content() when Playwright returns HTML, or on requests responses.
+
+D) Route / itinerary validation (reject garbage)
+python
+Copy code
+from datetime import datetime, timedelta
+
+def validate_itinerary(item, requested_origin, requested_destination, departure_date):
+    """
+    Returns (is_valid, reasons[])
+    - Confirms the extracted data actually references requested airports or cities.
+    - Checks price bounds, times, and plausibility.
+    """
+    reasons = []
+    # price sanity
+    price = item.get('price')
+    if price is None or price < 10 or price > 10000:
+        reasons.append('price-out-of-range')
+
+    # times plausibility if both present
+    if item.get('dep_time') and item.get('arr_time'):
+        fmt = "%H:%M"
+        try:
+            dep = datetime.strptime(item['dep_time'], fmt)
+            arr = datetime.strptime(item['arr_time'], fmt)
+            # naive duration check (if arrival earlier assume next day)
+            duration_min = (arr - dep).seconds / 60 if arr >= dep else ((arr + timedelta(days=1)) - dep).seconds / 60
+            if duration_min <= 0 or duration_min > 48*60:
+                reasons.append('duration-unrealistic')
+        except Exception:
+            pass
+
+    # route validation: ensure texts reference requested airports/cities
+    combined = " ".join([str(item.get(f)) for f in ['airline','stops','duration','flight_number'] if item.get(f)])
+    if requested_origin not in combined and requested_destination not in combined:
+        # we also must check card contains destination/origin strings
+        # for many meta sites they omit exact codes in cards, so be lenient but flag
+        reasons.append('route-mismatch')
+
+    is_valid = len(reasons) == 0
+    return is_valid, reasons
+If route-mismatch, keep the item but mark low confidence — or drop based on policy.
+
+E) Dedupe & canonicalization
+Use fuzzy hashing (e.g., SHA256 of normalized tuple) or combination keys:
+
+python
+Copy code
+import hashlib
+def flight_signature(item):
+    # normalize fields
+    k = "|".join([
+        item.get('airline','').lower(),
+        str(item.get('flight_number','')).upper(),
+        item.get('dep_time',''),
+        item.get('arr_time',''),
+        str(item.get('price',''))
+    ])
+    return hashlib.sha256(k.encode()).hexdigest()
+Store signatures in DB index to dedupe quickly.
+
+4) Improvements to raise success rate (practical tactics)
+Prioritized source ordering: search major meta-engines (Skyscanner / Kayak /Google) first — they aggregate many sources so one scrape often yields many itineraries.
+
+Mobile site as fallback: mobile pages are simpler and often easier to parse; they sometimes avoid bot checks.
+
+Per-site heuristics: maintain per-site selector lists and timeouts (you're already doing this). Add per-site CSS specificity scores and weighted success frequency in your selector DB — prefer selectors with better historical performance.
+
+Active selector A/B testing: when a new selector is added by SelectorUpdater, try it against live traffic and measure its success rate; keep the best.
+
+Session persistence: reuse session cookies for a short window; some sites return richer results if cookies persist.
+
+Partial structured extraction: even if full itinerary cannot be obtained, try to capture flight detail page link and follow it (deeper crawl) to extract full data.
+
+Use public APIs where possible: e.g., partner APIs (Amadeus, Skyscanner partners) — they're paid but guaranteed quality. Offer a paid tier that uses partner APIs and cheaper tier that uses scraping.
+
+5) Testing & monitoring plan (must-have)
+Automated health checks: your ScraperHealthMonitor is good — add per-site historical success rate and alert when < 60% over last N runs.
+
+Synthetic tests: daily scheduled jobs that run canonical searches (LHR→AMS etc.) to track regressions.
+
+Unit tests for extractor: create HTML fixtures (from real downloads) and assert extracted fields.
+
+E2E staging environment: clone production with a smaller proxy pool and test before deploying.
+
+6) Production deployment checklist
+Use Gunicorn + Uvicorn workers (if using async) behind Nginx. Don’t use Flask dev server.
+
+Isolate scraping workers; run Playwright inside dedicated pods/containers without exposing to public.
+
+Rate-limit per-site and use queueing to avoid overload.
+
+Secrets stored in environment/secret manager.
+
+Logging to structured logs (JSON) and ship to ELK/CloudWatch.
+
+Backups for DB and selector history

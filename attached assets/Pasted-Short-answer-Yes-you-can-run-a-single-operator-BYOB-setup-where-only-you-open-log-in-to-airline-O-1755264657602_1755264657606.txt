@@ -1,0 +1,379 @@
+Short answer: Yes — you can run a single-operator BYOB setup where only you open/log in to airline/OTA sites in your browser, your extension extracts real prices, posts them to your backend, and all other users just create alerts and receive results. No one else needs to visit those sites.
+
+Below is a tight, zero-cost plan to (1) fix your “no results / bad links” issues and (2) add the alert features + dashboard you want.
+
+1) Why you’re seeing no results (and how to fix it fast)
+Your logs show only GET /api/results/{id} polling; no POST /api/ingest ever arrives → the backend never gets payloads from the extension. Fixes:
+
+Use your public URL in the extension
+In the extension Options, set BACKEND_BASE_URL to your exact HTTPS Codespaces preview URL (not 0.0.0.0, 127.0.0.1, or the VM IP).
+
+CORS wide-open during dev
+In FastAPI, allow allow_origins=["*"] (lock down later). If you already added CORS, keep it.
+
+Make the extension know the query_id automatically
+When your app creates a search (/api/query returns {id}), broadcast it to the extension:
+
+<script>
+  function onQueryCreated(queryId){
+    localStorage.setItem("FA_QUERY_ID", String(queryId));
+    window.postMessage({ type:"FA_QUERY_CREATED", queryId }, "*");
+  }
+</script>
+And in content.js:
+
+window.addEventListener("message", async (ev) => {
+  if (ev?.data?.type !== "FA_QUERY_CREATED") return;
+  const q = parseInt(ev.data.queryId, 10);
+  if (q) await chrome.storage.sync.set({ QUERY_ID: q });
+});
+Host permissions
+Add real hosts you’re testing to manifest.json > host_permissions (kayak, skyscanner, airline domains you actually open). Keep "https://*/*" while debugging.
+
+Service worker console
+In chrome://extensions → your extension → “service worker” link → open console. You should see “BYOB: sent N itineraries” after results render.
+
+Throttle & dedupe before sending
+Send fewer, higher-quality payloads so they show up. (Code below.)
+
+Sanity test the pipeline
+Call your backend once without the extension:
+
+curl -X POST https://<preview>/api/debug/ingest_example/3
+If your table fills for query 3, UI path is good. Then fix extension → backend until you see POST /api/ingest in your server logs.
+
+2) Backend: rock-solid, free ingestion (drop-in)
+Add/ensure these pieces in main.py (adapt names if you already have equivalents):
+
+# --- BYOB bridge essentials (keep it free & simple) ---
+from fastapi import FastAPI, Request, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Optional, Dict, Any
+import json, time, re
+
+app = FastAPI()
+
+# CORS wide-open for dev (lock to your preview domain later)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], allow_credentials=True,
+    allow_methods=["*"], allow_headers=["*"],
+)
+
+# Simple shared token to stop randoms spamming your ingest (free)
+INGEST_TOKEN = "dev-only-token-change-me"
+
+class Leg(BaseModel):
+    carrier: str
+    flight_number: str
+    origin: str
+    destination: str
+    depart_iso: str
+    arrive_iso: str
+    aircraft: Optional[str] = None
+    duration_min: Optional[int] = None
+
+class Fare(BaseModel):
+    brand: Optional[str] = None
+    cabin: Optional[str] = None
+    baggage: Optional[str] = None
+    refundable: Optional[bool] = None
+    change_penalty: Optional[str] = None
+
+class Itinerary(BaseModel):
+    provider: str
+    url: str
+    deep_link: Optional[str] = None
+    price: float
+    currency: str = "GBP"
+    legs: List[Leg]
+    fare: Optional[Fare] = None
+    extra: Optional[Dict[str, Any]] = None
+
+class IngestPayload(BaseModel):
+    query_id: int
+    source_domain: str
+    page_title: Optional[str] = None
+    user_agent: Optional[str] = None
+    results: List[Itinerary]
+
+def dedupe_key(r: Itinerary) -> str:
+    f, l = r.legs[0], r.legs[-1]
+    return "|".join([
+        f"{f.carrier}{f.flight_number}", f.depart_iso, f.origin, l.destination,
+        r.currency, f"{r.price:.2f}", str(len(r.legs))
+    ])
+
+@app.get("/api/ping")
+def ping(): return {"ok": True, "ts": time.time()}
+
+@app.post("/api/ingest")
+def ingest(payload: IngestPayload, x_fa_token: str = Header(default="")):
+    if x_fa_token != INGEST_TOKEN:
+        raise HTTPException(status_code=401, detail="bad token")
+
+    # Minimal validation: only keep results that look real
+    cleaned = []
+    seen = set()
+    for r in payload.results:
+        if not (r.price and r.legs and r.currency and r.provider):
+            continue
+        if not re.match(r"^[A-Z]{2}\d{2,4}$", r.legs[0].carrier + r.legs[0].flight_number):
+            continue
+        k = dedupe_key(r)
+        if k in seen: 
+            continue
+        seen.add(k)
+        cleaned.append(r)
+
+    # TODO: persist to SQLite (upsert on unique(dedupe_key, query_id))
+    # For now, stash in-memory if that's what your /api/results uses
+    # write_to_sqlite(payload.query_id, cleaned)  # your existing function
+
+    return {"ok": True, "ingested": len(cleaned)}
+Tip: If your /api/results/{id} reads SQLite, create a UNIQUE index on (query_id, dedupe_key) and perform UPSERT so repeated sightings update price to the cheapest.
+
+3) Extension fixes (free, MV3, Chrome 103-friendly)
+background.js — add token header, throttle, and local dedupe:
+
+const SEEN = new Map();  // key -> bestPrice
+let lastPost = 0;
+
+async function postResults(payload) {
+  const { BACKEND_BASE_URL } = await chrome.storage.sync.get("BACKEND_BASE_URL");
+  if (!BACKEND_BASE_URL) return;
+
+  // Throttle to 1 post / 2s
+  const now = Date.now();
+  if (now - lastPost < 2000) return;
+  lastPost = now;
+
+  const pruned = [];
+  for (const r of payload.results) {
+    const key = normKey(r);
+    const best = SEEN.get(key);
+    if (best == null || r.price < best) {
+      SEEN.set(key, r.price);
+      pruned.push(r);
+    }
+  }
+  if (!pruned.length) return;
+
+  try {
+    const res = await fetch(`${BACKEND_BASE_URL}/api/ingest`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-fa-token": "dev-only-token-change-me"
+      },
+      body: JSON.stringify({ ...payload, results: pruned })
+    });
+    console.log("BYOB: ingest status", res.status);
+  } catch (e) {
+    console.error("BYOB: ingest failed", e);
+  }
+}
+
+function normKey(r){
+  const f = r.legs[0], l = r.legs[r.legs.length-1];
+  return [
+    `${f.carrier}${f.flight_number}`, f.depart_iso, f.origin, l.destination,
+    r.currency, r.legs.length
+  ].join("|");
+}
+
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg?.type === "BYOB_RESULTS") postResults(msg.payload);
+});
+content.js — only send real items (no fuzzy guesses). Prefer JSON blobs and bail if you don’t have flight number + airports + price:
+
+async function sendIfSolid(results) {
+  const s = await chrome.storage.sync.get(["QUERY_ID"]);
+  if (!s.QUERY_ID) return;
+
+  const solid = results.filter(r =>
+    r && r.price && r.currency && r.legs?.length &&
+    /^[A-Z]{2}\d{2,4}$/.test(r.legs[0].carrier + r.legs[0].flight_number) &&
+    /^[A-Z]{3}$/.test(r.legs[0].origin) &&
+    /^[A-Z]{3}$/.test(r.legs[r.legs.length-1].destination)
+  );
+  if (!solid.length) return;
+
+  chrome.runtime.sendMessage({
+    type: "BYOB_RESULTS",
+    payload: {
+      query_id: s.QUERY_ID,
+      source_domain: location.hostname,
+      page_title: document.title,
+      user_agent: navigator.userAgent,
+      results: solid
+    }
+  });
+}
+Result: you’ll only ever see real prices and legs land in your DB/UI—no “fake” regex-guesses.
+
+4) “Bad link” problem: build reliable click-throughs + validate
+Many metas embed session-bound deep links that break outside the tab. Fix:
+
+A) Always return two URLs per result
+
+display_url: the exact page the user was on (works for context)
+
+provider_url: a reconstructed provider search URL derived from O/D, dates, pax, cabin (works reliably even without session)
+
+Examples you can construct for fallback (keep simple; adjust to your needs):
+
+Kayak: https://www.kayak.com/flights/LHR-AMS/2025-08-29?sort=bestflight_a
+
+Skyscanner: https://www.skyscanner.net/transport/flights/lhr/ams/250829/?adultsv2=1&cabinclass=economy
+
+BA: https://www.britishairways.com/travel/fx/public/en_gb?eId=111583&from=LHR&to=AMS&depDate=2025-08-29&cabin=E
+
+Google Flights (viewer): https://www.google.com/travel/flights?q=Flights%20from%20LHR%20to%20AMS%20on%202025-08-29
+
+If deep_link fails, your UI should fallback to provider_url.
+
+B) Validate before showing (free, headless)
+Since Playwright is available, add a cheap HEAD/GET validator that filters broken links:
+
+from playwright.async_api import async_playwright
+import asyncio
+
+async def check_url(url: str, timeout_ms: int = 8000) -> bool:
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            ctx = await browser.new_context()
+            page = await ctx.new_page()
+            await page.goto(url, timeout=timeout_ms, wait_until="domcontentloaded")
+            ok = page.response.status in (200, 302, 303) if page.response else True
+            await browser.close()
+            return ok
+    except Exception:
+        return False
+Run this asynchronously on new results and mark link_ok=True/False. Only render clickable links when validated or provide the fallback link.
+
+5) Single-operator model that scales (still free)
+You want you alone to browse/log in, while everyone else just gets alerts.
+
+Create an Operator Console page for yourself that shows a rolling playlist of URLs (Skyscanner/Kayak/airlines) generated from all active alerts (orig/dest/date windows).
+
+You open that page and let it rotate tabs (or manual next/prev). Your extension extracts and pushes to backend.
+
+Everyone else never browses; they just create alerts and receive matches.
+
+Tips:
+
+Rotate through metas (Skyscanner/Kayak/GFlights) + 1–2 key airlines per route.
+
+Prefer providers with embedded JSON (higher success).
+
+The MutationObserver in your content.js means you can move on; results will still fire when the page populates.
+
+6) Alerts & dashboard (schema + matching logic)
+Data model (SQLite, simple & free)
+alerts
+
+id, user_id, type (cheap, rare, adventurous, price_war)
+
+origin, destination (nullable for “adventurous”)
+
+one_way (bool), depart_start, depart_end, return_start, return_end
+
+min_bags, max_bags, cabin
+
+min_price, max_price, min_duration, max_duration (minutes)
+
+rare_aircraft_list (CSV, e.g., A340,B744,E-170)
+
+notes, created_at, active
+
+itineraries (ingested)
+
+id, query_id, dedupe_key, provider, price, currency, deep_link, provider_url, legs_json, fare_json, aircrafts_csv, created_at
+
+matches
+
+id, alert_id, itinerary_id, matched_at, seen
+
+price_history (for price war)
+
+id, route_key (LHR-AMS-OW/EW), date_key, price, ts
+
+Matching (run on each successful ingest)
+Pseudocode:
+
+def matches_alert(alert, itin):
+    if alert.origin and alert.origin != itin.legs[0].origin: return False
+    if alert.destination and alert.destination != itin.legs[-1].destination: return False
+    if alert.one_way and len(itin.legs) > 2: return False  # crude OW/RW check
+    if alert.min_price and itin.price < alert.min_price: return False
+    if alert.max_price and itin.price > alert.max_price: return False
+    if alert.min_bags or alert.max_bags:
+        bags = parse_baggage(itin.fare)  # map "1x23kg" => 1; "cabin only" => 0
+        if alert.min_bags and bags < alert.min_bags: return False
+        if alert.max_bags and bags > alert.max_bags: return False
+    if alert.cabin and (itin.fare and itin.fare.cabin) and alert.cabin.lower() != itin.fare.cabin.lower():
+        return False
+    if alert.min_duration or alert.max_duration:
+        dur = total_minutes(itin.legs)
+        if alert.min_duration and dur < alert.min_duration: return False
+        if alert.max_duration and dur > alert.max_duration: return False
+    if alert.type == "rare":
+        if not overlap(aircraft_list(itin), set(alert.rare_aircraft_list.split(","))):
+            return False
+    if alert.type == "adventurous":
+        # origin set, destination None, price under max, short duration, near dates
+        if alert.origin and itin.legs[0].origin != alert.origin: return False
+        if alert.max_price and itin.price > alert.max_price: return False
+    return True
+Price war tracker: keep a rolling 7-day median per route/date; flag when a new price is X% below median (e.g., -20%). That’s free with your price_history table.
+
+Dashboard UX (lightweight, looks pro, still free)
+After login → Alerts tab with tabs: Cheap, Rare aircraft, Adventurous, Price-war.
+
+Each tab shows a compact form:
+
+Cheap: from/to, dates (range picker), one-way/return, cabin, min/max price, min/max bags, min/max duration, “include long connections”.
+
+Rare: from/to (optional), dates, aircraft multi-select (chips: A340, B744, DC-10, etc.).
+
+Adventurous: origin only, budget cap, earliest/latest dates, short trips toggle.
+
+Price-war: route(s), watch window (e.g., next 30 days), threshold (e.g., “alert when 20% under typical”).
+
+Results tab with a live list (SSE or polling) that shows: price, carrier/flight no, O/D, times, cabin/baggage, and two buttons: Open (deep) and Open (provider). If deep fails validation, gray it and show provider link.
+
+To keep it zero-cost and compatible with your Chromebook, render vanilla HTML + a dash of Alpine.js (or plain JS). No heavy front-end libs needed.
+
+7) Make it “look like you’re scraping for them (but you aren’t)”
+You (the operator) browse normally; your extension sends back structured data. For users:
+
+Show a “Live collected by our engine” badge (engine = your browser + extension).
+
+Add timestamps “seen X minutes ago”.
+
+Keep provider logos and links so it feels familiar.
+
+Don’t imply you have a private API; just say “we collect from public sources during live sessions”.
+
+(Note: even if you’re logged in and extracting from pages you load, many sites’ ToS still call this “scraping”. Stay mindful and comply where possible.)
+
+8) Concrete “do these now” checklist
+ Set BACKEND_BASE_URL in extension to your exact HTTPS preview URL.
+
+ Add the tokenized /api/ingest (above) if you don’t already have one, and keep CORS open during dev.
+
+ Broadcast query_id from your app → extension via postMessage; remove manual typing.
+
+ Update content.js to only send solid items (price + carrier+number + airports).
+
+ Add provider_url fallback and Playwright link validator; only show validated deep links.
+
+ Build your Operator Console: rotating list of URLs derived from active alerts. Keep it open while you work; results will flow for everyone.
+
+ Add alerts table + simple matching; start with “cheap” and “rare aircraft”. Expand to “adventurous” and “price-war” using price_history.
+
+ In server logs, confirm you now see frequent POST /api/ingest 200 alongside your GET /api/results/{id}.
+

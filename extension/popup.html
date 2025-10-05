@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            width: 300px;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h3>FlightAlert Pro BYOB</h3>
+    </div>
+    
+    <div id="status" class="status disconnected">
+        🔍 Checking status...
+    </div>
+    
+    <div class="info">
+        <strong>Current Query:</strong> <span id="queryId">None</span><br>
+        <strong>Backend:</strong> <span id="backend">Not set</span><br>
+        <strong>Site:</strong> <span id="currentSite">Unknown</span>
+    </div>
+    
+    <button class="button" onclick="testConnection()">Test Connection</button>
+    <button class="button" onclick="extractNow()">Extract Now</button>
+    
+    <div id="result" style="margin-top: 10px; font-size: 12px;"></div>
+    
+    <script>
+        // Update popup with current status
+        chrome.storage.local.get(['FA_QUERY_ID', 'FA_BACKEND_URL'], (result) => {
+            document.getElementById('queryId').textContent = result.FA_QUERY_ID || 'None';
+            document.getElementById('backend').textContent = result.FA_BACKEND_URL || 'Not set';
+            
+            if (result.FA_QUERY_ID && result.FA_BACKEND_URL) {
+                document.getElementById('status').textContent = '✅ Ready to collect data';
+                document.getElementById('status').className = 'status connected';
+            } else {
+                document.getElementById('status').textContent = '❌ Not configured';
+                document.getElementById('status').className = 'status disconnected';
+            }
+        });
+        
+        // Get current tab info
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            if (tabs[0]) {
+                const hostname = new URL(tabs[0].url).hostname;
+                document.getElementById('currentSite').textContent = hostname;
+            }
+        });
+        
+        function testConnection() {
+            chrome.storage.local.get(['FA_BACKEND_URL', 'FA_INGEST_TOKEN'], async (result) => {
+                if (!result.FA_BACKEND_URL) {
+                    document.getElementById('result').innerHTML = '❌ Backend URL not set';
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`${result.FA_BACKEND_URL}/api/debug/connectivity`, {
+                        headers: {
+                            'X-FA-Token': result.FA_INGEST_TOKEN || 'dev-only-token-change-me'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.token_valid) {
+                        document.getElementById('result').innerHTML = '✅ Connection successful!';
+                    } else {
+                        document.getElementById('result').innerHTML = '❌ Connection failed';
+                    }
+                } catch (error) {
+                    document.getElementById('result').innerHTML = '❌ Cannot reach backend';
+                }
+            });
+        }
+        
+        function extractNow() {
+            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                chrome.tabs.sendMessage(tabs[0].id, {type: 'EXTRACT_NOW'});
+                document.getElementById('result').innerHTML = '🔍 Extracting data...';
+            });
+        }
+    </script>
+</body>
+</html>

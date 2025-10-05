@@ -1,0 +1,22 @@
+[
+  {
+    "id": 2,
+    "user_id": 1,
+    "alert_type": "cheap",
+    "trip_type": "round_trip",
+    "departure_airport": "LHR,LGW,STN,LCY,BQH",
+    "destination_airport": "DAC",
+    "departure_date": "2025-08-25",
+    "return_date": "2025-09-17",
+    "airline": "BA,QR,EK",
+    "aircraft_type": "",
+    "max_price": 1000.0,
+    "min_baggage": 40,
+    "max_baggage": 50,
+    "min_trip_duration": null,
+    "max_trip_duration": null,
+    "is_active": true,
+    "notifications_sent": 0,
+    "created_at": "2025-06-26T16:51:25.602907"
+  }
+]

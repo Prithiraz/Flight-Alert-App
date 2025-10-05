@@ -1,0 +1,60 @@
+Thanks for sharing the snippet — the error is happening because your previous return jsonify(...) block is not closed properly.
+
+You're missing:
+
+A closing }] bracket for the list comprehension.
+
+The return statement ends mid-expression, so the next line (@app.route) confuses the Python interpreter.
+
+✅ Fixed Version:
+Here's the corrected version of your code:
+
+python
+Copy
+Edit
+@app.route('/api/airports')
+def get_airports():
+    airports = [
+        {'code': 'SIN', 'name': 'Singapore Changi Airport', 'city': 'Singapore', 'country': 'SG'},
+        {'code': 'NRT', 'name': 'Narita International Airport', 'city': 'Tokyo', 'country': 'JP'},
+        {'code': 'ICN', 'name': 'Incheon International Airport', 'city': 'Seoul', 'country': 'KR'}
+    ]
+    return jsonify([{
+        'code': airport['code'],
+        'name': airport['name'],
+        'city': airport['city'],
+        'country': airport['country']
+    } for airport in airports])  # ✅ Closing list comprehension & brackets
+Now the next route will work without causing a syntax error:
+
+python
+Copy
+Edit
+@app.route('/api/surprise_me')
+def surprise_me():
+    """Surprise Me feature - random amazing destinations within budget"""
+    budget = request.args.get('budget', 100, type=int)
+
+    destinations = [
+        {'code': 'PRG', 'city': 'Prague', 'country': 'Czech Republic', 'price': 45, 'vibe': 'Historic & Beer Culture'},
+        {'code': 'WAW', 'city': 'Warsaw', 'country': 'Poland', 'price': 38, 'vibe': 'Rising Star & Affordable'},
+        {'code': 'BUD', 'city': 'Budapest', 'country': 'Hungary', 'price': 42, 'vibe': 'Thermal Baths & Architecture'},
+        {'code': 'VIE', 'city': 'Vienna', 'country': 'Austria', 'price': 55, 'vibe': 'Imperial Elegance'},
+        {'code': 'LIS', 'city': 'Lisbon', 'country': 'Portugal', 'price': 48, 'vibe': 'Coastal Charm & Trams'},
+        {'code': 'VLC', 'city': 'Valencia', 'country': 'Spain', 'price': 35, 'vibe': 'Beach & Paella Paradise'},
+        {'code': 'KRK', 'city': 'Krakow', 'country': 'Poland', 'price': 39, 'vibe': 'Old Town & Castles'},
+    ]
+
+    filtered = [d for d in destinations if d['price'] <= budget]
+    
+    if not filtered:
+        return jsonify({'message': 'No surprise deals found within your budget'}), 404
+
+    import random
+    pick = random.choice(filtered)
+    return jsonify(pick)
+✅ Summary:
+Always make sure previous return blocks are fully closed (especially ], }, ))
+
+You can’t start a decorator like @app.route(...) in the middle of an unfinished expression.
+

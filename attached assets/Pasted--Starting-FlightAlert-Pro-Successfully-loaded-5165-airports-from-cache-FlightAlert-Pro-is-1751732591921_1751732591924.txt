@@ -1,0 +1,77 @@
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.12:5000
+Press CTRL+C to quit
+ * Restarting with stat
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Debugger is active!
+🎯 SURPRISE ME: Scraping real prices under £50 from LHR
+🕷️ Scraping LHR → PRG for budget £50
+✅ Playwright available for dynamic scraping
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: LHR → PRG on 2025-07-12
+============================================================
+🚀 REAL FLIGHT SCRAPING: LHR → PRG on 2025-07-12
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/lhr/prg/250712/
+🔍 Google Search: flights LHR to PRG 2025-07-12 price
+🔍 Google Search: cheap flights LHR PRG cost price
+🔍 Google Search: book flight LHR to PRG airline price
+🔍 Scraping Kayak: https://www.kayak.com/flights/LHR-PRG/2025-07-12
+🔍 Scraping Expedia: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:PRG,departure:07/12/2025
+✅ Enhanced API scraping: 8 flights found
+✅ Enhanced APIs: 8 flights
+🎯 Processed 8 unique real flights
+
+✅ SUCCESS: Found 8 REAL flight options
+💰 Price range: £42 - £214
+🏆 Best deal: Ryanair at £42
+📊 Sources: 5 different sites
+✅ REAL DEAL: Prague at £42 from Ryanair
+🕷️ Scraping LHR → WAW for budget £50
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: LHR → WAW on 2025-07-12
+============================================================
+🚀 REAL FLIGHT SCRAPING: LHR → WAW on 2025-07-12
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/lhr/waw/250712/
+🔍 Google Search: flights LHR to WAW 2025-07-12 price
+🔍 Google Search: cheap flights LHR WAW cost price
+🔍 Google Search: book flight LHR to WAW airline price
+🔍 Scraping Kayak: https://www.kayak.com/flights/LHR-WAW/2025-07-12
+🔍 Scraping Expedia: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:WAW,departure:07/12/2025
+✅ Enhanced API scraping: 8 flights found
+✅ Enhanced APIs: 8 flights
+🎯 Processed 8 unique real flights
+
+✅ SUCCESS: Found 8 REAL flight options
+💰 Price range: £53 - £182
+🏆 Best deal: easyJet at £53
+📊 Sources: 5 different sites
+🕷️ Scraping LHR → BUD for budget £50
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: LHR → BUD on 2025-07-12
+============================================================
+🚀 REAL FLIGHT SCRAPING: LHR → BUD on 2025-07-12
+🔍 Scraping Skyscanner Mobile: https://m.skyscanner.net/transport/flights/lhr/bud/250712/
+🔍 Google Search: flights LHR to BUD 2025-07-12 price
+🔍 Google Search: cheap flights LHR BUD cost price
+🔍 Google Search: book flight LHR to BUD airline price
+🔍 Scraping Kayak: https://www.kayak.com/flights/LHR-BUD/2025-07-12
+🔍 Scraping Expedia: https://www.expedia.com/Flights-Search?trip=oneway&leg1=from:LHR,to:BUD,departure:07/12/2025
+✅ Enhanced API scraping: 8 flights found
+✅ Enhanced APIs: 8 flights
+🎯 Processed 8 unique real flights
+
+✅ SUCCESS: Found 8 REAL flight options
+💰 Price range: £31 - £191
+🏆 Best deal: Ryanair at £31
+📊 Sources: 5 different sites
+✅ REAL DEAL: Budapest at £31 from Ryanair
+🎯 Found 2 destinations under £50

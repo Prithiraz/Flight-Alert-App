@@ -1,0 +1,301 @@
+I’m going to be blunt so you don’t waste months: “free, high-success, hundreds of sites, with real prices” is not achievable with a server-side scraper alone. Most flight sites actively block automated scraping; beating that at scale requires paid infra (proxies, captchas, IP pools) and often violates ToS.
+
+But you can get very close to your goal for free if you change the architecture:
+
+Don’t scrape prices on your server.
+
+Collect prices in the user’s own real browser (no bots → far fewer blocks) with a free browser extension you ship.
+
+Use your server only for orchestration, dedupe, storage, analytics and selector updates (all free on small tiers).
+
+For sites that legally allow it (check robots/terms): run a polite, low-rate server scraper for schedules/metadata (not prices).
+
+Offer deep links to airline/OTA pages that preload the route/date so the extension can extract prices instantly when the user opens them.
+
+This “Bring-Your-Own-Browser (BYOB)” pattern is how you get high success with no paid infra and stay on safer ground.
+
+Below is a complete, production-minded blueprint you can implement now. I’ll keep it concrete, with specific components, data shapes, and the exact things to add to your code.
+
+0) Hardware & constraints (your Chromebook)
+Acer 14 CB3-431 caps around Chrome ~103. That’s old but good enough for a Manifest V3 extension (works on 93+).
+
+Don’t run Playwright on the Chromebook; run it in Codespaces (free tier) headless. You already flipped to headless—good. Keep headless=True, no xvfb needed.
+
+1) Target UX (what your users see)
+User searches LHR→AMS on your site.
+
+Your site shows deep links: “Open Skyscanner”, “Open Kayak”, “Open British Airways”.
+
+User clicks; the page opens on their own browser.
+
+Your extension (content script) detects the page, extracts complete real prices & flight details from the live DOM (after consent banners etc.), and POSTs results back to your backend.
+
+Your backend dedupes, validates, merges across sites, then shows “best fares” and full itineraries.
+
+If a site displays a captcha to the user, they can solve it (normal browsing). You’re not bypassing anything.
+
+Result: very high success on many sites, for free, and much safer.
+
+2) System architecture (free, robust)
+A) Backend (FastAPI, single file main.py)
+Use it for:
+
+Job queue (simple in-memory or SQLite queue for “suggested deep links”).
+
+Results ingestion from the extension (/api/ingest).
+
+Selector & site config registry served to the extension (/api/site_config).
+
+Lightweight, allowlisted server-side scraping for schedules/metadata only (optional).
+
+Dedupe, validation, scoring, and a small dashboard.
+
+Key tables (SQLite):
+
+sites(id, domain, allowed_scrape, robots_checked_at, notes)
+
+selectors(site_id, version, field, strategy, selector, regex, json_path, priority, success_7d)
+
+queries(id, origin, destination, depart_date, created_at, status) // user searches
+
+results(id, query_id, site_id, fetched_at, raw_json, hash, price_min, price_currency, legs_json, source="extension|server")
+
+Ingestion contract (/api/ingest JSON):
+
+json
+Copy code
+{
+  "site": "kayak.com",
+  "url": "https://www.kayak.com/flights/LHR-AMS/2025-08-26",
+  "query": {"origin":"LHR","destination":"AMS","depart_date":"2025-08-26"},
+  "currency": "GBP",
+  "itineraries": [
+    {
+      "carrier":"British Airways",
+      "flight_number":"BA432",
+      "depart_local":"2025-08-26T08:55",
+      "arrive_local":"2025-08-26T11:15",
+      "from":"LHR",
+      "to":"AMS",
+      "stops":0,
+      "fare_brand":"Economy",
+      "price_total": 96.00,
+      "price_currency":"GBP",
+      "fare_rules": "Basic no-bag",
+      "booking_url": "https://..."
+    }
+  ],
+  "page_meta": {"dom_hash":"...", "ua":"...", "ts":169...}
+}
+Store raw payload (for audits) and a normalized set for your UI. Compute a hash from key fields for dedupe.
+
+B) Browser Extension (Manifest V3, free)
+Content script runs on allowed URL patterns (e.g., *://*.kayak.com/*, *://*.skyscanner.net/*, etc.).
+
+Waits for the site to load; listens to XHR/fetch (via chrome.devtools.network in a DevTools page or by scraping rendered DOM).
+
+Uses your selector registry to extract the info.
+
+Sends to backend via fetch('/api/ingest', {method:'POST', body:…}).
+
+Provides a small popup (“Found 23 fares • Sent to FlightAlert”).
+
+Because this runs inside the user’s real browser session (with their cookies, locale, and human behavior), you avoid the usual bot walls that crush server bots. This is the single biggest win for success rate at zero cost.
+
+C) Optional server Playwright (polite mode)
+Use only for sites that permit scraping (check robots.txt + ToS; set allow_scrape=True per site).
+
+Rate limit to something very low (e.g., one request / minute / site).
+
+Use it mainly for site structure validation and for non-price data (airport lists, schedules, baggage texts).
+
+3) Selector & extraction strategy (scales to 100s of sites)
+Don’t hardcode per-site logic in your code. Store it in the DB so you can update without redeploy.
+
+A selector record supports multiple strategies:
+
+strategy="css" with selector and optional regex (for text cleanup).
+
+strategy="json" with json_path (when the page has embedded JSON, e.g., window.__KAYAK_STATE__).
+
+strategy="script" for tiny JS snippets run by the extension content script (e.g., reading a global variable).
+
+Auto-scoring selectors:
+
+Every time a record yields valid data, increment success_7d.
+
+Choose the highest-scoring selector per field at runtime.
+
+Keep a fallback list per site; rotate if top selector fails N times on that domain version.
+
+Schema idea (per site):
+
+field in ('itineraries','price_total','currency','legs', 'carrier', 'fare_brand', 'booking_url').
+
+Multiple rows per field, different strategies and priorities.
+
+Validation rules (server-side):
+
+origin/destination must be IATA codes and match the query.
+
+Times must parse, and durations computed must be plausible.
+
+price_total > 0, currency in ISO 4217 set.
+
+Deduplicate same itinerary across multiple sites; prefer official airline price when available.
+
+4) Rate-limiting, retries, and ethics (server side)
+Per-domain token bucket: e.g., capacity=1, refill=1/60s → max one request per minute per site.
+
+Global concurrent requests: cap at 2–3 in Codespaces (free tier friendly).
+
+Retry with jitter for transient network errors; do not retry captchas. If your Playwright code sees captcha, stop and log.
+
+5) How you actually get prices (legally & free)
+Primary path: The extension extracts full prices & itineraries after user action (click/open). This looks/behaves like normal browsing; you’re not evading bot checks server-side.
+
+Secondary path: Some airlines expose preloadable deep links (e.g., ?origin=LHR&dest=AMS&date=2025-08-26). Provide those links in your UI to nudge the user to pages your extension can parse.
+
+Tertiary path: Email import (optional, opt-in):
+
+Users connect Gmail; you parse flight confirmations to build a historical price database (not live quotes) and trend lines. Free and valuable.
+
+6) Implementation plan (step-by-step, all free)
+Step 1 — Convert your server to the BYOB design
+Keep FastAPI + uvicorn (headless Playwright optional).
+
+Add endpoints:
+
+GET /api/site_config → returns active sites + selectors.
+
+POST /api/ingest → receives extension payloads (see contract).
+
+POST /api/query → create a search query, returns deep links.
+
+GET /api/results?query_id=… → aggregated, deduped results.
+
+Add SQLite models/tables listed above.
+
+Add dedupe, basic validation, and a score for each result score = w_price + w_duration + w_stops + site_trust.
+
+Step 2 — Build the browser extension (MV3)
+manifest.json:
+
+"host_permissions": ["*://*.kayak.com/*", "*://*.skyscanner.net/*", "*://*.ba.com/*", ...]
+
+"permissions": ["storage","activeTab","scripting"]
+
+content_scripts that run on those hosts, run_at: "document_idle".
+
+content.js per site pattern:
+
+Wait for a key element (.resultsList, etc.) or observe DOM mutations.
+
+Extract itineraries via selectors from /api/site_config (fetch once and cache).
+
+Normalize to ingestion schema, POST to your server.
+
+Provide a minimal UI badge (“✓ Sent 12 fares”).
+
+Note: With Chrome 103 you’re fine using MV3 content scripts. Avoid fancy APIs that require very new Chrome.
+
+Step 3 — UI (your dashboard)
+Your FastAPI can serve a simple HTML dashboard (Jinja/HTMX) that:
+
+Lets the user create a query (origin, dest, date).
+
+Shows deep link buttons for each site.
+
+Auto-refreshes to show incoming results as the extension posts them.
+
+Renders best fares, full itineraries, and links back to book.
+
+Step 4 — Selector lifecycle
+Seed initial selectors for 3–5 sites to prove the loop.
+
+Add a “Selector Lab” in your dashboard:
+
+Paste a page snapshot or URL (manually opened & saved).
+
+Test a selector/json_path on the snapshot and store it if it passes.
+
+Add a nightly “canary” job that checks if selectors still work on sample pages (allowed sites only). If a selector fails twice, lower its priority and alert.
+
+Step 5 — Observability (free)
+Log to stdout in JSON; tail logs in Codespaces.
+
+Metrics (DIY): record counters in SQLite: ingested_results_per_site, valid_results_rate, avg_parse_time_ms.
+
+A /health endpoint exposing summary stats.
+
+7) Data model details (normalize flights properly)
+Normalized itinerary (server):
+
+makefile
+Copy code
+itinerary_id (hash of carrier+flights+times+farebrand)
+query_id
+site_id
+carrier_codes: ["BA"]
+flight_numbers: ["BA432"]
+segments: [
+  { from:"LHR", to:"AMS", depart_utc:"2025-08-26T07:55Z", arrive_utc:"2025-08-26T10:15Z", flight_no:"BA432", aircraft:"A320" }
+]
+stops: 0
+fare_brand: "Economy Basic"
+price_total: 96.00
+currency: "GBP"
+booking_url: "https://..."
+source: "extension"
+collected_at_utc: ...
+Run validators:
+
+Time order valid; duration within reasonable bounds.
+
+IATA codes known (use your 82k airports db).
+
+Currency known.
+
+Deduping across sites:
+
+Hash key on segments + carrier + date + fare_brand (ignore minor cents differences).
+
+Prefer airline over OTA; prefer lower price when same product.
+
+8) Making it scale to “hundreds of sites” (practical)
+You don’t need hundreds on day 1. Start with 10 high-traffic sites.
+
+Each new site = add domain in sites, add initial selectors in selectors, add host permission to extension, test.
+
+As your users click deep links and visit those sites, the extension will start filling your DB. You scale by adding site configs, not by adding servers or proxies.
+
+9) What about server Playwright you already have?
+Keep it but narrow its purpose:
+
+Headless always.
+
+No proxy, no stealth tricks.
+
+Only for:
+
+Grabbing static metadata (airport lists, baggage texts) from sites that allow it.
+
+Running your canary checks on your own saved snapshots (HTML files), not live sites.
+
+If a site returns a captcha to Playwright, stop and record blocked_by_captcha=1 for metrics. Don’t try to bypass.
+
+10) Security, compliance, ethics (non-negotiable)
+Show a clear consent notice in your app: the extension extracts data only from pages the user opens and only for flight pricing; no personal fields; user can pause/disable per site.
+
+Respect each site’s terms. If a site forbids automated collection, don’t scrape it server-side and don’t preload it automatically; let the user choose to open it and parse only what’s on screen in their session.
+
+Provide an allowlist toggle per site in your settings.
+
+11) How this achieves your goals
+Free: no proxies, no captcha services, no paid APIs.
+
+High success: you’re collecting from real human browsing sessions, which is what those sites are built to serve.
+
+Many sites: you add sites by shipping new selectors + extension host permissions, not by scaling infra.
+
+Production-ready path: you get metrics, dedupe, validation, and a clean ingestion contract. When you’re ready (and/or have budget), you can add official APIs and phase out fragile sites

@@ -1,0 +1,208 @@
+2025-09-25 16:20:58,556 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:20:58,557 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:01,543 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:01,545 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:05,077 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:05,080 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:07,558 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:07,559 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:28,258 INFO ✅ Duffel returned 50 flight offers
+2025-09-25 16:21:28,987 INFO 🎯 Duffel API: Formatted 50 unique flights from 50 offers
+2025-09-25 16:21:29,108 INFO ✅ Added 50 Duffel results to query 22
+2025-09-25 16:21:29,252 ERROR ❌ FlightAPI failed: 404 - <!DOCTYPE html><html><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1"/><meta name="next-head-count" content="2"/><link rel="preload" href="/_next/static/tSfwMNiWB2gKOqS23zTR6/pages/_app.js" as="script"/><link rel="preload" href="/_next/static/runtime/webpack-4b444dab214c6491079c.js" as="script"/><link rel="preload" href="/_next/static/chunks/commons.c8f2132c0ba743a77bce.js" as="script"/><link rel="preload" href="/_next/static/runtime/main-664aca51377cde29e36f.js" as="script"/></head><body><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MWKX9K4G" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><div id="__next"><div style="color:#000;background:#fff;font-family:-apple-system, BlinkMacSystemFont, Roboto, &quot;Segoe UI&quot;, &quot;Fira Sans&quot;, Avenir, &quot;Helvetica Neue&quot;, &quot;Lucida Grande&quot;, sans-serif;height:100vh;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center"><div><style>body { margin: 0 }</style><h1 style="display:inline-block;border-right:1px solid rgba(0, 0, 0,.3);margin:0;margin-right:20px;padding:10px 23px 10px 0;font-size:24px;font-weight:500;vertical-align:top">404</h1><div style="display:inline-block;text-align:left;line-height:49px;height:49px;vertical-align:middle"><h2 style="font-size:14px;font-weight:normal;line-height:inherit;margin:0;padding:0">This page could not be found<!-- -->.</h2></div></div></div></div><script id="__NEXT_DATA__" type="application/json">{"dataManager":"[]","props":{"pageProps":{"statusCode":404}},"page":"/_error","query":{"from":"LHR","to":"AMS","depart":"2025-10-09","adults":"1","stops":"0,1,2","currency":"GBP"},"buildId":"tSfwMNiWB2gKOqS23zTR6"}</script><script nomodule="" src="/_next/static/runtime/polyfills-0746b43f5663adadbbdd.js"></script><script async="" data-next-page="/_app" src="/_next/static/tSfwMNiWB2gKOqS23zTR6/pages/_app.js"></script><script src="/_next/static/runtime/webpack-4b444dab214c6491079c.js" async=""></script><script src="/_next/static/chunks/commons.c8f2132c0ba743a77bce.js" async=""></script><script src="/_next/static/runtime/main-664aca51377cde29e36f.js" async=""></script></body></html>
+2025-09-25 16:21:29,819 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:29,820 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:30,754 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:30,755 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:31,559 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:31,560 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:32,322 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:32,323 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:33,055 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:33,056 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:33,773 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:33,774 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:34,522 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:34,523 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:35,234 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:35,235 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:35,983 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:35,984 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:37,563 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:37,564 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:40,555 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:40,556 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:43,555 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:43,556 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:47,042 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:47,043 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:49,557 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:49,559 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:52,540 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:52,541 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:55,566 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:55,567 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:21:59,248 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:21:59,249 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:01,539 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:01,540 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:04,621 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:04,622 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:08,476 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:08,477 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:10,535 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:10,536 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:13,587 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:13,591 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:16,536 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:16,537 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:20,985 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:20,990 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:22,565 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:22,566 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:25,753 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:25,754 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:29,196 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:29,198 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:31,610 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:31,611 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:34,552 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:34,553 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:37,546 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:37,548 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:41,059 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:41,060 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:43,650 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:43,652 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:47,043 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:47,045 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:50,092 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:50,094 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:52,577 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:52,578 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:55,574 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:55,575 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:22:58,546 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:22:58,547 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:02,179 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:02,180 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:04,537 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:04,538 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:07,666 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:07,667 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:11,099 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:11,100 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:13,549 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:13,550 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:16,549 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:16,550 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:19,563 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:19,564 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:23,084 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:23,086 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:25,548 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:25,549 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:28,572 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:28,575 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:32,170 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:32,172 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:34,571 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:34,573 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:37,561 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:37,563 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:40,541 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:40,542 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:43,987 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:43,990 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:46,564 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:46,566 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:49,605 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:49,606 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:53,036 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:53,037 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:55,566 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:55,567 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:23:58,564 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:23:58,565 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:24:01,562 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:24:01,563 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:24:04,546 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:24:04,548 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:24:07,547 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:24:07,548 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:24:10,542 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:24:10,543 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:24:14,057 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:24:14,058 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:24:16,568 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:24:16,570 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HTTP/1.1" 200 OK
+2025-09-25 16:24:19,561 ERROR ❌ Amadeus token request failed: 401
+2025-09-25 16:24:19,562 INFO 📊 Query 22: 50 results from sources: {'Duffel API': 50}
+INFO:     172.31.78.2:33732 - "GET /api/results/22 HT

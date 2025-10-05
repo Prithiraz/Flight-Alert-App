@@ -1,0 +1,44 @@
+
+{
+  "name": "FlightAlert BYOB Bridge",
+  "description": "Extracts live fares from airline/OTA pages and posts to your backend.",
+  "version": "0.2.0",
+  "manifest_version": 3,
+
+  "permissions": [
+    "storage",
+    "scripting",
+    "webNavigation",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*.skyscanner.*/*",
+    "*://*.kayak.*/*",
+    "*://*.britishairways.com/*",
+    "*://*.ryanair.com/*",
+    "*://*.easyjet.com/*",
+    "*://*.expedia.*/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "options_page": "options.html",
+
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.skyscanner.*/*",
+        "*://*.kayak.*/*",
+        "*://*.britishairways.com/*",
+        "*://*.ryanair.com/*",
+        "*://*.easyjet.com/*",
+        "*://*.expedia.*/*"
+      ],
+      "js": ["scrape.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

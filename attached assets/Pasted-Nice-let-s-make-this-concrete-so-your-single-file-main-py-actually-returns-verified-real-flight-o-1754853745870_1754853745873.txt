@@ -1,0 +1,428 @@
+Nice — let’s make this concrete so your single-file main.py actually returns verified, real flight offers (airline + route + date + price + currency) instead of a stream of regex matches.
+
+Below I’ll give you:
+
+a short high-level pipeline to implement, and
+
+copy-pasteable code snippets & patterns you can drop into your single file.
+
+a short checklist of tests to run after each change.
+
+I’ll avoid low-level “stealth tricks” (overwriting navigator.webdriver etc.) and instead focus on robust, legally/ethically sound techniques that will actually get you real offers: use vendor APIs/XHR when present, render with Playwright only when needed, parse structured data, and most importantly — always associate a price with a flight card or API offer before treating it as “real.”
+
+1 — High level scraping pipeline (one-pass)
+Implement this pipeline for each site you scrape:
+
+Fetch: requests (fast) to get HTML. Save debug HTML.
+
+Quick checks: detect bot/captcha markers or extremely short HTML → if detected, go to step 4.
+
+Try structured sources (preferred):
+
+parse application/ld+json (<script type="application/ld+json">) — many OTAs/airlines embed offers
+
+intercept/call XHR/JSON endpoints (capture them with Playwright or from debug HAR)
+
+if JSON API with offers exists, parse and return verified offers
+
+Render with Playwright (headful or headless) if step 3 fails and site requires JS.
+
+capture XHR responses during render and parse them (much more reliable than DOM scraping)
+
+DOM scraping fallback: find flight-card elements, then extract price/airline/time from that card (not the whole page regex)
+
+Validation: ensure the parsed card contains the requested route, airports/airport codes, and dates before marking as verified
+
+Log & Debug: save HTML/screenshot/HAR snippets on failure
+
+2 — Concrete code pieces to insert (single file friendly)
+Below are functions you can add. Adjust names to match your code style.
+
+A. Common utilities (regex, normalize, currency)
+python
+Copy code
+import re
+import json
+from bs4 import BeautifulSoup
+from datetime import datetime
+
+# multi-currency, decimals and thousand separators
+PRICE_RE = re.compile(r'(?P<currency>£|\$|€|¥|Rs|INR)\s?(?P<amount>\d{1,3}(?:[,\.\s]\d{3})*(?:[.,]\d{1,2})?)')
+
+CURRENCY_MAP = {'£': 'GBP', '$': 'USD', '€': 'EUR', '¥': 'JPY', 'Rs': 'INR', 'INR': 'INR'}
+
+def normalize_amount(amount_str):
+    # Remove spaces, normalize commas/dots: prefer dot as decimal
+    s = amount_str.replace(' ', '')
+    # if there's both comma & dot, assume comma is thousands sep: "1,234.56"
+    if ',' in s and '.' in s:
+        s = s.replace(',', '')
+    # if only commas AND last comma separates two digits (like 1.234,56 style) convert comma->dot
+    elif ',' in s and re.search(r',\d{1,2}$', s):
+        s = s.replace('.', '').replace(',', '.')
+    else:
+        s = s.replace(',', '')
+    try:
+        return float(s)
+    except:
+        return None
+
+def parse_price_text(text):
+    m = PRICE_RE.search(text)
+    if not m:
+        return None
+    currency = CURRENCY_MAP.get(m.group('currency'), m.group('currency'))
+    amount = normalize_amount(m.group('amount'))
+    return {'currency': currency, 'amount': amount}
+B. Bot/captcha/page-health detector
+Detect when a page is likely bot-blocked — skip regex-only extraction in that case.
+
+python
+Copy code
+BOT_MARKERS = [
+    'are you a robot', 'captcha', 'please verify', 'access denied', 'unusual traffic', 
+    'enable javascript', 'blocked', 'ddos protection'
+]
+
+def is_bot_blocked_html(html_text):
+    low = html_text.lower()
+    # also check for tiny content size
+    if len(html_text) < 2000:
+        return True
+    for marker in BOT_MARKERS:
+        if marker in low:
+            return True
+    return False
+C. Prefer structured data (ld+json) extractor
+python
+Copy code
+def extract_ldjson_offers(html_text):
+    offers = []
+    soup = BeautifulSoup(html_text, 'html.parser')
+    for s in soup.find_all('script', type='application/ld+json'):
+        try:
+            data = json.loads(s.string)
+        except Exception:
+            continue
+        # If data is a list, flatten
+        if isinstance(data, list):
+            array = data
+        else:
+            array = [data]
+        for obj in array:
+            # Many sites embed Offer or Flight data
+            if isinstance(obj, dict):
+                # Example: an Offers list
+                if obj.get('@type') in ('Offer', 'Flight'):
+                    price = None
+                    currency = None
+                    if 'price' in obj:
+                        price = normalize_amount(str(obj['price']))
+                    if 'priceCurrency' in obj:
+                        currency = obj['priceCurrency']
+                    # extract route/airline fields if present - best-effort
+                    airline = obj.get('seller', {}).get('name') or obj.get('airline') or obj.get('provider')
+                    dep = obj.get('departureAirport') or obj.get('departure')
+                    arr = obj.get('arrivalAirport') or obj.get('arrival')
+                    if price:
+                        offers.append({'airline': airline, 'dep': dep, 'arr': arr, 'price': price, 'currency': currency, 'source': 'ld+json'})
+    return offers
+D. Capture XHR JSON using Playwright (best technique)
+When you render the page with Playwright, capture network responses and look for JSON that contains price arrays.
+
+python
+Copy code
+# inside your existing Playwright flow, add:
+captured_responses = []
+def _on_response(resp):
+    try:
+        url = resp.url
+        ct = resp.headers.get('content-type', '')
+        if 'application/json' in ct or 'json' in url.lower():
+            try:
+                j = resp.json()
+                # quick heuristic: does JSON contain 'price' or 'offers'?
+                if isinstance(j, dict) and any(k in json.dumps(j).lower() for k in ['price','offer','fare','itinerary']):
+                    captured_responses.append({'url': url, 'json': j})
+            except Exception:
+                pass
+page.on('response', _on_response)
+
+# after navigation & waiting for results:
+# parse captured_responses to extract offers
+def parse_captured_json_responses(captured_responses, departure, destination, date):
+    offers = []
+    for entry in captured_responses:
+        j = entry['json']
+        # try heuristics: look for lists/dicts with keys price/amount/fare
+        def walk(obj):
+            if isinstance(obj, dict):
+                keys = set(obj.keys())
+                if 'price' in keys or 'amount' in keys or 'fare' in keys:
+                    return obj
+                for v in obj.values():
+                    res = walk(v)
+                    if res:
+                        return res
+            elif isinstance(obj, list):
+                for item in obj:
+                    res = walk(item)
+                    if res:
+                        return res
+            return None
+        candidate = walk(j)
+        if candidate:
+            # best-effort normalization
+            if 'price' in candidate:
+                price_val = candidate.get('price')
+            elif 'amount' in candidate:
+                price_val = candidate.get('amount')
+            else:
+                # fallback: search for any number-looking field
+                price_val = None
+                for k,v in candidate.items():
+                    if isinstance(v, (int, float)):
+                        price_val = v
+                        break
+            if price_val:
+                offers.append({'source_json_url': entry['url'], 'price': float(price_val)})
+    return offers
+Why this helps: many modern OTAs load flight lists via XHR/GraphQL. Parsing that JSON is far more stable and guaranteed to tie price to itinerary.
+
+E. DOM-based reliable extraction pattern (only if JSON unavailable)
+Key rule: always extract from the flight card element. Do not accept a page-wide regex match.
+
+python
+Copy code
+def extract_offers_from_cards(page, flight_card_selectors, price_selectors, airline_selectors, dep_selectors, arr_selectors):
+    """page is a Playwright page or BeautifulSoup parsed page - prefer Playwright element handles"""
+    offers = []
+    # If you have Playwright page object:
+    cards = []
+    for sel in flight_card_selectors:
+        found = page.query_selector_all(sel)
+        if found:
+            cards = found
+            break
+    for card in cards:
+        try:
+            # try each price selector within the card
+            price_text = None
+            for psel in price_selectors:
+                p = card.query_selector(psel)
+                if p:
+                    price_text = p.inner_text().strip()
+                    break
+            if not price_text:
+                # fallback: try searching card text with PRICE_RE
+                card_text = card.inner_text()
+                pr = PRICE_RE.search(card_text)
+                if pr:
+                    price_text = pr.group(0)
+
+            parsed = parse_price_text(price_text or "")
+            if not parsed:
+                continue
+
+            airline = None
+            for asel in airline_selectors:
+                node = card.query_selector(asel)
+                if node:
+                    airline = node.inner_text().strip()
+                    break
+
+            dep = None
+            for dsel in dep_selectors:
+                node = card.query_selector(dsel)
+                if node:
+                    dep = node.inner_text().strip()
+                    break
+
+            arr = None
+            for asel in arr_selectors:
+                node = card.query_selector(asel)
+                if node:
+                    arr = node.inner_text().strip()
+                    break
+
+            offers.append({
+                'airline': airline,
+                'dep': dep, 'arr': arr,
+                'price': parsed['amount'],
+                'currency': parsed['currency'],
+                'raw_price_text': price_text,
+                'source': 'card_dom'
+            })
+        except Exception as e:
+            # log and continue
+            continue
+    return offers
+Example selectors (put in a dict at top of your file so you can tweak without hunting through code):
+
+python
+Copy code
+SITE_SELECTORS = {
+    'kayak': {
+        'flight_card': ['[data-testid="flight-card"]', '.resultWrapper', '.result'],
+        'price': ['[data-testid="price"]', '.price .amount', '.price-text'],
+        'airline': ['.airlineName', '.airline'],
+        'dep': ['.depart .time', '.depart-time'],
+        'arr': ['.arrival .time', '.arrival-time']
+    },
+    # add for each site
+}
+F. Associate regex matches to nearest card (for pages where you must regex entire HTML)
+If you must regex the whole page, always find the parent block around the match (using BeautifulSoup) and then require that block contains the route/airline.
+
+python
+Copy code
+def price_matches_with_context(html_text):
+    soup = BeautifulSoup(html_text, 'html.parser')
+    matches = []
+    for m in PRICE_RE.finditer(html_text):
+        start, end = m.span()
+        # get a snippet window
+        snippet = html_text[max(0, start-300):end+300]
+        matches.append({'match': m.group(0), 'snippet': snippet})
+    return matches
+# BUT: do not add an offer unless snippet contains departure/destination codes AND an airline name.
+G. Validation before "VERIFIED"
+Create a function is_offer_verified(offer, request) that checks:
+
+offer['dep']/offer['arr'] contain requested IATA codes (LHR/AMS).
+
+offer['price'] is numeric and in realistic range (e.g., 10 < price < 5000).
+
+airline field matches one of known carriers or is non-empty.
+
+python
+Copy code
+def is_offer_verified(offer, origin_iata, dest_iata, requested_date=None):
+    # checks
+    price_ok = isinstance(offer.get('price'), (int,float)) and 5 <= offer['price'] <= 10000
+    # ensure dep/arr contain iata codes (fuzzy match)
+    dep = (offer.get('dep') or '').upper()
+    arr = (offer.get('arr') or '').upper()
+    dep_ok = origin_iata in dep or origin_iata in (offer.get('raw_price_text') or '')
+    arr_ok = dest_iata in arr or dest_iata in (offer.get('raw_price_text') or '')
+    airline_ok = bool(offer.get('airline'))
+    return price_ok and dep_ok and arr_ok and airline_ok
+Only mark an entry verified=True if the function returns True.
+
+3 — Playwright practical tips (inside your one file)
+Use Playwright to discover XHR endpoints: run the page once in debug/headful mode and print captured_responses URLs — then call those JSON endpoints directly in requests for subsequent runs (more efficient and less likely to be blocked).
+
+When rendering with Playwright:
+
+Wait for the selector .result-list or similar; page.wait_for_selector(selector, timeout=20000).
+
+Use page.screenshot(path=...) and page.content() for debugging.
+
+Use page.on("response", handler) to catch API JSON. You can then resp.json().
+
+4 — Logging & debugging (make your console useful)
+When your code says Regex found price: £54, also dump the 200–300 char context snippet and whether the snippet contains a newline with origin/destination codes. Eg:
+
+less
+Copy code
+💰 Regex found price: £54  [context: "...Airline: KAYAK ... LHR → AMS ... Price: £54 ..."]
+On failure, save:
+
+debug_SITE_route_date.html
+
+debug_SITE_route_date.json (captured XHRs)
+
+debug_SITE_route_date.png (screenshot)
+
+Example:
+
+python
+Copy code
+page.screenshot(path=f"debug_{site}_{origin}_{dest}_{date}.png", full_page=True)
+open(f"debug_{site}_{origin}_{dest}_{date}.html",'w',encoding='utf8').write(page.content())
+# save captured_responses as JSON
+open(f"debug_{site}_{origin}_{dest}_{date}_xhr.json",'w',encoding='utf8').write(json.dumps(captured_responses, indent=2))
+5 — Selector monitoring + automated tests (health)
+Add a small automated test you call every Git push or via your /api/run_health_check endpoint:
+
+For each site in SITE_SELECTORS:
+
+Fetch page (requests)
+
+Run is_bot_blocked_html; if blocked, render once with Playwright and capture HAR/JSON
+
+Try parsing using selectors and count number of cards found
+
+If count drops below baseline → alert (save debug files)
+
+This is already in your logs; extend it to assert >= N cards or >= 1 verified offer for a sample route.
+
+6 — Concurrency & politeness
+Limit parallel Playwright contexts (e.g., max 3–4 concurrent browsers).
+
+Add jittered delays between requests (0.5–3s) and exponential backoff on 429/403.
+
+Respect robots.txt and each site’s Terms of Service. If a site forbids scraping, prefer official APIs or partner feeds.
+
+7 — CAPTCHAs & blocked pages
+If is_bot_blocked_html returns True, do not try to harvest regex prices. Instead:
+
+Save debug files and either (a) try a different source (another OTA/airline), or (b) present the debug file for manual check.
+
+If you need automated solving, use a compliant external service and log that usage & consent — but be cautious legally.
+
+8 — Fixes for your Pylance errors (quick)
+"[\" was not closed" — search near that line for an unclosed bracket/quote and fix it. Run python -m py_compile main.py to get an exact syntax error line.
+
+"RealFlightScraper" is not defined — ensure that either:
+
+the class is defined before usage, or
+
+you renamed it elsewhere — search for typos (e.g., AdvancedFlightScraper vs RealFlightScraper) and unify names.
+
+9 — Prioritized rollout plan (what to implement in which order)
+Quick fixes (30–90 minutes)
+
+Add PRICE_RE, normalize_amount, parse_price_text.
+
+Add is_bot_blocked_html and early-skip logic (stop recording regex-only prices).
+
+Improve logging to include context snippets.
+
+Add validation is_offer_verified.
+
+Next (2–6 hours)
+
+Add LD+JSON extractor and try it first on each site.
+
+Add network capture logic inside Playwright (page.on response) and test on Kayak/Momondo.
+
+Next (1–2 days)
+
+Build per-site selectors dict and the extract_offers_from_cards function. Tune selectors for top sites.
+
+Build health tests for each site (requests→parse→verify).
+
+Longer (days-weeks)
+
+Capture stable JSON endpoints and call them directly with requests.
+
+Add a selector-updater UI / autosuggest from baseline HTML diffs.
+
+10 — Final checklist (copy this into your repo README)
+ Add PRICE_RE and price normalization function
+
+ Stop saving regex-only prices unless verified via card/API
+
+ Add LD+JSON parse stage
+
+ Capture XHR responses during Playwright render & parse JSON
+
+ Implement is_offer_verified() checks
+
+ Save debug HTML/screenshot/xhr for each failed site
+
+ Add site selector dict & health checks endpoint
+
+ Fix Python syntax (run python -m py_compile main.py) and fix Pylance warnings
+

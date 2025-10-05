@@ -1,0 +1,337 @@
+Nice — you’ve got a huge, powerful codebase and you’re asking the right questions. I’ll be blunt and tactical: keep Playwright, stop doing heavy scraping inside the Flask request thread, and move to an async worker model (or queue workers) so routes never block. Below I give a concrete, single-file refactor pattern you can drop into main.py (one file, but much cleaner), then a thorough list of improvements, reliability/success-rate tactics, and deployment/ops fixes.
+
+TL;DR (what to do now)
+Keep Playwright. Run a single Playwright process per app worker and create new browser contexts for each job (cheaper than launching new browsers each job).
+
+Stop scraping inside request handlers. Return 202 Accepted with a job id; do scraping in background workers or an async background task.
+
+Migrate to an async server (FastAPI + uvicorn) or run Flask behind a production WSGI/ASGI server, but your code and Playwright usage will be much more natural with FastAPI.
+
+Use a job queue + job status store (in-memory for dev, Redis/sqlite for prod). Provide /api/job/{id} and /api/jobs to poll results.
+
+Add robust retries, timeouts, backoff, per-site rate-limiting, proxy rotation & health checks.
+
+Instrumentation and monitoring (metrics, structured logs, alerting).
+
+Below: a single-file main.py blueprint using FastAPI + async Playwright with a job queue, concurrency limits, retries and graceful startup/shutdown. After the example I list deep-dive improvements and operational recommendations to push success rate toward and above 70%.
+
+Minimal, production-minded single-file main.py
+This is a drop-in pattern you can adapt. It:
+
+starts Playwright once at startup
+
+uses an asyncio.Queue for jobs
+
+uses a worker pool with an asyncio.Semaphore to cap concurrent pages
+
+runs scrapers in background tasks and returns job ids immediately
+
+provides job status/result endpoints
+
+includes timeouts, retries, simple proxy hook, and structured logging
+
+Note: I keep the sample compact. Integrate your existing scraping logic into scrape_site_core() (use its selector-testing, parsing, dedup, validation there).
+
+python
+Copy code
+# main.py
+import asyncio
+import uuid
+import json
+import logging
+from fastapi import FastAPI, BackgroundTasks, HTTPException
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from typing import Dict, Any, Optional
+from datetime import datetime, timedelta
+import os
+
+# -- Playwright imports will be used inside async startup/shutdown --
+from playwright.async_api import async_playwright, TimeoutError as PWTimeout
+
+# ------------ Config ------------
+MAX_CONCURRENT_PAGES = 6       # tune to your VM/cpu/memory
+JOB_TIMEOUT_SECONDS = 60       # per-site timeout
+MAX_RETRIES = 3
+JOB_QUEUE_MAX = 200
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+
+logging.basicConfig(level=LOG_LEVEL, format="%(asctime)s %(levelname)s %(message)s")
+logger = logging.getLogger("flight-scraper")
+
+# ------------ App & models ------------
+app = FastAPI(title="FlightScraper", version="0.1")
+class ScrapeRequest(BaseModel):
+    origin: str
+    destination: str
+    date: Optional[str] = None
+
+# Simple in-memory job store (replace with Redis/DB in prod)
+jobs: Dict[str, Dict[str, Any]] = {}
+job_queue: asyncio.Queue = asyncio.Queue(maxsize=JOB_QUEUE_MAX)
+
+# Playwright runtime handles (populated at startup)
+PLAY = None
+BROWSER = None
+page_semaphore: Optional[asyncio.Semaphore] = None
+
+# ------------ Startup & shutdown ------------
+@app.on_event("startup")
+async def startup():
+    global PLAY, BROWSER, page_semaphore
+    logger.info("Starting Playwright...")
+    PLAY = await async_playwright().start()
+    # Launch Chromium once per process (headless or headful if needed)
+    BROWSER = await PLAY.chromium.launch(headless=True, args=[
+        "--no-sandbox", "--disable-dev-shm-usage"
+    ])
+    page_semaphore = asyncio.Semaphore(MAX_CONCURRENT_PAGES)
+    # start N background consumers
+    for _ in range(2):  # fine tune number of consumers
+        asyncio.create_task(job_consumer())
+    logger.info("Startup complete. Playwright ready.")
+
+@app.on_event("shutdown")
+async def shutdown():
+    global PLAY, BROWSER
+    logger.info("Shutting down Playwright...")
+    try:
+        if BROWSER:
+            await BROWSER.close()
+        if PLAY:
+            await PLAY.stop()
+    except Exception as e:
+        logger.exception("Error closing Playwright: %s", e)
+
+# ------------ Job lifecycle endpoints ------------
+@app.post("/api/scrape", status_code=202)
+async def enqueue_scrape(payload: ScrapeRequest):
+    job_id = str(uuid.uuid4())
+    job = {
+        "id": job_id,
+        "payload": payload.dict(),
+        "status": "queued",
+        "created_at": datetime.utcnow().isoformat(),
+        "attempts": 0,
+        "result": None,
+        "error": None
+    }
+    jobs[job_id] = job
+    try:
+        job_queue.put_nowait(job_id)
+    except asyncio.QueueFull:
+        jobs[job_id]["status"] = "failed"
+        jobs[job_id]["error"] = "Queue full"
+        raise HTTPException(status_code=503, detail="Job queue full")
+    return JSONResponse(status_code=202, content={"job_id": job_id})
+
+@app.get("/api/job/{job_id}")
+async def get_job(job_id: str):
+    job = jobs.get(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Unknown job id")
+    return job
+
+@app.get("/api/health_check")
+async def health_check():
+    return {"status": "ok", "playwright": bool(BROWSER is not None), "queue_size": job_queue.qsize()}
+
+# ------------ Worker / consumer ------------
+async def job_consumer():
+    """Background consumer that pulls job ids and processes them."""
+    logger.info("Job consumer started")
+    while True:
+        job_id = await job_queue.get()
+        job = jobs.get(job_id)
+        if job is None:
+            job_queue.task_done()
+            continue
+        try:
+            jobs[job_id]["status"] = "running"
+            jobs[job_id]["started_at"] = datetime.utcnow().isoformat()
+            result = await run_scrape_with_retries(job["payload"], job_id)
+            jobs[job_id]["result"] = result
+            jobs[job_id]["status"] = "completed"
+            jobs[job_id]["finished_at"] = datetime.utcnow().isoformat()
+        except Exception as e:
+            jobs[job_id]["status"] = "failed"
+            jobs[job_id]["error"] = str(e)
+            logger.exception("Job failed: %s", job_id)
+        finally:
+            job_queue.task_done()
+
+# ------------ Scrape orchestration helpers ------------
+async def run_scrape_with_retries(payload, job_id):
+    last_exc = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        jobs[job_id]["attempts"] = attempt
+        try:
+            return await scrape_site_core(payload, job_id)
+        except PWTimeout as e:
+            last_exc = e
+            logger.warning("Playwright timeout attempt %d for job %s", attempt, job_id)
+            await asyncio.sleep(2 ** attempt)
+        except Exception as e:
+            last_exc = e
+            logger.warning("Scrape attempt %d failed for job %s: %s", attempt, job_id, e)
+            await asyncio.sleep(2 ** attempt)
+    raise last_exc
+
+async def scrape_site_core(payload, job_id):
+    """
+    Implement your site scraping logic here.
+    - Use page_semaphore to limit concurrency
+    - Use context = await BROWSER.new_context(...) for per-job isolation
+    - Block images/scripts if you want speed; but be conservative with blocking important JS.
+    - Try multiple selectors / parse strategies and validate results.
+    """
+    origin = payload["origin"]
+    dest = payload["destination"]
+    date = payload.get("date") or (datetime.utcnow() + timedelta(days=14)).strftime("%Y-%m-%d")
+
+    async with page_semaphore:
+        context = await BROWSER.new_context(user_agent="Mozilla/5.0 (compatible)", locale="en-GB")
+        page = await context.new_page()
+
+        try:
+            page.set_default_navigation_timeout(JOB_TIMEOUT_SECONDS * 1000)
+            page.set_default_timeout(JOB_TIMEOUT_SECONDS * 1000)
+
+            # Example: navigate to a meta engine and extract price(s)
+            search_url = f"https://www.example-flight-site.test/search/{origin}/{dest}/{date}"
+            await page.goto(search_url, wait_until="networkidle")
+            # optional: await page.wait_for_selector(".flight-result", timeout=5000)
+
+            html = await page.content()
+            # --- YOUR PARSING: try CSS selectors, fallback to regex parsing of html ---
+            # Here we just return a minimal structure for demonstration.
+            parsed = {"sample_html_len": len(html), "src": search_url}
+
+            return {"job_id": job_id, "payload": payload, "parsed": parsed}
+
+        finally:
+            await page.close()
+            await context.close()
+
+# ------------ Run instruction (use uvicorn to serve) ------------
+# If you still run the file directly (dev), use: `uvicorn main:app --reload --host 0.0.0.0 --port 8000`
+# Don't run the app with `app.run()` (Flask-style) when using async Playwright or uvicorn.
+How this fixes your problems immediately
+
+Playwright loads once at startup; the heavy import no longer happens on each request or during reload races.
+
+Request handlers are non-blocking: /api/scrape returns immediately with job id.
+
+Worker tasks run in background and are concurrency-limited with page_semaphore so you won't overload browser or VM.
+
+Use uvicorn (or Gunicorn+Uvicorn workers) in production; no Flask reloader thrashing Playwright imports.
+
+Deep improvements and why they matter (very specific)
+1) API reliability & broken routes — common causes + fixes
+Cause: long-running synchronous scraping inside route -> process blocks, reloader restarts, timeouts.
+Fix: move heavy work out of request handlers (pattern above).
+
+Cause: double import of Playwright by Werkzeug reloader -> unpredictable startup and KeyboardInterrupt.
+Fix: run server with use_reloader=False or better, run via uvicorn/gunicorn in production (no dev reloader). Use PLAY/BROWSER initialization inside startup event.
+
+Cause: inconsistent return types and missing error handling.
+Fix: standardize JSON responses and HTTP codes (202 for accepted, 200 for sync success, 400/404 for client errors, 500 for server errors).
+
+Cause: endpoints directly mutate global state with no locks.
+Fix: queue + atomic job store (use Redis or sqlite with transactions for production).
+
+2) Playwright usage — do not remove it, but use it correctly
+Don’t launch a new browser for every request — massive overhead. Launch once per process and create browser contexts per job.
+
+Do use an async model (FastAPI/uvicorn) so async_playwright and the event loop are native.
+
+Pool model: keep a pool of contexts or rely on an asyncio.Semaphore to limit new_context() concurrency. If you need extreme scale, run multiple workers (containers/pods), each with its own Playwright instance.
+
+Bulk/batch scraping: if you must run many scrapers (bulk), schedule them into the queue and process them with controlled concurrency and per-site rate limits so you don't get blocked.
+
+3) Concurrency, robustness & retries
+Use exponential backoff (2^n) per retry, with jitter.
+
+Abort and mark a site as “bot-blocked” when patterns of CAPTCHA or block pages are detected (then fallback to other sources).
+
+Use page.set_default_navigation_timeout() and page.set_default_timeout() tightly.
+
+For long running site scanning, use 202 Accepted and a job status endpoint.
+
+Implement a circuit breaker per site: after N failures mark as degraded for T minutes.
+
+4) Improve scraping success-rate (~70% target)
+Combine these strategies (not just one):
+
+Official APIs first. Where possible prefer Amadeus/Skyscanner/Kayak APIs (commercial) — they are far more reliable than HTML scraping.
+
+If you can purchase API access for critical markets, that instantly raises reliability.
+
+Multi-strategy per site. For each site:
+
+Try structured JSON endpoints first (network/XHR endpoints).
+
+Fallback to HTML scraping via CSS selectors.
+
+Fallback to regex extraction on HTML.
+Implement these in decreasing reliability order and merge results.
+
+Selector-resilience. Keep for each site a prioritized list of selectors (multiple). If top selectors fail, try the next and log to selector monitor.
+
+Proxy and IP rotation. Use a pool of healthy proxies; check each proxy health (latency, response codes). Prefer residential or trusted rotating proxies; mark proxies as bad quickly.
+
+Request fingerprint hygiene. Use realistic UA strings, but avoid instructions that aim to bypass security. Use legitimate headers, accept-languages, and small random delays that mimic human behaviour. (Always follow target site ToS/legal rules.)
+
+Resource control. Block images/fonts if not needed. Use route handlers in Playwright to block analytics/tracker requests (improves speed).
+
+Caching & deduplication. Cache results for short TTLs (30s–10min) to reduce load. Merge results from multiple sources and deduplicate by canonical itinerary + price.
+
+Fallback & merge logic. If meta-search engines fail, try OTAs, then airlines, then cached historical data as LAST resort (if you must return something). But per your policy, if you insist on only real scraped data, return empty results if all fail — but prefer showing partials with source labels.
+
+Health monitoring & automatic selector updates. Keep your SelectorUpdater and SiteChangeMonitor running daily to auto-detect site changes and generate alerts.
+
+5) Logging, metrics, and observability (non-optional)
+Emit structured logs (JSON) with fields: job_id, site, selector, duration_ms, status, error_code.
+
+Add Prometheus metrics: scrape_jobs_total, scrape_failures_total, job_queue_size, playwright_pages_in_use.
+
+Add Sentry (or similar) for errors & stack traces.
+
+Add alerts on >X% job failure or queue backlog.
+
+6) Tests & CI
+Create integration smoke tests that run every hour for key routes (LHR→AMS etc.) and validate presence of price values; alert on anomalies.
+
+Add unit tests for parsing functions (selectors regex), and a small local HTML fixture suite for each site.
+
+7) Deployment & process model (practical)
+Do not run the dev server in production (the logs you pasted show that). Use:
+
+uvicorn main:app --host 0.0.0.0 --port 8000 --workers 1 for a single-process async worker (Playwright per worker).
+
+For horizontal scaling, run multiple containers each with their own Playwright instance. Use a central queue (Redis) for load leveling.
+
+For multi-worker with Playwright: each worker must start its own Playwright. Sharing a Playwright instance across processes is invalid.
+
+Use container orchestration (K8s) to scale workers and restart failed nodes.
+
+Use health/readiness probes that check GET /api/health_check.
+
+Quick checklist to implement this week
+Migrate request handlers to enqueue jobs and return job ids (202).
+
+Implement background worker(s) with async_playwright startup/shutdown events.
+
+Add concurrency limit (semaphore) and per-site circuit breaker.
+
+Add proxy rotation with health-check and fail-fast if proxy is dead.
+
+Replace Flask dev server with uvicorn (or Gunicorn+Uvicorn worker). Disable dev reloader for production.
+
+Instrument logs and metrics and add a health endpoint.
+
+Build selector monitoring + automated test job to run nightly (detect site changes early).
+
+If success-rate still < 70%: pay for official APIs or specialized data providers for critical markets      
+
+Keep code modular. Even if everything must remain in main.py, break it into classes and small functions (like JobManager, PlaywrightManager, SiteScraper) and declare clear boundaries.

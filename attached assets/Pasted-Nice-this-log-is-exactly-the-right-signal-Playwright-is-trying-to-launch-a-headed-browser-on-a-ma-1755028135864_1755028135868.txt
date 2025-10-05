@@ -1,0 +1,387 @@
+Nice — this log is exactly the right signal: Playwright is trying to launch a headed browser on a machine with no X server / no $DISPLAY, so Chrome immediately crashes and the whole scraper becomes unreliable. Below I’ll give you a practical immediate fix (so it stops crashing right away) and a full, production-grade engineering plan that makes the whole Playwright + FastAPI scraper robust, scalable, and maintainable. I’ll include concrete code snippets, commands, and a prioritized roadmap with estimated effort so you can decide how deep you want to go.
+
+Immediate fixes (get it running now)
+Three safe options — pick the one that fits your environment:
+
+Force headless Playwright (recommended for Codespaces / CI / containers)
+
+If there is no X server, always launch headless. Detect $DISPLAY or use an env var.
+
+Minimal change (async Playwright):
+
+python
+Copy code
+import os
+from playwright.async_api import async_playwright
+
+HEADLESS = os.getenv("PLAYWRIGHT_HEADLESS", "1") != "0"  # default ON
+
+async def start_playwright():
+    pw = await async_playwright().start()
+    browser = await pw.chromium.launch(
+        headless=HEADLESS,
+        args=[
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-blink-features=AutomationControlled",
+            "--disable-features=VizDisplayCompositor,AutomationControlled",
+            "--start-maximized",
+        ],
+    )
+    return pw, browser
+Set PLAYWRIGHT_HEADLESS=0 locally if you do have a display and want headed.
+
+Use Xvfb when you must run headed
+
+Install Xvfb and run the app under it:
+
+bash
+Copy code
+sudo apt-get update && sudo apt-get install -y xvfb
+xvfb-run -s "-screen 0 1920x1080x24" uvicorn main:app --host 0.0.0.0 --port 5000
+This is useful for debugging visual behavior, but for production headless is simpler & more stable.
+
+Run inside a Playwright-ready Docker image (best for production consistency)
+
+Use the official Playwright Python image (it includes necessary libs & browsers):
+
+dockerfile
+Copy code
+FROM mcr.microsoft.com/playwright/python:latest
+WORKDIR /app
+COPY . /app
+RUN pip install -r requirements.txt
+ENV PLAYWRIGHT_HEADLESS=1
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
+This avoids host-level dependency issues (dbus, X libs, etc).
+
+Why you were seeing the other errors in logs
+Missing X server or $DISPLAY → browser couldn't initialize GUI surface and exited.
+
+Target page, context or browser has been closed → browser process died during launch.
+
+StatReload detected changes / Error loading ASGI app. Attribute "app" not found → uvicorn autoreload can spawn multiple processes; ensure Playwright startup code runs only in the worker child (see “Lifecycle” below) and avoid starting Playwright in the reloader parent.
+
+Make Playwright startup reliable inside FastAPI (recommended pattern)
+Use FastAPI @app.on_event("startup") and @app.on_event("shutdown") to start/stop Playwright. Detect if running under the uvicorn reloader and avoid double-inits.
+
+python
+Copy code
+import os, asyncio
+from fastapi import FastAPI
+
+app = FastAPI()
+
+PLAYWRIGHT = None
+BROWSER = None
+
+def running_under_uvicorn_reloader():
+    return os.environ.get("PYTHONUNBUFFERED") or os.environ.get("WERKZEUG_RUN_MAIN")  # not perfect; use env var
+
+@app.on_event("startup")
+async def startup_event():
+    global PLAYWRIGHT, BROWSER
+    # Only start Playwright in real worker (avoid double init with reloaders)
+    if os.getenv("SKIP_PLAYWRIGHT_STARTUP", "") == "1":
+        return
+
+    from playwright.async_api import async_playwright
+    PLAYWRIGHT = await async_playwright().start()
+    headless = os.getenv("PLAYWRIGHT_HEADLESS", "1") != "0" or not os.environ.get("DISPLAY")
+    BROWSER = await PLAYWRIGHT.chromium.launch(headless=headless, args=[...])
+    # Optionally init a BrowserPool here (see below)
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    global PLAYWRIGHT, BROWSER
+    if BROWSER:
+        await BROWSER.close()
+    if PLAYWRIGHT:
+        await PLAYWRIGHT.stop()
+Notes:
+
+Set PLAYWRIGHT_HEADLESS=1 by default in cloud; use 0 locally.
+
+In development with --reload, uvicorn spawns a monitor + worker. If you still see double starts, run without reload or set an env var so only the worker starts Playwright.
+
+Upgrade to a production-quality scraper — the architecture (high level)
+If you want “really well” — you’ll invest in these subsystems. I list them, why they matter, and concrete tech suggestions:
+
+Playwright Browser Pool & Context Pool (Medium engineering)
+
+Reuse browser instances and contexts. Create a pool of contexts (lightweight) and allocate per job.
+
+Per-context proxy and user-agent apply easily. Limits memory usage and reduces startup cost.
+
+Job Queue & Worker Pool (Medium → Heavy)
+
+Use Celery / Redis or RQ for background jobs (scrapes). FastAPI enqueues a job; workers perform scraping.
+
+Advantages: retries, rate limiting, concurrency control, horizontal scaling.
+
+Proxy Management & Rotation (Heavy, essential for reliability)
+
+Residential proxies for fragile sites (Skyscanner, Kayak); datacenter proxies for other OTAs.
+
+Pool proxies by domain, track success/failure and automatically retire bad IPs.
+
+Stealth & Anti-bot Strategy (Medium → Heavy)
+
+Inject add_init_script() to mimic real browser env (navigator.webdriver=false, plugins, languages, hardwareConcurrency, etc.).
+
+Rotate viewport, UA, timezone, geolocation.
+
+Use human-like delays and mouse/keyboard emulation occasionally.
+
+Adaptive Retry / Circuit Breaker (Medium)
+
+If site starts returning CAPTCHAs, circuit-break that site for X minutes, escalate to alternate sources, send alert.
+
+Exponential backoff and change to different proxy and UA before retry.
+
+Selector Auto-healing & Change Detection (Medium)
+
+Save failing pages as HTML. Run heuristics to extract price-like strings with regex as fallback.
+
+Maintain selector baselines and diff them regularly to auto-suggest new selectors (you already have some of this in main.py — integrate it).
+
+Storage, Cache, and Dedup (Low → Medium)
+
+Save raw results to Postgres (or Mongo) and snapshots to S3.
+
+Cache query results in Redis for N minutes to avoid duplicate scrapes. Dedup identical itineraries by key (airline+dep_time+arr_time+stops).
+
+Observability & Alerts (Low → Medium)
+
+Metrics via Prometheus: scrape latency, success rate, blocked rate, queue length.
+
+Logs: structured JSON logs to ELK or Loki.
+
+Alerts for high error rate or dramatic latency spike.
+
+Containerization & Orchestration (Medium → Heavy)
+
+Dockerize using Playwright base image.
+
+Kubernetes with HPA (pods scale on CPU/queue). Use init containers if needed, resource limits, node affinity.
+
+Legal & Ethical
+
+Check each site’s ToS. Prefer official APIs where possible; throttled, respectful scraping is less likely to cause trouble.
+
+Concrete technical pieces & code patterns
+BrowserPool (async) — reuse contexts/pages
+This is a simplified pattern; adapt for proxies per-context.
+
+python
+Copy code
+import asyncio
+from typing import Optional
+
+class BrowserPool:
+    def __init__(self, browser, pool_size=4):
+        self.browser = browser
+        self.pool_size = pool_size
+        self._contexts = asyncio.Queue(maxsize=pool_size)
+        self._init_task = None
+
+    async def init(self):
+        for _ in range(self.pool_size):
+            ctx = await self.browser.new_context(
+                user_agent=random.choice(USER_AGENTS),
+                viewport={'width': 1920, 'height': 1080},
+                locale='en-GB'
+            )
+            await ctx.add_init_script(stealth_script)
+            await self._contexts.put(ctx)
+
+    async def acquire(self):
+        return await self._contexts.get()
+
+    async def release(self, ctx):
+        await ctx.clear_cookies()
+        await self._contexts.put(ctx)
+
+    async def close(self):
+        while not self._contexts.empty():
+            ctx = await self._contexts.get()
+            await ctx.close()
+Use it from your job:
+
+python
+Copy code
+ctx = await browser_pool.acquire()
+page = await ctx.new_page()
+try:
+    await page.goto(url, timeout=30000)
+    # scraping logic
+finally:
+    await page.close()
+    await browser_pool.release(ctx)
+Retry & backoff (tenacity)
+python
+Copy code
+from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
+
+@retry(wait=wait_exponential(multiplier=1, min=2, max=60), stop=stop_after_attempt(4), retry=retry_if_exception_type(Exception))
+async def robust_goto(page, url):
+    await page.goto(url, timeout=30000)
+    # detect bot page (captcha title or "access denied") and raise exception
+Proxy per-context
+python
+Copy code
+ctx = await browser.new_context(proxy={"server": "http://user:pass@proxy:port"})
+Maintain a proxy pool and mark proxies as bad if they produce captcha or blocked.
+
+Stealth script (injection)
+Shortened example — use carefully:
+
+javascript
+Copy code
+// reduce navigator.webdriver
+Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+// mock plugins/languages
+Object.defineProperty(navigator, 'languages', { get: () => ['en-GB', 'en'] });
+context.add_init_script(stealth_script) after creating a context.
+
+Job queue recommendation
+For production: Celery + Redis (or RQ for simplicity). Celery lets you:
+
+Retry policies
+
+Scheduled tasks
+
+Worker autoscaling
+
+Rate limiting per-domain via custom broker middleware
+
+Schematic:
+
+rust
+Copy code
+FastAPI (enqueue) --> Redis --> Celery workers (use BrowserPool) --> store results in Postgres + Redis cache --> FastAPI returns job id and fetch endpoint
+Monitoring & metrics (concrete)
+Add prometheus_client to expose metrics at /metrics.
+
+counters: scrapes_total, scrapes_failed, scrapes_blocked
+
+histograms: scrape_latency_seconds
+
+Alert on:
+
+scrapes_failed / scrapes_total > 0.2 in last 5m
+
+average latency > 30s
+
+queue length > threshold
+
+Scaling strategy & resource sizing (practical)
+One Playwright browser process uses significant memory — prefer one browser per worker node, many contexts.
+
+Typical pod:
+
+2 vCPUs, 4-8 GB RAM per worker (depends on concurrency and target sites).
+
+Start small, measure memory/CPU per browser instance, then scale.
+
+Selector auto-heal & site baseline (you already have code) — improve it
+When a selector fails:
+
+Save HTML snapshot to S3.
+
+Run a regex-based fallback (prices, times) to salvage data.
+
+Use a lightweight ML classifier to find price-like DOM nodes between runs and propose new CSS selectors to a small human-in-the-loop UI.
+
+Keep history of selectors and performance (success/fail) per domain.
+
+Data validation & deduplication
+Sanity checks:
+
+price ∈ reasonable range
+
+departure < arrival time
+
+airline code is known
+
+Deduplicate using deterministic key, e.g. hash(airline + dep_time + arr_time + stops + fare_class).
+
+CI/CD & testing
+Unit tests for parser functions.
+
+Integration tests against a stable subset of sites or test fixtures (HTML snapshots).
+
+Synthetic monitors that run nightly and assert success rate > 80%.
+
+Security & secrets
+Store proxy credentials in Vault or AWS Secrets Manager; never in repo.
+
+Use HTTPS for all internal APIs.
+
+Limit who can enqueue heavy jobs in the API (rate limits, auth).
+
+Prioritized implementation roadmap (suggested)
+Immediate (0–2 days) — fix crashing:
+
+Force headless in production / Codespaces.
+
+Run inside Playwright docker image OR use Xvfb.
+
+Put Playwright start/stop in FastAPI lifecycle.
+
+Disable uvicorn --reload in production. (LOW effort)
+
+Short (1–2 weeks) — reliability:
+
+Implement BrowserPool + context reuse.
+
+Add user-agent rotation and stealth init script.
+
+Add basic proxy pool & simple rotation per domain.
+
+Add retries with backoff & basic logging. (MED effort)
+
+Medium (2–6 weeks) — scale & robustness:
+
+Move scraping to Celery workers + Redis broker.
+
+Add Prometheus metrics and alerting.
+
+Add DB for results + Redis cache.
+
+Add HTML snapshot storage (S3).
+
+Add selector auto-heal pipeline (human-in-the-loop). (HEAVY effort)
+
+Advanced (1–3 months) — enterprise-level:
+
+Kubernetes deployment with HPA, node pools, secrets manager.
+
+Sophisticated proxy backends (residential provider, rotation, auto-retire).
+
+Advanced anti-bot evasion and ML-assisted selector updates.
+
+Full observability (traces, dashboards, runbooks). (VERY HEAVY)
+
+Rough engineering effort:
+
+Immediate: 2–8 hours
+
+Short: 2–5 days
+
+Medium: 2–4 weeks
+
+Advanced: months + ongoing ops
+
+Quick checklist to run right now
+ Set PLAYWRIGHT_HEADLESS=1 in Codespaces or CI.
+
+ Start uvicorn without --reload in production (or ensure Playwright is only in worker process).
+
+ Use Playwright docker image when possible.
+
+ Add robust fast fail detection: if Playwright launch fails, crash gracefully and alert.
+
+Would you like me to:
+A. Provide a full refactor of your main.py that includes: Playwright lifecycle, BrowserPool, startup/shutdown hooks, a Celery-friendly job enqueuer stub, and headless/Xvfb-awareness
+

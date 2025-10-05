@@ -1,0 +1,278 @@
+[{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"severity": 8,
+	"message": "\"{\" was not closed",
+	"source": "Pylance",
+	"startLineNumber": 573,
+	"startColumn": 17,
+	"endLineNumber": 573,
+	"endColumn": 18,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"severity": 8,
+	"message": "Dictionary entries must contain key/value pairs",
+	"source": "Pylance",
+	"startLineNumber": 600,
+	"startColumn": 13,
+	"endLineNumber": 621,
+	"endColumn": 14,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"severity": 8,
+	"message": "Dictionary entries must contain key/value pairs",
+	"source": "Pylance",
+	"startLineNumber": 622,
+	"startColumn": 13,
+	"endLineNumber": 640,
+	"endColumn": 14,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"severity": 8,
+	"message": "Dictionary entries must contain key/value pairs",
+	"source": "Pylance",
+	"startLineNumber": 641,
+	"startColumn": 13,
+	"endLineNumber": 657,
+	"endColumn": 14,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"severity": 8,
+	"message": "Statements must be separated by newlines or semicolons",
+	"source": "Pylance",
+	"startLineNumber": 658,
+	"startColumn": 9,
+	"endLineNumber": 658,
+	"endColumn": 10,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"severity": 8,
+	"message": "Expected expression",
+	"source": "Pylance",
+	"startLineNumber": 658,
+	"startColumn": 9,
+	"endLineNumber": 658,
+	"endColumn": 10,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"severity": 8,
+	"message": "Dictionary entries must contain key/value pairs",
+	"source": "Pylance",
+	"startLineNumber": 699,
+	"startColumn": 13,
+	"endLineNumber": 714,
+	"endColumn": 14,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"departure_date\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 667,
+	"startColumn": 120,
+	"endLineNumber": 667,
+	"endColumn": 134,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"departure_date\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 685,
+	"startColumn": 131,
+	"endLineNumber": 685,
+	"endColumn": 145,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"departure_date\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 702,
+	"startColumn": 136,
+	"endLineNumber": 702,
+	"endColumn": 150,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"departure_date\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 723,
+	"startColumn": 178,
+	"endLineNumber": 723,
+	"endColumn": 192,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"departure_date\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 729,
+	"startColumn": 122,
+	"endLineNumber": 729,
+	"endColumn": 136,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"departure_date\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 735,
+	"startColumn": 101,
+	"endLineNumber": 735,
+	"endColumn": 115,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"departure_date\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 773,
+	"startColumn": 114,
+	"endLineNumber": 773,
+	"endColumn": 128,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"departure_date\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 779,
+	"startColumn": 83,
+	"endLineNumber": 779,
+	"endColumn": 97,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"departure_date\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 785,
+	"startColumn": 144,
+	"endLineNumber": 785,
+	"endColumn": 158,
+	"origin": "extHost2"
+},{
+	"resource": "/workspaces/dynamic-scraper/main.py",
+	"owner": "pylance",
+	"code": {
+		"value": "reportUndefinedVariable",
+		"target": {
+			"$mid": 1,
+			"path": "/microsoft/pylance-release/blob/main/docs/diagnostics/reportUndefinedVariable.md",
+			"scheme": "https",
+			"authority": "github.com"
+		}
+	},
+	"severity": 4,
+	"message": "\"RealFlightScraper\" is not defined",
+	"source": "Pylance",
+	"startLineNumber": 1216,
+	"startColumn": 16,
+	"endLineNumber": 1216,
+	"endColumn": 33,
+	"origin": "extHost2"
+}]

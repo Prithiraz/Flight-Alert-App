@@ -1,0 +1,77 @@
+Got it — you want everything in one Python file so all scraper code, debug handling, and monitoring lives together.
+That’s fine for GitHub Codespaces and will work, but it does make the file bigger and harder to maintain.
+
+From your latest run, I can see why your real flight success rate is only ~23%:
+
+Main problems right now
+Bot detection on multiple sources
+
+Skyscanner, Wizz Air (partial), and others are blocking you.
+
+Some block instantly, some show misleading prices.
+
+“No data” cases
+
+Kayak sometimes works, sometimes not.
+
+easyJet returns empty despite loading the page.
+
+Too many regex-only matches
+
+Regex alone may pull “£500” spam values that aren’t from the actual flight listings.
+
+No “retry with stealth” on failure
+
+When a source fails due to bot detection, your scraper moves on instead of retrying with Playwright stealth or a mobile user agent.
+
+How to improve while keeping a single Python file
+If you don’t want multiple files, you can still:
+
+Put each site’s scraping function in the same Python file (scrape_skyscanner(), scrape_kayak(), etc.).
+
+Keep debug HTML saving in the same file.
+
+Keep health monitoring + selector updating in the same file.
+
+Changes I’d recommend
+Unified retry logic inside the same file:
+
+If bot detection is triggered → retry with:
+
+Mobile user agent
+
+Headful Playwright
+
+Different proxy (if you add proxies later)
+
+One “smart scrape” function per site inside main.py:
+
+That function tries different scraping methods until it gets real data.
+
+This way, adding new airlines/websites is just adding another function.
+
+Better price validation
+
+Only accept prices that appear in the HTML inside the flight listings container, not anywhere on the page.
+
+Auto selector updater
+
+You already have /api/update_selectors.
+
+Make it run automatically if a scrape fails, instead of waiting for you to call it.
+
+Cycle sites
+
+Don’t always start with the same site — cycle so no single one is overloaded.
+
+If you want, I can rewrite your single Python file scraper so:
+
+It retries automatically on bot detection.
+
+It can handle 15+ airline/meta sites in one place.
+
+It validates that prices are real flight prices.
+
+It keeps all scraping, monitoring, and debugging in one file exactly like you want.
+
+Do you want me to prepare that all-in-one file for you? That would push your success rate far above 23%.

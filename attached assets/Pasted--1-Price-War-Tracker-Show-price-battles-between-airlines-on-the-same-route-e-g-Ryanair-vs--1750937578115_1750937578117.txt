@@ -1,0 +1,81 @@
+✈️ 🔥 1. “Price War Tracker”
+Show price battles between airlines on the same route (e.g. Ryanair vs EasyJet to Malaga).
+
+Display historical price trends: “This ticket was £21 last week!”
+
+Fun visualizations like “🔥 Cheapest Week to Fly”.
+
+✅ Free via scraping or Skyscanner API
+
+🎯 2. "Dream Destination Alerts"
+Let users pick 3 dream places (“Tokyo, New York, Santorini”).
+
+Send alerts only when deals hit below their dream budget (e.g. “£299 to Tokyo!”).
+
+Make it personal and emotional.
+
+✅ Unique + sticky
+
+🕹️ 3. Gamify It: "Deal Hunter XP"
+Award users points (XP) for:
+
+Catching cheap flights
+
+Booking quickly
+
+Referring friends
+
+Unlock “Gold Tier” for early access to secret deals or more destinations.
+
+✅ All possible with basic backend + SQLite
+
+🧳 4. Auto-Compare Nearby Airports
+Show “It’s £47 cheaper if you fly from Gatwick instead of Heathrow.”
+
+Use location or IP-based suggestions.
+
+Helps users save money by tweaking departure airports.
+
+✅ Use scraper or Skyscanner for alt routes
+
+📸 5. Add "Visual Destination Teasers"
+When showing an alert, include a cool image + fact about the city:
+
+“Fly to Lisbon for £29! ☀️ 26°C and 10h of sunshine today.”
+
+✅ Use free APIs like Unsplash + OpenWeather
+
+💬 6. Live Deal Chat / Community
+Add a basic chat for users to share deals they found.
+
+Show “Last booked from London: £15 to Rome”.
+
+✅ Social proof makes app addictive
+
+📆 7. Add "Flex Calendar Deals"
+Instead of static dates, show “Cheapest day in next 60 days” to fly to a city.
+
+Highlight deals with color-coded calendar.
+
+✅ Use scraping or Skyscanner flexible search API
+
+📍 8. Geo-Based Deal Alerts
+Auto-suggest nearby airports (within 50–100km)
+
+Mobile version: show push alert if a “deal under £20 from your area” is found.
+
+✅ Detect IP/geolocation, useful on mobile or web
+
+💸 9. Group Buy / Travel Buddies
+Let users create/join groups (“4 friends want Paris for under £100 total”)
+
+Notify only when group goal is met (like a “flight crowdfunding”)
+
+✅ Viral and social
+
+🪄 10. "Surprise Me!" Mode
+Let users set budget + dates, and randomly pick amazing places.
+
+“You can go to Prague, Milan, or Warsaw for under £40. Choose one!”
+
+✅ Fun + highly shareable feature

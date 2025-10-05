@@ -1,0 +1,50 @@
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ source /opt/conda/bin/activate /workspaces/dynamic-scraper/.conda
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ ^C
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+^C/workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+Traceback (most recent call last):
+  File "/workspaces/dynamic-scraper/main.py", line 14, in <module>
+    import pandas
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/__init__.py", line 14, in <module>
+    __import__(_dependency)
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/numpy/__init__.py", line 112, in <module>
+    from numpy.__config__ import show_config
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/numpy/__config__.py", line 4, in <module>
+    from numpy._core._multiarray_umath import (
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/numpy/_core/__init__.py", line 22, in <module>
+    from . import multiarray
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/numpy/_core/multiarray.py", line 11, in <module>
+    from . import _multiarray_umath, overrides
+  File "<frozen importlib._bootstrap>", line 1165, in _find_and_load
+KeyboardInterrupt
+
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 16:06:24,276 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+✅ All required packages imported successfully
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [4189] using StatReload
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 16:06:25,816 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 16:06:26,391 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+INFO:     Started server process [4264]
+INFO:     Waiting for application startup.
+2025-08-16 16:06:26,408 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-16 16:06:26,411 INFO ✅ Database initialized with BYOB architecture
+2025-08-16 16:06:26,413 INFO Starting Playwright for validation...
+2025-08-16 16:06:42,071 INFO ✅ Playwright ready for validation
+2025-08-16 16:06:42,072 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.

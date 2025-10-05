@@ -1,0 +1,83 @@
+ FlightAlert Pro is ready!
+ * Debugger is active!
+ * Debugger PIN: 105-189-372
+172.31.128.95 - - [11/Jul/2025 16:23:41] "GET / HTTP/1.1" 200 -
+172.31.128.95 - - [11/Jul/2025 16:24:40] "GET /login HTTP/1.1" 200 -
+172.31.128.95 - - [11/Jul/2025 16:24:49] "POST /login HTTP/1.1" 302 -
+172.31.128.95 - - [11/Jul/2025 16:24:49] "GET /dashboard HTTP/1.1" 200 -
+172.31.128.95 - - [11/Jul/2025 16:24:51] "GET /api/flight_trivia HTTP/1.1" 200 -
+172.31.128.95 - - [11/Jul/2025 16:24:51] "GET /api/user_xp HTTP/1.1" 200 -
+172.31.128.95 - - [11/Jul/2025 16:24:52] "GET /api/trending_routes HTTP/1.1" 200 -
+✅ Playwright available for dynamic scraping
+🕷️ Scraping delay data for LHR
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: LHR → AMS on 2025-07-18
+============================================================
+🚀 REAL FLIGHT SCRAPING: LHR → AMS on 2025-07-18
+🌐 Calling GitHub Codespaces microservice for LHR → AMS
+📡 Microservice URL: https://dynamic-scraper-empty-wind-2301.fly.dev/scrape?origin=LHR&dest=AMS
+172.31.128.95 - - [11/Jul/2025 16:24:52] "GET /api/flight_trivia HTTP/1.1" 200 -
+172.31.128.95 - - [11/Jul/2025 16:24:52] "GET /api/trending_routes HTTP/1.1" 200 -
+172.31.128.95 - - [11/Jul/2025 16:24:53] "GET /api/flight_stats HTTP/1.1" 200 -
+172.31.128.95 - - [11/Jul/2025 16:24:53] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+172.31.128.95 - - [11/Jul/2025 16:24:54] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+🔁 Microservice status code: 200
+✅ Microservice response received
+✅ GitHub microservice SUCCESS: 6 flights found
+✅ GitHub Microservice: 6 flights
+
+✅ SUCCESS: Found 6 REAL flight options
+💰 Price range: £20 - £222
+🏆 Best deal: easyJet at £20
+📊 Sources: 1 different sites
+🕷️ Scraping delay data for CDG
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: CDG → AMS on 2025-07-18
+============================================================
+🚀 REAL FLIGHT SCRAPING: CDG → AMS on 2025-07-18
+🌐 Calling GitHub Codespaces microservice for CDG → AMS
+📡 Microservice URL: https://dynamic-scraper-empty-wind-2301.fly.dev/scrape?origin=CDG&dest=AMS
+🔁 Microservice status code: 200
+✅ Microservice response received
+✅ GitHub microservice SUCCESS: 6 flights found
+✅ GitHub Microservice: 6 flights
+
+✅ SUCCESS: Found 6 REAL flight options
+💰 Price range: £47 - £228
+🏆 Best deal: Ryanair at £47
+📊 Sources: 1 different sites
+🕷️ Scraping delay data for FRA
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: FRA → AMS on 2025-07-18
+============================================================
+🚀 REAL FLIGHT SCRAPING: FRA → AMS on 2025-07-18
+🌐 Calling GitHub Codespaces microservice for FRA → AMS
+📡 Microservice URL: https://dynamic-scraper-empty-wind-2301.fly.dev/scrape?origin=FRA&dest=AMS
+🔁 Microservice status code: 200
+✅ Microservice response received
+✅ GitHub microservice SUCCESS: 6 flights found
+✅ GitHub Microservice: 6 flights
+
+✅ SUCCESS: Found 6 REAL flight options
+💰 Price range: £36 - £206
+🏆 Best deal: Ryanair at £36
+📊 Sources: 1 different sites
+172.31.128.95 - - [11/Jul/2025 16:24:57] "GET /api/airport_delays HTTP/1.1" 200 -
+🕷️ PRICE WAR: Launching REAL price scraping for LHR → DAC on 2025-07-23
+🌐 REAL SCRAPING: LHR → DAC on 2025-07-23
+🌐 Calling GitHub Codespaces microservice...
+📡 Microservice URL: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape?origin=LHR&dest=DAC
+🔁 Microservice status code: 404
+❌ Microservice returned status 404
+⚠️ GitHub microservice failed, trying local scraping...
+🚀 Launching local flight scraping...
+🌐 REAL FLIGHT DATA SCRAPING (NO FALLBACKS)
+📍 Route: LHR → DAC on 2025-07-23
+============================================================
+🚀 REAL FLIGHT SCRAPING: LHR → DAC on 2025-07-23
+🌐 Calling GitHub Codespaces microservice for LHR → DAC
+📡 Microservice URL: https://dynamic-scraper-empty-wind-2301.fly.dev/scrape?origin=LHR&dest=DAC
+🔁 Microservice status code: 200
+✅ Microservice response received
+✅ GitHub microservice SUCCESS: 6 flights found
+✅ GitHub Microservice: 6 flights

@@ -1,0 +1,314 @@
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-23 18:53:09,657 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+✅ All required packages imported successfully
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/home/runner/workspace']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [195] using StatReload
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-23 18:53:10,968 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-23 18:53:11,374 INFO ✅ Loaded 106697 airport codes from 82808 total airports in CSV
+INFO:     Started server process [224]
+INFO:     Waiting for application startup.
+2025-08-23 18:53:11,399 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-23 18:53:11,413 INFO ✅ Database initialized with BYOB architecture
+2025-08-23 18:53:11,414 INFO Starting Playwright for validation...
+2025-08-23 18:53:19,753 INFO ✅ Playwright ready for validation
+2025-08-23 18:53:19,753 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.
+INFO:     172.31.95.2:35224 - "GET / HTTP/1.1" 200 OK
+INFO:     172.31.95.2:54946 - "GET /login HTTP/1.1" 200 OK
+🔐 Login attempt for email: prithirazchoudhury2@gmail.com
+🔍 User lookup result: Found
+✅ Login successful for prithirazchoudhury2@gmail.com
+INFO:     172.31.95.2:54948 - "POST /login HTTP/1.1" 302 Found
+INFO:     172.31.95.2:54948 - "GET /search HTTP/1.1" 200 OK
+2025-08-23 18:55:43,926 INFO Found 2 airports matching 'lhr' from CSV
+INFO:     172.31.95.2:45446 - "GET /api/airports?q=lhr HTTP/1.1" 200 OK
+2025-08-23 18:55:51,055 INFO Found 100 airports matching 'ams' from CSV
+INFO:     172.31.95.2:46554 - "GET /api/airports?q=ams HTTP/1.1" 200 OK
+2025-08-23 18:55:51,752 INFO Found 35 airports matching 'amst' from CSV
+INFO:     172.31.95.2:46562 - "GET /api/airports?q=amst HTTP/1.1" 200 OK
+2025-08-23 18:55:53,016 INFO Found 14 airports matching 'amsterdam' from CSV
+INFO:     172.31.95.2:46564 - "GET /api/airports?q=amsterdam HTTP/1.1" 200 OK
+2025-08-23 18:55:55,973 INFO 📝 Created query 7: LHR → AMS on 2025-09-06
+INFO:     172.31.95.2:46564 - "POST /api/query HTTP/1.1" 200 OK
+2025-08-23 18:55:57,149 INFO ⏳ Query 7: No real flight data yet. Query age: 2s
+2025-08-23 18:55:57,149 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:55:59,562 INFO ⏳ Query 7: No real flight data yet. Query age: 4s
+2025-08-23 18:55:59,562 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:01,284 INFO ⏳ Query 7: No real flight data yet. Query age: 6s
+2025-08-23 18:56:01,284 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:02,333 INFO ⏳ Query 7: No real flight data yet. Query age: 7s
+2025-08-23 18:56:02,333 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:02,498 INFO ⏳ Query 7: No real flight data yet. Query age: 7s
+2025-08-23 18:56:02,498 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:04,201 INFO ⏳ Query 7: No real flight data yet. Query age: 9s
+2025-08-23 18:56:04,202 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:05,583 INFO ⏳ Query 7: No real flight data yet. Query age: 10s
+2025-08-23 18:56:05,583 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:05,738 INFO ⏳ Query 7: No real flight data yet. Query age: 10s
+2025-08-23 18:56:05,738 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:05,962 INFO ⏳ Query 7: No real flight data yet. Query age: 10s
+2025-08-23 18:56:05,962 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:06,674 INFO ⏳ Query 7: No real flight data yet. Query age: 11s
+2025-08-23 18:56:06,675 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:08,212 INFO ⏳ Query 7: No real flight data yet. Query age: 13s
+2025-08-23 18:56:08,212 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:08,428 INFO ⏳ Query 7: No real flight data yet. Query age: 13s
+2025-08-23 18:56:08,428 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:08,603 INFO ⏳ Query 7: No real flight data yet. Query age: 13s
+2025-08-23 18:56:08,603 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:08,886 INFO ⏳ Query 7: No real flight data yet. Query age: 13s
+2025-08-23 18:56:08,886 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:09,146 INFO ⏳ Query 7: No real flight data yet. Query age: 14s
+2025-08-23 18:56:09,146 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:10,014 INFO ⏳ Query 7: No real flight data yet. Query age: 15s
+2025-08-23 18:56:10,014 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:10,678 INFO ⏳ Query 7: No real flight data yet. Query age: 15s
+2025-08-23 18:56:10,679 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:11,193 INFO ⏳ Query 7: No real flight data yet. Query age: 16s
+2025-08-23 18:56:11,193 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:11,337 INFO ⏳ Query 7: No real flight data yet. Query age: 16s
+2025-08-23 18:56:11,337 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:11,488 INFO ⏳ Query 7: No real flight data yet. Query age: 16s
+2025-08-23 18:56:11,488 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:12,982 INFO ⏳ Query 7: No real flight data yet. Query age: 17s
+2025-08-23 18:56:12,982 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:13,568 INFO ⏳ Query 7: No real flight data yet. Query age: 18s
+2025-08-23 18:56:13,569 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:13,868 INFO ⏳ Query 7: No real flight data yet. Query age: 18s
+2025-08-23 18:56:13,868 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:14,250 INFO ⏳ Query 7: No real flight data yet. Query age: 19s
+2025-08-23 18:56:14,250 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:14,495 INFO ⏳ Query 7: No real flight data yet. Query age: 19s
+2025-08-23 18:56:14,495 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:14,661 INFO ⏳ Query 7: No real flight data yet. Query age: 19s
+2025-08-23 18:56:14,661 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:14,827 INFO ⏳ Query 7: No real flight data yet. Query age: 19s
+2025-08-23 18:56:14,827 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:16,078 INFO ⏳ Query 7: No real flight data yet. Query age: 21s
+2025-08-23 18:56:16,078 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:16,697 INFO ⏳ Query 7: No real flight data yet. Query age: 21s
+2025-08-23 18:56:16,697 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:16,886 INFO ⏳ Query 7: No real flight data yet. Query age: 21s
+2025-08-23 18:56:16,886 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:17,638 INFO ⏳ Query 7: No real flight data yet. Query age: 22s
+2025-08-23 18:56:17,638 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:17,957 INFO ⏳ Query 7: No real flight data yet. Query age: 22s
+2025-08-23 18:56:17,957 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:18,115 INFO ⏳ Query 7: No real flight data yet. Query age: 23s
+2025-08-23 18:56:18,115 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:18,269 INFO ⏳ Query 7: No real flight data yet. Query age: 23s
+2025-08-23 18:56:18,269 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:18,413 INFO ⏳ Query 7: No real flight data yet. Query age: 23s
+2025-08-23 18:56:18,413 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:19,176 INFO ⏳ Query 7: No real flight data yet. Query age: 24s
+2025-08-23 18:56:19,176 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:20,252 INFO ⏳ Query 7: No real flight data yet. Query age: 25s
+2025-08-23 18:56:20,252 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:20,521 INFO ⏳ Query 7: No real flight data yet. Query age: 25s
+2025-08-23 18:56:20,522 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:20,691 INFO ⏳ Query 7: No real flight data yet. Query age: 25s
+2025-08-23 18:56:20,691 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:20,842 INFO ⏳ Query 7: No real flight data yet. Query age: 25s
+2025-08-23 18:56:20,842 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:21,012 INFO ⏳ Query 7: No real flight data yet. Query age: 26s
+2025-08-23 18:56:21,012 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:21,215 INFO ⏳ Query 7: No real flight data yet. Query age: 26s
+2025-08-23 18:56:21,215 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:22,024 INFO ⏳ Query 7: No real flight data yet. Query age: 27s
+2025-08-23 18:56:22,027 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:22,667 INFO ⏳ Query 7: No real flight data yet. Query age: 27s
+2025-08-23 18:56:22,667 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:23,188 INFO ⏳ Query 7: No real flight data yet. Query age: 28s
+2025-08-23 18:56:23,188 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:23,343 INFO ⏳ Query 7: No real flight data yet. Query age: 28s
+2025-08-23 18:56:23,343 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:23,737 INFO ⏳ Query 7: No real flight data yet. Query age: 28s
+2025-08-23 18:56:23,737 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:24,420 INFO ⏳ Query 7: No real flight data yet. Query age: 29s
+2025-08-23 18:56:24,420 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:24,632 INFO ⏳ Query 7: No real flight data yet. Query age: 29s
+2025-08-23 18:56:24,632 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:24,997 INFO ⏳ Query 7: No real flight data yet. Query age: 29s
+2025-08-23 18:56:24,997 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:25,839 INFO ⏳ Query 7: No real flight data yet. Query age: 30s
+2025-08-23 18:56:25,840 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:26,172 INFO ⏳ Query 7: No real flight data yet. Query age: 31s
+2025-08-23 18:56:26,172 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:26,386 INFO ⏳ Query 7: No real flight data yet. Query age: 31s
+2025-08-23 18:56:26,386 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:26,561 INFO ⏳ Query 7: No real flight data yet. Query age: 31s
+2025-08-23 18:56:26,561 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:26,740 INFO ⏳ Query 7: No real flight data yet. Query age: 31s
+2025-08-23 18:56:26,740 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:26,918 INFO ⏳ Query 7: No real flight data yet. Query age: 31s
+2025-08-23 18:56:26,918 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:28,029 INFO ⏳ Query 7: No real flight data yet. Query age: 33s
+2025-08-23 18:56:28,029 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:28,732 INFO ⏳ Query 7: No real flight data yet. Query age: 33s
+2025-08-23 18:56:28,732 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:29,149 INFO ⏳ Query 7: No real flight data yet. Query age: 34s
+2025-08-23 18:56:29,149 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:29,385 INFO ⏳ Query 7: No real flight data yet. Query age: 34s
+2025-08-23 18:56:29,385 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:29,769 INFO ⏳ Query 7: No real flight data yet. Query age: 34s
+2025-08-23 18:56:29,769 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:30,142 INFO ⏳ Query 7: No real flight data yet. Query age: 35s
+2025-08-23 18:56:30,142 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:30,573 INFO ⏳ Query 7: No real flight data yet. Query age: 35s
+2025-08-23 18:56:30,573 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:30,994 INFO ⏳ Query 7: No real flight data yet. Query age: 35s
+2025-08-23 18:56:30,994 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:31,681 INFO ⏳ Query 7: No real flight data yet. Query age: 36s
+2025-08-23 18:56:31,681 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:32,376 INFO ⏳ Query 7: No real flight data yet. Query age: 37s
+2025-08-23 18:56:32,376 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:32,536 INFO ⏳ Query 7: No real flight data yet. Query age: 37s
+2025-08-23 18:56:32,536 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:32,749 INFO ⏳ Query 7: No real flight data yet. Query age: 37s
+2025-08-23 18:56:32,749 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:32,915 INFO ⏳ Query 7: No real flight data yet. Query age: 37s
+2025-08-23 18:56:32,915 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:34,034 INFO ⏳ Query 7: No real flight data yet. Query age: 39s
+2025-08-23 18:56:34,034 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:34,689 INFO ⏳ Query 7: No real flight data yet. Query age: 39s
+2025-08-23 18:56:34,689 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:35,169 INFO ⏳ Query 7: No real flight data yet. Query age: 40s
+2025-08-23 18:56:35,170 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:35,540 INFO ⏳ Query 7: No real flight data yet. Query age: 40s
+2025-08-23 18:56:35,540 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:35,937 INFO ⏳ Query 7: No real flight data yet. Query age: 40s
+2025-08-23 18:56:35,937 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:36,988 INFO ⏳ Query 7: No real flight data yet. Query age: 41s
+2025-08-23 18:56:36,988 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:38,199 INFO ⏳ Query 7: No real flight data yet. Query age: 43s
+2025-08-23 18:56:38,199 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:38,645 INFO ⏳ Query 7: No real flight data yet. Query age: 43s
+2025-08-23 18:56:38,645 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:38,912 INFO ⏳ Query 7: No real flight data yet. Query age: 43s
+2025-08-23 18:56:38,912 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:41,158 INFO ⏳ Query 7: No real flight data yet. Query age: 46s
+2025-08-23 18:56:41,159 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:42,289 INFO ⏳ Query 7: No real flight data yet. Query age: 47s
+2025-08-23 18:56:42,289 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:42,602 INFO ⏳ Query 7: No real flight data yet. Query age: 47s
+2025-08-23 18:56:42,602 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:44,196 INFO ⏳ Query 7: No real flight data yet. Query age: 49s
+2025-08-23 18:56:44,196 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:44,909 INFO ⏳ Query 7: No real flight data yet. Query age: 49s
+2025-08-23 18:56:44,909 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:47,185 INFO ⏳ Query 7: No real flight data yet. Query age: 52s
+2025-08-23 18:56:47,185 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:50,216 INFO ⏳ Query 7: No real flight data yet. Query age: 55s
+2025-08-23 18:56:50,216 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:53,576 INFO ⏳ Query 7: No real flight data yet. Query age: 58s
+2025-08-23 18:56:53,576 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:56,216 INFO ⏳ Query 7: No real flight data yet. Query age: 61s
+2025-08-23 18:56:56,216 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:56:59,292 INFO ⏳ Query 7: No real flight data yet. Query age: 64s
+2025-08-23 18:56:59,292 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:57:02,311 INFO ⏳ Query 7: No real flight data yet. Query age: 67s
+2025-08-23 18:57:02,311 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.95.2:46564 - "GET /api/results/7 HTTP/1.1" 200 OK
+2025-08-23 18:57:05,585 INFO ⏳ Query 7: No real flight data yet. Q

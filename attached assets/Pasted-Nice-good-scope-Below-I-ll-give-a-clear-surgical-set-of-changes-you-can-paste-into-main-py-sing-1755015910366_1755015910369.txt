@@ -1,0 +1,422 @@
+Nice — good scope. Below I’ll give a clear, surgical set of changes you can paste into main.py (single-file), plus explanations so your app stops throwing 404s, avoids the Event loop is closed Playwright crashes, and becomes much more stable and production-ready without ripping Playwright out.
+
+I’ll show:
+
+a small job/queue manager and worker process pattern (keeps Playwright off the Flask event loop),
+
+safe API endpoints that enqueue jobs (no 404s),
+
+graceful shutdown / reloader guards so Flask hot reload won’t leave Playwright zombies,
+
+short pointers for improving scraper stability (retries/backoff, caching, validation, dedupe, proxies, etc.) and where to add them.
+
+1) Add these imports (top of main.py, after existing imports)
+Add these extra imports near the top of your file:
+
+python
+Copy code
+# for job queue & worker process
+import multiprocessing as mp
+import atexit
+import signal
+import uuid
+import traceback
+import queue as pyqueue
+2) Add a simple Job Manager + Playwright worker (put after your classes, before app route declarations)
+This creates a background worker process that owns Playwright (so Playwright runs in a separate process and never shares Flask’s event loop). There are two operating modes in the code below: persistent browser mode (recommended) and per-job-launch (fallback). Use the persistent one for best perf.
+
+Paste this whole block into main.py (after your classes but before route handlers):
+
+python
+Copy code
+# ------------------------
+# Job manager + Playwright worker (single-file)
+# ------------------------
+
+class JobManager:
+    """
+    Manages job submit/wait and uses a separate process (PlaywrightWorker)
+    to run browser operations — this avoids event-loop/Flask reload problems.
+    """
+    def __init__(self):
+        self.task_q = mp.Queue()
+        self.result_q = mp.Queue()
+        self.control_q = mp.Queue()
+        self.worker = None
+        self._results_cache = {}   # in-process cache for quick checks: job_id -> result
+        self._results_lock = mp.Lock()
+
+    def start_worker(self):
+        if self.worker and self.worker.is_alive():
+            return
+        self.worker = mp.Process(target=playwright_worker_process, args=(self.task_q, self.result_q, self.control_q), daemon=True)
+        self.worker.start()
+        # start a small listener thread (in main process) to move results into _results_cache
+        import threading
+        t = threading.Thread(target=self._result_listener, daemon=True)
+        t.start()
+
+    def stop_worker(self):
+        try:
+            if self.worker and self.worker.is_alive():
+                # tell worker to exit
+                self.control_q.put({'cmd': 'shutdown'})
+                self.worker.join(timeout=10)
+                if self.worker.is_alive():
+                    self.worker.terminate()
+        except Exception:
+            pass
+
+    def _result_listener(self):
+        """Moves worker results from multiprocessing Queue to in-memory dict for quick web access"""
+        while True:
+            try:
+                payload = self.result_q.get(timeout=1)
+                job_id = payload.get('job_id')
+                self._results_cache[job_id] = payload
+            except pyqueue.Empty:
+                # continue until process finishes
+                if self.worker and not self.worker.is_alive():
+                    # maybe flush remaining
+                    while not self.result_q.empty():
+                        payload = self.result_q.get_nowait()
+                        self._results_cache[payload.get('job_id')] = payload
+                    break
+                continue
+            except Exception:
+                break
+
+    def submit_job(self, job_type, payload):
+        job_id = str(uuid.uuid4())
+        job = {'job_id': job_id, 'type': job_type, 'payload': payload, 'ts': time.time()}
+        self.task_q.put(job)
+        return job_id
+
+    def get_result(self, job_id):
+        return self._results_cache.get(job_id)
+
+    def wait_for_result(self, job_id, timeout=30):
+        """Poll local cache for result up to timeout seconds"""
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            r = self.get_result(job_id)
+            if r:
+                return r
+            time.sleep(0.5)
+        return None
+
+
+def playwright_worker_process(task_q: mp.Queue, result_q: mp.Queue, control_q: mp.Queue):
+    """
+    Persistent worker process which launches Playwright once and reuses it.
+    If a crash occurs the parent will restart the worker.
+    This function MUST import playwright inside the process (not at module top).
+    """
+    # Imports local to process
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception:
+        # If Playwright missing, put an error result and exit
+        while not task_q.empty():
+            job = task_q.get_nowait()
+            result_q.put({'job_id': job.get('job_id'), 'status': 'error', 'error': 'playwright_not_installed'})
+        return
+
+    browser = None
+    page = None
+    try:
+        with sync_playwright() as p:
+            # Launch a persistent browser (Chromium)
+            browser = p.chromium.launch(headless=True, args=[
+                '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'
+            ])
+            # keep one context open and create pages per job
+            context = browser.new_context()
+            # optional: inject stealth/init scripts here if you maintain them
+            # e.g. context.add_init_script( ... )
+
+            running = True
+            while running:
+                # check control queue
+                try:
+                    ctrl = control_q.get_nowait()
+                    if isinstance(ctrl, dict) and ctrl.get('cmd') == 'shutdown':
+                        running = False
+                        break
+                except pyqueue.Empty:
+                    pass
+
+                try:
+                    job = task_q.get(timeout=1)
+                except pyqueue.Empty:
+                    continue
+
+                job_id = job.get('job_id')
+                try:
+                    if job.get('type') == 'scrape_route':
+                        payload = job.get('payload', {})
+                        # create a fresh page per job
+                        page = context.new_page()
+                        # IMPORTANT: call a helper function that knows how to scrape given payload + page
+                        # You need to move/play adapt your scraping logic to accept a 'page' object
+                        res = scrape_route_with_page(page, payload)
+                        page.close()
+                        result_q.put({'job_id': job_id, 'status': 'ok', 'result': res})
+                    else:
+                        result_q.put({'job_id': job_id, 'status': 'error', 'error': 'unknown_job_type'})
+                except Exception as e:
+                    tb = traceback.format_exc()
+                    result_q.put({'job_id': job_id, 'status': 'error', 'error': tb})
+                    try:
+                        if page:
+                            page.close()
+                    except:
+                        pass
+
+    except Exception:
+        # fatal worker error - forward to results where possible
+        tb = traceback.format_exc()
+        # flush tasks with error
+        while not task_q.empty():
+            try:
+                job = task_q.get_nowait()
+                result_q.put({'job_id': job.get('job_id'), 'status': 'error', 'error': 'worker_fatal:' + tb})
+            except Exception:
+                break
+    finally:
+        try:
+            if browser:
+                browser.close()
+        except Exception:
+            pass
+Notes on the above:
+
+playwright_worker_process runs in its own process. That isolates Playwright and its event loop; Flask restart/hotreload will not kill it improperly.
+
+scrape_route_with_page(page, payload) is a small adapter I’ll explain next — it should call your existing scraping logic but accept a page object and return JSON-serializable results. You must add that adapter (see next section).
+
+3) Add the adapter function scrape_route_with_page(page, payload)
+Your scraping functions currently likely assume they create/close Playwright contexts themselves. To use the worker above, add one adapter that uses your existing scraping functions but makes them accept a page (or call a simplified scraping path that uses the page object).
+
+Add:
+
+python
+Copy code
+def scrape_route_with_page(page, payload):
+    """
+    Thin adapter — use the existing scraping code but refactored into a function that accepts a Playwright page.
+    payload: {'departure':'LHR', 'arrival':'AMS', 'departure_date':'YYYY-MM-DD', 'sites': ['Skyscanner', ...]}
+    Return: list/dict of flights (JSON-serializable)
+    """
+    departure = payload.get('departure')
+    arrival = payload.get('arrival')
+    departure_date = payload.get('departure_date')
+
+    # Example: use a lightweight per-site scraping logic that uses page.goto + page.query_selector
+    # You should move the relevant scraping logic from your RealFlightScraper into functions that accept `page`.
+    # For now, a minimal example that navigates to Skyscanner and tries to extract a price:
+    results = []
+    site_order = payload.get('sites') or ['Skyscanner', 'Kayak']
+    for site in site_order:
+        try:
+            if site == 'Skyscanner':
+                url = f"https://www.skyscanner.net/transport/flights/{departure.lower()}/{arrival.lower()}/{departure_date.replace('-', '')}/"
+                page.goto(url, wait_until='networkidle', timeout=60000)
+                # small wait + try selectors
+                page.wait_for_timeout(3000)
+                price_elem = None
+                for sel in ['[data-testid*=\"price\"]', '.price', '.fare']:
+                    try:
+                        el = page.query_selector(sel)
+                        if el:
+                            price_elem = el.inner_text().strip()
+                            break
+                    except:
+                        continue
+                results.append({'site': site, 'price_raw': price_elem})
+            elif site == 'Kayak':
+                # similarly call kayak
+                url = f"https://www.kayak.co.uk/flights/{departure}-{arrival}/{departure_date}"
+                page.goto(url, wait_until='networkidle', timeout=60000)
+                page.wait_for_timeout(3000)
+                el = page.query_selector('.price-text') or page.query_selector('.price')
+                results.append({'site': site, 'price_raw': el.inner_text().strip() if el else None})
+            # add more sites...
+        except Exception as e:
+            results.append({'site': site, 'error': str(e)})
+    # You should replace the above with your real extraction logic (times, airline, stops, etc.)
+    return results
+Important: you must refactor the core Playwright scraping routines you already have to either:
+
+accept an existing page object (preferred), or
+
+expose a simple function that the worker can call which uses the worker's page context.
+
+Do not import async_playwright in the main process — keep Playwright imports only inside playwright_worker_process (as done above).
+
+4) Start/Stop worker in your Flask app lifecycle (put before app.run())
+Add startup/shutdown hooks so the worker starts only once and stops cleanly:
+
+python
+Copy code
+# Instantiate one shared manager
+job_manager = JobManager()
+
+def _start_background_components():
+    # Only start the worker in the real process. Flask debug uses the reloader and spawns two processes;
+    # WERKZEUG_RUN_MAIN is set in the *reloader child* where app actually runs.
+    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' or not app.debug:
+        job_manager.start_worker()
+
+# call at import time (safe guard)
+_start_background_components()
+
+# Ensure worker stops on exit
+def _shutdown_handler(*args):
+    try:
+        job_manager.stop_worker()
+    except Exception:
+        pass
+    # then exit
+    try:
+        # for explicit cleanup
+        atexit._run_exitfuncs()
+    finally:
+        os._exit(0)
+
+# register signals
+signal.signal(signal.SIGINT, _shutdown_handler)
+signal.signal(signal.SIGTERM, _shutdown_handler)
+atexit.register(job_manager.stop_worker)
+5) Replace broken endpoints with job-based endpoints (examples)
+Add these Flask routes (paste into your route section). They enqueue a job and either return the result synchronously within timeout or return job id.
+
+python
+Copy code
+@app.route('/api/price_war/<dep>/<arr>', methods=['GET'])
+def api_price_war(dep, arr):
+    try:
+        departure_date = request.args.get('date') or (datetime.now() + timedelta(days=14)).strftime('%Y-%m-%d')
+        payload = {'departure': dep.upper(), 'arrival': arr.upper(), 'departure_date': departure_date,
+                   'sites': ['Skyscanner','Kayak','Momondo','British Airways']}
+        job_id = job_manager.submit_job('scrape_route', payload)
+
+        # quick wait to return immediate results if job completes fast (optional)
+        result = job_manager.wait_for_result(job_id, timeout=12)  # wait up to 12s
+        if result:
+            return jsonify({'job_id': job_id, 'status': result.get('status'), 'data': result.get('result')}), 200
+        else:
+            return jsonify({'job_id': job_id, 'status': 'queued'}), 202
+
+    except Exception as e:
+        app.logger.exception("price_war error")
+        return jsonify({'error': str(e)}), 500
+
+
+# simple placeholder endpoints to avoid 404s and give useful behavior:
+@app.route('/api/trending_routes', methods=['GET'])
+def api_trending_routes():
+    # either compute from your database or return a placeholder list
+    routes = [{'from':'LHR','to':'AMS','count':42}, {'from':'LHR','to':'BCN','count':21}]
+    return jsonify({'routes': routes}), 200
+
+@app.route('/api/airport_delays', methods=['GET'])
+def api_airport_delays():
+    # return cached summary or an empty structure to avoid 404s
+    return jsonify({'airport': 'LHR', 'delays': []}), 200
+
+@app.route('/api/rare_aircraft_spotted', methods=['GET'])
+def api_rare_aircraft():
+    return jsonify({'events': []}), 200
+These will kill the 404 errors and provide consistent behavior while you wire the real logic.
+
+6) Fix Playwright event loop errors
+Summary of fixes you must do in the file:
+
+Only import Playwright inside the worker process, not at module top. (The worker code above does that.)
+
+Use persistent worker process (provided above) so a single Playwright browser is used and cleaned up on exit.
+
+When running Flask in debug/hotreload, only start the worker when WERKZEUG_RUN_MAIN == 'true' (done in _start_background_components()).
+
+Use atexit and signal registrations to gracefully shut down the worker (done).
+
+This prevents the “Event loop is closed” messages coming from Playwright subprocesses left running by Flask reload.
+
+7) Make scraping more robust (concrete, actionable improvements)
+Add / integrate these improvements (I’ll be brief but precise):
+
+A. Backoff & Retry: Wrap HTTP and JS-render requests with exponential backoff.
+
+python
+Copy code
+import backoff
+@backoff.on_exception(backoff.expo, (requests.exceptions.RequestException,), max_tries=4)
+def requests_get_retry(url, session=None, **kwargs):
+    s = session or requests
+    return s.get(url, timeout=20, **kwargs)
+B. Timeouts everywhere — never rely on default requests timeouts. Use timeout= and page.wait_for_timeoutjudiciously.
+
+C. User-agent + header rotation — you already have a UA list; ensure each session or Playwright context uses a randomly chosen UA. In Playwright context = browser.new_context(user_agent=...).
+
+D. Proxy rotation (if you have proxies) — add a pool and rotate proxies per job. Keep proxies in config and test them periodically.
+
+E. Selective JS rendering — try static scraping first (requests + BeautifulSoup). Only use Playwright for sites that fail static extraction. This saves resources and reduces detection.
+
+F. Validation & Deduping: after scraping, run validate_flight(flight) that ensures fields airline, departure_time, arrival_time, price exist and price in reasonable bounds. Deduplicate by key (airline, departure_time, arrival_time, duration) keeping lowest price.
+
+G. Caching: cache recent results (in-memory TTL) to avoid repeat scraping the same route in short windows. Example TTL = 2–5 minutes.
+
+H. Selector auto-update pipeline: your SelectorUpdater already exists — wire it so health checks failing for a site push the site HTML into debug_xxx.html and run the selector analyzer automatically.
+
+I. Instrumentation / metrics: log per-site success/failure, response times. Your ScraperHealthMonitor is a good place. Use Grafana/Prometheus later.
+
+J. Run the web app behind a WSGI server (production): gunicorn + multiple workers; keep the Playwright worker as a single separate process (or multiple worker processes) — do not rely on Flask development server.
+
+8) Checklist — what to add to main.py (summary)
+Add the extra imports I listed.
+
+Paste the JobManager + playwright_worker_process block.
+
+Add the scrape_route_with_page(page, payload) adapter (or refactor your scraping functions to accept page).
+
+Create a single global job_manager = JobManager() and call _start_background_components() as shown.
+
+Add the new API endpoints that enqueue/look up jobs (examples above).
+
+Add atexit and signal handlers (above) so the worker is stopped cleanly.
+
+Replace any top-level async_playwright usage in the main process with calls routed through the worker (so Playwright imports disappear from main process).
+
+9) Small example: how to migrate one of your existing functions
+If you currently have:
+
+python
+Copy code
+def some_skyscanner_scrape(...):
+    with sync_playwright() as p:
+         browser = p.chromium.launch(...)
+         page = browser.new_page()
+         ...
+Refactor to:
+
+python
+Copy code
+def some_skyscanner_scrape_with_page(page, departure, arrival, date):
+    # use existing page object - DO NOT open/close browser here
+    page.goto(url, wait_until='networkidle', timeout=60000)
+    # extract using page.query_selector(...)
+    ...
+    return {...}
+Then call it from scrape_route_with_page in the worker.
+
+10) Quick testing tips
+Run locally with Flask debug disabled to simulate production:
+FLASK_ENV=production python main.py or use gunicorn main:app --workers 1.
+
+Check worker started: ps aux | grep main.py and confirm mp.Process running.
+
+Trigger /api/price_war/LHR/AMS and check returned job id; poll /api/price_war or inspect logs.
+
+If you still see Playwright errors: stop Flask, ensure no orphan chrome/chromium processes remain, and restart.
+

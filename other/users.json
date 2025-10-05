@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "username": "Prithiraz",
+    "email": "prithirazchoudhury2@gmail.com",
+    "password_hash": "scrypt:32768:8:1$4GVRyizYL45KE7zV$98ea38cf6918027f1582746bd272af3f05d375e5bd0e0cee38908e7a57d6a4d3b6c100d009f88c4d316593d087d751959880f6fd35774936feb67b4208c7d763",
+    "subscription_type": "free",
+    "subscription_end": null,
+    "alerts_used": 0,
+    "created_at": "2025-06-24T16:13:46.959410",
+    "xp_points": 25,
+    "xp_history": [
+      {
+        "points": 25,
+        "reason": "Created flight alert",
+        "date": "2025-06-26T16:51:25.603291"
+      }
+    ]
+  }
+]

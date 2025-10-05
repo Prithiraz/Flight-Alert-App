@@ -1,0 +1,62 @@
+✅ Playwright available for dynamic scraping
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.94.2:5000
+Press CTRL+C to quit
+✅ Playwright available for dynamic scraping
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Debugger is active!
+ * Debugger PIN: 107-614-333
+172.31.94.2 - - [23/Jul/2025 19:17:53] "POST /login HTTP/1.1" 302 -
+172.31.94.2 - - [23/Jul/2025 19:17:54] "GET /dashboard HTTP/1.1" 200 -
+172.31.94.2 - - [23/Jul/2025 19:17:55] "GET /api/flight_trivia HTTP/1.1" 200 -
+172.31.94.2 - - [23/Jul/2025 19:17:55] "GET /api/user_xp HTTP/1.1" 200 -
+172.31.94.2 - - [23/Jul/2025 19:17:55] "GET /api/trending_routes HTTP/1.1" 200 -
+🕷️ Scraping delay data for LHR
+🚀 COMPREHENSIVE FLIGHT SCRAPING: LHR → AMS on 2025-08-06
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+172.31.94.2 - - [23/Jul/2025 19:17:56] "GET /api/flight_trivia HTTP/1.1" 200 -
+172.31.94.2 - - [23/Jul/2025 19:17:56] "GET /api/flight_stats HTTP/1.1" 200 -
+172.31.94.2 - - [23/Jul/2025 19:17:56] "GET /api/trending_routes HTTP/1.1" 200 -
+❌ Rare aircraft error: Expecting value: line 1 column 1 (char 0)
+172.31.94.2 - - [23/Jul/2025 19:17:56] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+❌ Rare aircraft error: Expecting value: line 1 column 1 (char 0)
+172.31.94.2 - - [23/Jul/2025 19:17:57] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+🔍 OPTION 1: Direct flight-specific search
+🌐 Searching Skyscanner: LHR→AMS
+🎯 SURPRISE ME: Scraping ONLY REAL prices under £100 from LHR on 2025-08-11
+🕷️ Scraping LHR → AMS for budget £100
+🚀 COMPREHENSIVE FLIGHT SCRAPING: LHR → AMS on 2025-08-06
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+🔍 OPTION 1: Direct flight-specific search
+🌐 Searching Skyscanner: LHR→AMS
+🕷️ PRICE WAR: Launching REAL price scraping for LHR → DAC on 2025-08-05
+🚀 MICROSERVICE SCRAPING: LHR → DAC on 2025-08-05
+✅ Playwright available for dynamic scraping
+🌐 Calling microservice for LHR → DAC
+📡 Microservice URL: https://redesigned-pancake-g4jwvrq9pp7f9xg6-8080.app.github.dev/scrape
+📊 Parameters: {'origin': 'LHR', 'dest': 'DAC', 'date': '2025-08-05'}
+🔁 Microservice status code: 404
+❌ Microservice returned status 404
+   Response: {
+  "count": 0,
+  "error": "No real flight data could be scraped",
+  "flights": [],
+  "message": "Real data scraping failed - NO FALLBACK DATA PROVIDED",
+  "route": "LHR \u2192 DAC",
+  "scraped_at": "2025-07-23T19:18:25.405698",
+  "success": false
+}
+...
+🔍 VALIDATING 0 flights for real pricing...
+❌ NO FLIGHTS RETURNED FROM MICROSERVICE

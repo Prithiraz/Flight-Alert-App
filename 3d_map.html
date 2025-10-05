@@ -1,0 +1,240 @@
+
+{% extends "base.html" %}
+
+{% block extra_css %}
+<script src="https://cesium.com/downloads/cesiumjs/releases/1.98/Build/Cesium/Cesium.js"></script>
+<link href="https://cesium.com/downloads/cesiumjs/releases/1.98/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+<style>
+    #cesiumContainer {
+        width: 100%;
+        height: 600px;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        border-radius: 15px;
+    }
+    
+    .flight-info {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        backdrop-filter: blur(10px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0"><i class="fas fa-globe me-2"></i>Live 3D Flight Map</h3>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary" onclick="toggleFlightPaths()">
+                        <i class="fas fa-route me-1"></i>Toggle Paths
+                    </button>
+                    <button class="btn btn-sm btn-outline-success" onclick="refreshFlights()">
+                        <i class="fas fa-sync me-1"></i>Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="cesiumContainer"></div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Live Flight Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="flight-info">
+                            <h6><i class="fas fa-plane text-primary me-2"></i>Total Flights</h6>
+                            <h4 id="totalFlights">0</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="flight-info">
+                            <h6><i class="fas fa-tachometer-alt text-success me-2"></i>Avg Speed</h6>
+                            <h4 id="avgSpeed">0 km/h</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="flight-info">
+                            <h6><i class="fas fa-mountain text-info me-2"></i>Avg Altitude</h6>
+                            <h4 id="avgAltitude">0 ft</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="flight-info">
+                            <h6><i class="fas fa-clock text-warning me-2"></i>Last Update</h6>
+                            <h4 id="lastUpdate">Never</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize Cesium
+Cesium.Ion.defaultAccessToken = 'your_cesium_token_here'; // Replace with your Cesium token
+
+const viewer = new Cesium.Viewer('cesiumContainer', {
+    terrainProvider: Cesium.createWorldTerrain(),
+    timeline: false,
+    animation: false,
+    baseLayerPicker: false,
+    fullscreenButton: false,
+    geocoder: false,
+    homeButton: false,
+    infoBox: true,
+    sceneModePicker: false,
+    selectionIndicator: true,
+    navigationHelpButton: false,
+    navigationInstructionsInitiallyVisible: false
+});
+
+// Flight tracking variables
+let flightEntities = [];
+let showFlightPaths = true;
+
+// Initialize the map
+viewer.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(0, 0, 20000000),
+    orientation: {
+        heading: 0,
+        pitch: -Cesium.Math.PI_OVER_TWO,
+        roll: 0
+    }
+});
+
+// Load and display flights
+async function loadFlights() {
+    try {
+        const response = await fetch('/api/live_flights');
+        const flights = await response.json();
+        
+        if (flights.error) {
+            console.error('Error loading flights:', flights.error);
+            return;
+        }
+        
+        // Clear existing flights
+        flightEntities.forEach(entity => viewer.entities.remove(entity));
+        flightEntities = [];
+        
+        // Add new flights
+        let totalSpeed = 0;
+        let totalAltitude = 0;
+        let validFlights = 0;
+        
+        flights.forEach(flight => {
+            if (flight.latitude && flight.longitude) {
+                const entity = viewer.entities.add({
+                    position: Cesium.Cartesian3.fromDegrees(
+                        flight.longitude, 
+                        flight.latitude, 
+                        flight.altitude || 10000
+                    ),
+                    billboard: {
+                        image: createPlaneIcon(flight.heading || 0),
+                        scale: 0.5,
+                        verticalOrigin: Cesium.VerticalOrigin.CENTER,
+                        horizontalOrigin: Cesium.HorizontalOrigin.CENTER
+                    },
+                    label: {
+                        text: flight.callsign || 'Unknown',
+                        font: '12px Arial',
+                        fillColor: Cesium.Color.WHITE,
+                        outlineColor: Cesium.Color.BLACK,
+                        outlineWidth: 2,
+                        pixelOffset: new Cesium.Cartesian2(0, -40),
+                        showBackground: true,
+                        backgroundColor: Cesium.Color.BLACK.withAlpha(0.7)
+                    },
+                    description: `
+                        <div style="font-family: Arial, sans-serif;">
+                            <h4><i class="fas fa-plane"></i> ${flight.callsign || 'Unknown Flight'}</h4>
+                            <p><strong>Altitude:</strong> ${flight.altitude ? flight.altitude.toLocaleString() + ' ft' : 'Unknown'}</p>
+                            <p><strong>Speed:</strong> ${flight.velocity ? Math.round(flight.velocity * 3.6) + ' km/h' : 'Unknown'}</p>
+                            <p><strong>Heading:</strong> ${flight.heading ? Math.round(flight.heading) + '°' : 'Unknown'}</p>
+                        </div>
+                    `
+                });
+                
+                flightEntities.push(entity);
+                
+                // Calculate statistics
+                if (flight.velocity) {
+                    totalSpeed += flight.velocity * 3.6; // Convert to km/h
+                    validFlights++;
+                }
+                if (flight.altitude) {
+                    totalAltitude += flight.altitude;
+                }
+            }
+        });
+        
+        // Update statistics
+        document.getElementById('totalFlights').textContent = flights.length;
+        document.getElementById('avgSpeed').textContent = validFlights > 0 ? 
+            Math.round(totalSpeed / validFlights) + ' km/h' : '0 km/h';
+        document.getElementById('avgAltitude').textContent = validFlights > 0 ?
+            Math.round(totalAltitude / validFlights).toLocaleString() + ' ft' : '0 ft';
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        
+    } catch (error) {
+        console.error('Error loading flights:', error);
+    }
+}
+
+// Create plane icon based on heading
+function createPlaneIcon(heading) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    
+    // Draw plane
+    ctx.save();
+    ctx.translate(16, 16);
+    ctx.rotate((heading * Math.PI) / 180);
+    ctx.fillStyle = '#3498db';
+    ctx.beginPath();
+    ctx.moveTo(0, -12);
+    ctx.lineTo(-8, 8);
+    ctx.lineTo(-3, 6);
+    ctx.lineTo(0, 8);
+    ctx.lineTo(3, 6);
+    ctx.lineTo(8, 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    
+    return canvas.toDataURL();
+}
+
+// Control functions
+function toggleFlightPaths() {
+    showFlightPaths = !showFlightPaths;
+    // Implementation for flight paths would go here
+}
+
+function refreshFlights() {
+    loadFlights();
+}
+
+// Auto-refresh flights every 30 seconds
+setInterval(loadFlights, 30000);
+
+// Initial load
+loadFlights();
+</script>
+{% endblock %}

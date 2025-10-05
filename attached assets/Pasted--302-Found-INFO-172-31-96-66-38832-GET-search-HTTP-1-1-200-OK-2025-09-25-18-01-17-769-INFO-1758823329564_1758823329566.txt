@@ -1,0 +1,58 @@
+ 302 Found
+INFO:     172.31.96.66:38832 - "GET /search HTTP/1.1" 200 OK
+2025-09-25 18:01:17,769 INFO Found 11 cities matching 'lond' from CSV
+INFO:     172.31.96.66:44074 - "GET /api/cities?q=lond HTTP/1.1" 200 OK
+2025-09-25 18:01:18,694 INFO Found 8 cities matching 'london' from CSV
+INFO:     172.31.96.66:44074 - "GET /api/cities?q=london HTTP/1.1" 200 OK
+2025-09-25 18:01:26,981 INFO Found 50 cities matching 'am' from CSV
+INFO:     172.31.96.66:58150 - "GET /api/cities?q=am HTTP/1.1" 200 OK
+2025-09-25 18:01:28,988 INFO Found 0 cities matching 'amsterdsa' from CSV
+INFO:     172.31.96.66:58150 - "GET /api/cities?q=amsterdsa HTTP/1.1" 200 OK
+2025-09-25 18:01:29,990 INFO Found 2 cities matching 'amsterd' from CSV
+INFO:     172.31.96.66:58150 - "GET /api/cities?q=amsterd HTTP/1.1" 200 OK
+2025-09-25 18:01:30,629 INFO Found 2 cities matching 'amsterda' from CSV
+INFO:     172.31.96.66:58150 - "GET /api/cities?q=amsterda HTTP/1.1" 200 OK
+2025-09-25 18:01:31,672 INFO Found 2 cities matching 'amsterdam' from CSV
+INFO:     172.31.96.66:58158 - "GET /api/cities?q=amsterdam HTTP/1.1" 200 OK
+2025-09-25 18:01:38,009 INFO 📝 Created query 28: NHT → AMS on 2025-10-09, economy class, 1 passengers
+INFO:     172.31.96.66:39960 - "POST /api/query HTTP/1.1" 200 OK
+2025-09-25 18:01:42,154 INFO ✅ Duffel returned 0 flight offers
+2025-09-25 18:01:42,154 INFO 🎯 Duffel API: Formatted 0 unique flights from 0 offers
+2025-09-25 18:01:42,154 INFO ℹ️ FlightAPI temporarily disabled - using Duffel API and Ryanair integration for comprehensive coverage
+2025-09-25 18:01:42,813 WARNING ⚠️ Amadeus API credentials not working (status 401). Disabling for 5 minutes to reduce console spam.
+2025-09-25 18:01:42,814 INFO ⏳ Query 28: No real flight data yet. Query age: 5s
+2025-09-25 18:01:42,814 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.96.66:39960 - "GET /api/results/28 HTTP/1.1" 200 OK
+2025-09-25 18:01:43,553 INFO ✅ Duffel returned 0 flight offers
+2025-09-25 18:01:43,553 INFO 🎯 Duffel API: Formatted 0 unique flights from 0 offers
+2025-09-25 18:01:43,554 INFO ⏳ Query 28: No real flight data yet. Query age: 6s
+2025-09-25 18:01:43,554 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.96.66:39960 - "GET /api/results/28 HTTP/1.1" 200 OK
+2025-09-25 18:01:44,799 INFO ✅ Duffel returned 0 flight offers
+2025-09-25 18:01:44,799 INFO 🎯 Duffel API: Formatted 0 unique flights from 0 offers
+2025-09-25 18:01:44,800 INFO ⏳ Query 28: No real flight data yet. Query age: 7s
+2025-09-25 18:01:44,800 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.96.66:39960 - "GET /api/results/28 HTTP/1.1" 200 OK
+2025-09-25 18:01:45,452 INFO 📝 Created query 29: NHT → AMS on 2025-10-09, economy class, 1 passengers
+INFO:     172.31.96.66:39960 - "POST /api/query HTTP/1.1" 200 OK
+2025-09-25 18:01:49,272 INFO ✅ Duffel returned 0 flight offers
+2025-09-25 18:01:49,272 INFO 🎯 Duffel API: Formatted 0 unique flights from 0 offers
+2025-09-25 18:01:49,273 INFO ⏳ Query 29: No real flight data yet. Query age: 4s
+2025-09-25 18:01:49,273 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.96.66:39960 - "GET /api/results/29 HTTP/1.1" 200 OK
+2025-09-25 18:01:50,089 INFO ✅ Duffel returned 0 flight offers
+2025-09-25 18:01:50,089 INFO 🎯 Duffel API: Formatted 0 unique flights from 0 offers
+2025-09-25 18:01:50,090 INFO ⏳ Query 29: No real flight data yet. Query age: 5s
+2025-09-25 18:01:50,091 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.96.66:39960 - "GET /api/results/29 HTTP/1.1" 200 OK
+2025-09-25 18:01:52,401 INFO ✅ Duffel returned 0 flight offers
+2025-09-25 18:01:52,402 INFO 🎯 Duffel API: Formatted 0 unique flights from 0 offers
+2025-09-25 18:01:52,403 INFO ⏳ Query 29: No real flight data yet. Query age: 7s
+2025-09-25 18:01:52,403 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.96.66:39960 - "GET /api/results/29 HTTP/1.1" 200 OK
+2025-09-25 18:01:55,434 INFO ✅ Duffel returned 0 flight offers
+2025-09-25 18:01:55,434 INFO 🎯 Duffel API: Formatted 0 unique flights from 0 offers
+2025-09-25 18:01:55,436 INFO ⏳ Query 29: No real flight data yet. Query age: 10s
+2025-09-25 18:01:55,436 INFO 💡 To get real prices: Use the browser extension or operator console to browse airline sites
+INFO:     172.31.96.66:39960 - "GET /api/results/29 HTTP/1.1" 200 OK
+2025-09-25 18:01:58,257 INF

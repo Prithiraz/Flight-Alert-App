@@ -1,0 +1,68 @@
+@Prithiraz ➜ /workspaces/dynamic-scraper (main) $ source /opt/conda/bin/activate /workspaces/dynamic-scraper/.conda
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ ^C
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+^CTraceback (most recent call last):
+  File "/workspaces/dynamic-scraper/main.py", line 12, in <module>
+    import aiohttp
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/aiohttp/__init__.py", line 6, in <module>
+    from .client import (
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/aiohttp/client.py", line 87, in <module>
+    from .connector import (
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/aiohttp/connector.py", line 895, in <module>
+    _SSL_CONTEXT_UNVERIFIED = _make_ssl_context(False)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/aiohttp/connector.py", line 885, in _make_ssl_context
+    sslcontext.set_default_verify_paths()
+KeyboardInterrupt
+
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+^CTraceback (most recent call last):
+  File "/workspaces/dynamic-scraper/main.py", line 14, in <module>
+    import pandas
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/__init__.py", line 49, in <module>
+    from pandas.core.api import (
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/core/api.py", line 1, in <module>
+    from pandas._libs import (
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/_libs/__init__.py", line 18, in <module>
+    from pandas._libs.interval import Interval
+  File "pandas/_libs/interval.pyx", line 1, in init pandas._libs.interval
+  File "pandas/_libs/hashtable.pyx", line 1, in init pandas._libs.hashtable
+  File "pandas/_libs/missing.pyx", line 1, in init pandas._libs.missing
+  File "/workspaces/dynamic-scraper/.conda/lib/python3.11/site-packages/pandas/_libs/tslibs/__init__.py", line 40, in <module>
+    from pandas._libs.tslibs.conversion import localize_pydatetime
+  File "pandas/_libs/tslibs/conversion.pyx", line 1, in init pandas._libs.tslibs.conversion
+  File "pandas/_libs/tslibs/offsets.pyx", line 1, in init pandas._libs.tslibs.offsets
+  File "<frozen importlib._bootstrap>", line 405, in parent
+KeyboardInterrupt
+/workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+
+(/workspaces/dynamic-scraper/.conda) @Prithiraz ➜ /workspaces/dynamic-scraper (main) $ /workspaces/dynamic-scraper/.conda/bin/python /workspaces/dynamic-scraper/main.py
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:27:19,875 INFO ✅ Loaded 9096 airport codes for validation
+✅ All required packages imported successfully
+🚀 Starting FlightAlert Pro BYOB Edition...
+🎯 Browser Extension + FastAPI Architecture
+📡 Server will be available at: http://0.0.0.0:5000
+🔧 Extension APIs + User Interface
+✅ SQLite Database + Real-time Ingestion
+INFO:     Will watch for changes in these directories: ['/workspaces/dynamic-scraper']
+INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+INFO:     Started reloader process [4674] using StatReload
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:27:21,399 INFO ✅ Loaded 9096 airport codes for validation
+✅ All required packages imported successfully
+✅ Playwright available for validation scraping
+🤖 Server validation will run in headless mode
+2025-08-16 11:27:21,962 INFO ✅ Loaded 9096 airport codes for validation
+INFO:     Started server process [4732]
+INFO:     Waiting for application startup.
+2025-08-16 11:27:22,002 INFO 🚀 Starting FlightAlert Pro BYOB Edition...
+2025-08-16 11:27:22,006 INFO ✅ Database initialized with BYOB architecture
+2025-08-16 11:27:22,009 INFO Starting Playwright for validation...
+2025-08-16 11:27:33,896 INFO ✅ Playwright ready for validation
+2025-08-16 11:27:33,897 INFO 🎯 FlightAlert Pro BYOB startup complete!
+INFO:     Application startup complete.

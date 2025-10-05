@@ -1,0 +1,319 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-plus me-2"></i>Create Flight Alert</h3>
+            </div>
+            <div class="card-body">
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                </div>
+                {% endif %}
+                <form method="POST" action="/create_alert" id="alertForm">
+                    <!-- Alert Type -->
+                    <div class="mb-4">
+                        <label class="form-label">Alert Type</label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="alert_type" id="cheap" value="cheap" checked>
+                                    <label class="form-check-label" for="cheap">
+                                        <i class="fas fa-dollar-sign text-success me-2"></i>
+                                        <strong>Cheap Flight Alert</strong><br>
+                                        <small class="text-muted">Get notified when prices drop below your target</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="alert_type" id="rare" value="rare">
+                                    <label class="form-check-label" for="rare">
+                                        <i class="fas fa-fighter-jet text-primary me-2"></i>
+                                        <strong>Rare Aircraft Alert</strong><br>
+                                        <small class="text-muted">Track special and rare aircraft</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Trip Type Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">Trip Type</label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="trip_type" id="round_trip" value="round_trip" checked>
+                                    <label class="form-check-label" for="round_trip">
+                                        <i class="fas fa-exchange-alt text-info me-2"></i>
+                                        <strong>Round Trip</strong><br>
+                                        <small class="text-muted">Return journey included</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="trip_type" id="one_way" value="one_way">
+                                    <label class="form-check-label" for="one_way">
+                                        <i class="fas fa-long-arrow-alt-right text-warning me-2"></i>
+                                        <strong>One Way</strong><br>
+                                        <small class="text-muted">Single journey only</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Airports -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="departure_airport" class="form-label">Departure Airports *</label>
+                            <select class="form-select airport-select" id="departure_airport" name="departure_airport" multiple required>
+                                <option value="">Search for departure airports...</option>
+                            </select>
+                            <small class="text-muted">Hold Ctrl/Cmd to select multiple airports</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="destination_airport" class="form-label">Destination Airports</label>
+                            <select class="form-select airport-select" id="destination_airport" name="destination_airport" multiple>
+                                <option value="">Search for destination airports...</option>
+                            </select>
+                            <small class="text-muted">Hold Ctrl/Cmd to select multiple airports</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Airline Selection -->
+                    <div class="mb-3">
+                        <label for="airline" class="form-label">Preferred Airlines (Optional)</label>
+                        <select class="form-select airline-select" id="airline" name="airline" multiple>
+                            <option value="">Search for airlines...</option>
+                        </select>
+                        <small class="text-muted">Hold Ctrl/Cmd to select multiple airlines</small>
+                    </div>
+                    
+                    <!-- Aircraft Type (for rare alerts) -->
+                    <div class="mb-3" id="aircraft_section" style="display: none;">
+                        <label for="aircraft_type" class="form-label">Aircraft Type</label>
+                        <select class="form-select" id="aircraft_type" name="aircraft_type">
+                            <option value="">Any Aircraft</option>
+                            <option value="Airbus A380">Airbus A380</option>
+                            <option value="Boeing 747">Boeing 747</option>
+                            <option value="Boeing 787">Boeing 787</option>
+                            <option value="Airbus A350">Airbus A350</option>
+                            <option value="Boeing 777">Boeing 777</option>
+                            <option value="Concorde">Concorde (Retired)</option>
+                            <option value="Airbus A340">Airbus A340</option>
+                            <option value="Boeing 767">Boeing 767</option>
+                            <option value="Douglas DC-10">Douglas DC-10</option>
+                            <option value="Lockheed L-1011">Lockheed L-1011</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Price (for cheap alerts) -->
+                    <div class="mb-3" id="price_section">
+                        <label for="max_price" class="form-label">Maximum Price (£)</label>
+                        <input type="number" class="form-control" id="max_price" name="max_price" 
+                               placeholder="e.g. 300" min="0" step="0.01">
+                    </div>
+                    
+                    <!-- Baggage Options -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="min_baggage" class="form-label">Minimum Baggage (kg)</label>
+                            <input type="number" class="form-control" id="min_baggage" name="min_baggage" 
+                                   placeholder="e.g. 20" min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="max_baggage" class="form-label">Maximum Baggage (kg)</label>
+                            <input type="number" class="form-control" id="max_baggage" name="max_baggage" 
+                                   placeholder="e.g. 32" min="0">
+                        </div>
+                    </div>
+                    
+                    <!-- Travel Dates -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="departure_date" class="form-label">Departure Date *</label>
+                            <input type="date" class="form-control" id="departure_date" name="departure_date" 
+                                   required min="{{ today }}">
+                        </div>
+                        <div class="col-md-6" id="return_date_section">
+                            <label for="return_date" class="form-label">Return Date (Optional for Round Trip)</label>
+                            <input type="date" class="form-control" id="return_date" name="return_date" 
+                                   min="{{ today }}">
+                            <small class="text-muted">Leave empty if unsure - we'll use trip duration instead</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Trip Duration (for round trips only) -->
+                    <div class="row g-3 mb-4" id="trip_duration_section">
+                        <div class="col-md-6">
+                            <label for="min_trip_duration" class="form-label">Minimum Trip Duration (days)</label>
+                            <input type="number" class="form-control" id="min_trip_duration" name="min_trip_duration" 
+                                   placeholder="e.g. 3" min="1">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="max_trip_duration" class="form-label">Maximum Trip Duration (days)</label>
+                            <input type="number" class="form-control" id="max_trip_duration" name="max_trip_duration" 
+                                   placeholder="e.g. 14" min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-bell me-2"></i>Create Alert
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize airport selects with multiple selection
+    $('.airport-select').select2({
+        ajax: {
+            url: '/api/airports',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term || ''
+                };
+            },
+            processResults: function (data) {
+                if (data && data.airports) {
+                    return {
+                        results: data.airports.map(function(airport) {
+                            return {
+                                id: airport.code,
+                                text: airport.display
+                            };
+                        })
+                    };
+                } else {
+                    return { results: [] };
+                }
+            },
+            cache: true
+        },
+        multiple: true,
+        minimumInputLength: 2,
+        placeholder: 'Search and select multiple airports...',
+        allowClear: true,
+        closeOnSelect: false,
+        dropdownAutoWidth: true,
+        width: '100%',
+        templateSelection: function(airport) {
+            // Show just the airport code in the selection box to save space
+            var parts = airport.text.split(' - ');
+            return parts[0] || airport.text;
+        }
+    });
+    
+    // Initialize airline select with enhanced search and multiple selection
+    $('.airline-select').select2({
+        ajax: {
+            url: '/api/airlines',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term || ''
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.map(function(airline) {
+                        return {
+                            id: airline.code,
+                            text: airline.display
+                        };
+                    })
+                };
+            },
+            cache: true
+        },
+        multiple: true,
+        minimumInputLength: 0,
+        placeholder: 'Search and select multiple airlines...',
+        allowClear: true,
+        closeOnSelect: false,
+        templateResult: function(airline) {
+            if (airline.loading) {
+                return airline.text;
+            }
+            
+            // Enhanced display with country info
+            var parts = airline.text.split(' - ');
+            if (parts.length >= 2) {
+                var code = parts[0];
+                var nameAndCountry = parts.slice(1).join(' - ');
+                return $('<span><strong>' + code + '</strong> - ' + nameAndCountry + '</span>');
+            }
+            return airline.text;
+        },
+        templateSelection: function(airline) {
+            // Show just the airline code in the selection box to save space
+            var parts = airline.text.split(' - ');
+            return parts[0] || airline.text;
+        }
+    });
+    
+    // Toggle sections based on alert type
+    $('input[name="alert_type"]').change(function() {
+        if ($(this).val() === 'cheap') {
+            $('#price_section').show();
+            $('#aircraft_section').hide();
+        } else {
+            $('#price_section').hide();
+            $('#aircraft_section').show();
+        }
+    });
+    
+    // Toggle return date and trip duration based on trip type
+    $('input[name="trip_type"]').change(function() {
+        if ($(this).val() === 'one_way') {
+            $('#return_date_section').hide();
+            $('#trip_duration_section').hide();
+            $('#return_date').removeAttr('required');
+            $('#return_date').val('');
+        } else {
+            $('#return_date_section').show();
+            $('#trip_duration_section').show();
+            // Don't make return date required since duration can be used instead
+        }
+    });
+    
+    // Date validation
+    $('#departure_date').change(function() {
+        const departureDate = $(this).val();
+        if (departureDate) {
+            $('#return_date').attr('min', departureDate);
+        }
+    });
+    
+    $('#return_date').change(function() {
+        const returnDate = $(this).val();
+        const departureDate = $('#departure_date').val();
+        
+        if (returnDate && departureDate && returnDate < departureDate) {
+            alert('Return date cannot be before departure date!');
+            $(this).val('');
+        }
+    });
+});
+</script>
+{% endblock %}

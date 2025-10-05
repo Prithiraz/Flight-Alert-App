@@ -1,0 +1,76 @@
+ What’s NOT Working:
+Every scraper returns "No REAL prices found".
+
+Expedia returns HTTP 429 → rate-limited
+
+Cheapflights returns 404 → endpoint likely changed
+
+All other HTML scrapers are getting valid HTML (large character sizes), but your parsers are failing to extract price data.
+
+🎯 What This Means
+Your scraper is not broken — it’s just outdated or too strict in parsing logic. Likely reasons:
+
+HTML structure of Skyscanner, Kayak, etc. has changed
+
+You’re getting ~160,000 characters — that means content is there
+
+But your regex / XPath / BeautifulSoup parsing isn't matching price elements anymore
+
+Anti-bot detection alters the HTML
+
+You might be getting dummy versions of the page, despite the size
+
+Check for phrases like “enable JavaScript” or “access denied”
+
+Your scraper might be looking for hardcoded patterns that no longer exist
+
+e.g. class="price" might now be class="fare-price"
+
+✅ How to Fix It (Minimal Action Plan)
+🛠 Step 1: Log and Inspect Raw HTML from Each Source
+Add this to each source scraper (temporary debugging):
+
+python
+Copy code
+with open(f"debug_{source}.html", "w", encoding="utf-8") as f:
+    f.write(response.text or page.content())
+Then open the files (like debug_skyscanner.html) and inspect them manually in the browser or VS Code. Look for the actual price elements.
+
+🧠 Step 2: Update Your Extractors
+Once you know the real structure, update the logic. For example:
+
+python
+Copy code
+# Instead of this:
+price = soup.find("span", class_="price").text
+
+# You may need this:
+price = soup.select_one("div.fare .amount").text.strip()
+Or if using regex, adapt to the new structure. Use:
+
+python
+Copy code
+re.findall(r"£\d{2,4}", page_content)
+🚫 Step 3: Skip Expedia or Rate-Limited Sources
+Since Expedia is returning 429 Too Many Requests, avoid querying it for now to reduce noise.
+
+✅ Step 4: Re-test with a Clean Target
+Try with a known, high-frequency route like:
+
+plaintext
+Copy code
+LHR → DUB
+LGW → AMS
+STN → FRA
+These are short-haul, high-traffic routes more likely to return prices.
+
+🔐 Pro Tip
+If you want truly robust scrapers long-term:
+
+Switch to Playwright page evaluation with selectors
+
+Use headless browser waits for elements like:
+
+python
+Copy code
+await page.wait_for_selector(".price")

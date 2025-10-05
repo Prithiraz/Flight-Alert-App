@@ -1,0 +1,72 @@
+✅ Playwright available for dynamic scraping
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Serving Flask app 'main'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.19:5000
+Press CTRL+C to quit
+ * Restarting with stat
+✅ Playwright available for dynamic scraping
+🚀 Starting FlightAlert Pro...
+✈️ Successfully loaded 5165 airports from cache!
+✅ FlightAlert Pro is ready!
+ * Debugger is active!
+ * Debugger PIN: 100-142-467
+172.31.128.19 - - [18/Jul/2025 11:42:35] "GET / HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:02] "GET /login HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:13] "POST /login HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:24] "POST /login HTTP/1.1" 302 -
+172.31.128.19 - - [18/Jul/2025 11:46:24] "GET /dashboard HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:25] "GET /api/flight_trivia HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:25] "GET /api/user_xp HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:26] "GET /api/trending_routes HTTP/1.1" 200 -
+✅ Playwright available for dynamic scraping
+⚠️ Comprehensive delay scraping failed: cannot import name 'scrape_comprehensive_flight_data' from 'flight_scraper' (/home/runner/workspace/flight_scraper.py)
+172.31.128.19 - - [18/Jul/2025 11:46:26] "GET /api/flight_trivia HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:26] "GET /api/trending_routes HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:26] "GET /api/airport_delays HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:27] "GET /api/flight_stats HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:27] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+172.31.128.19 - - [18/Jul/2025 11:46:28] "GET /api/rare_aircraft_spotted HTTP/1.1" 200 -
+🎯 SURPRISE ME: Scraping ONLY REAL prices under £100 from LHR on 2025-08-09
+🕷️ Scraping LHR → AMS for budget £100
+⚠️ Flight scraper not available for Amsterdam
+🚀 Getting REAL flight prices for LHR → AMS using DIRECT SCRAPER
+🚀 DIRECT 149-WEBSITE SCRAPING: LHR → AMS on 2025-07-25
+🚀 Launching ALL 149 WEBSITE comprehensive flight scraping DIRECTLY...
+🚀 COMPREHENSIVE FLIGHT SCRAPING: LHR → AMS on 2025-08-01
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+❌ Browser error: Pass user_data_dir parameter to 'browser_type.launch_persistent_context(user_data_dir, **kwargs)' instead of specifying '--user-data-dir' argument
+❌ No realistic flights found from 149 websites
+❌ No real flight data available from direct scraper
+❌ No real flights found for Amsterdam - skipping
+🕷️ Scraping LHR → BCN for budget £100
+⚠️ Flight scraper not available for Barcelona
+🚀 Getting REAL flight prices for LHR → BCN using DIRECT SCRAPER
+🚀 DIRECT 149-WEBSITE SCRAPING: LHR → BCN on 2025-07-25
+🚀 Launching ALL 149 WEBSITE comprehensive flight scraping DIRECTLY...
+🚀 COMPREHENSIVE FLIGHT SCRAPING: LHR → BCN on 2025-08-01
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+❌ Browser error: Pass user_data_dir parameter to 'browser_type.launch_persistent_context(user_data_dir, **kwargs)' instead of specifying '--user-data-dir' argument
+❌ No realistic flights found from 149 websites
+❌ No real flight data available from direct scraper
+❌ No real flights found for Barcelona - skipping
+🕷️ Scraping LHR → FCO for budget £100
+⚠️ Flight scraper not available for Rome
+🚀 Getting REAL flight prices for LHR → FCO using DIRECT SCRAPER
+🚀 DIRECT 149-WEBSITE SCRAPING: LHR → FCO on 2025-07-25
+🚀 Launching ALL 149 WEBSITE comprehensive flight scraping DIRECTLY...
+🚀 COMPREHENSIVE FLIGHT SCRAPING: LHR → FCO on 2025-08-01
+🎯 TARGET: Real prices for specific flights (not generic pricing)
+================================================================================
+❌ Browser error: Pass user_data_dir parameter to 'browser_type.launch_persistent_context(user_data_dir, **kwargs)' instead of specifying '--user-data-dir' argument
+❌ No realistic flights found from 149 websites
+❌ No real flight data available from direct scraper
+❌ No real flights found for Rome - skipping
+172.31.128.19 - - [18/Jul/2025 11:47:27] "GET /api/surprise_me?budget=100 HTTP/1.1" 200 -

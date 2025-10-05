@@ -1,0 +1,433 @@
+Nice — I’ll give you a full, production-grade plan and concrete code patterns to turn that codebase into a robust, high-success flight scraper that actually finds real itineraries with rich details (not just random prices), with a much higher success rate than the ~23% you mentioned.
+
+I’ll do this in three parts:
+
+High-level architecture & product/ethical considerations
+
+Tactical, engineering improvements (detailed list + code sketches you can drop in)
+
+Production readiness: testing, monitoring, infra, cost & next steps
+
+If you want, after this I can produce a ready-to-run repo with unit/integration tests and deployment manifests — tell me which parts to prioritize.
+
+1) High level architecture & constraints (must read)
+Legality & reliability: many aggregator/airline sites explicitly disallow scraping in their TOS and employ anti-scraping measures. Best practice: wherever possible use official APIs (Amadeus, Travelport, Sabre, Skyscanner for Business, IATA/NDC APIs) — they cost money but dramatically increase accuracy, rate limits, and reliability. If you must scrape, accept the operational cost: proxies, frequent maintenance, human-like automation and captcha handling.
+
+Data fidelity: target full itinerary extraction, not only prices: airline(s), flight numbers, cabins, fares, fare class, legs, airports (IATA), departure/arrival local times with timezones, duration, stops + layover airports and durations, baggage rules, restrictions, booking link / deep link.
+
+Risk: captchas, IP bans, legal TOS violation. Build fallback/partnership strategy for production.
+
+Success metric: define concrete KPIs: extraction success rate (per site) > 80%, itinerary completeness (all required fields present) > 95% for working sources, average time-to-scrape per search < Xs.
+
+2) Tactical engineering improvements (detailed + code)
+Below are the highest impact changes — do these first, they’ll raise success most.
+
+A. Replace brittle static scraping with robust Playwright orchestration
+Why: Modern flight sites are heavily JS-driven. Playwright (headful) + stealth + session reuse is essential.
+
+Key features:
+Use real browsers (headful Chrome/Chromium) with GPU disabled but not fully headless; headful reduces detection.
+
+Maintain a pool of browser contexts per (proxy, userAgent) triple; reuse contexts for a few requests to preserve cookies/session tokens.
+
+Rotate fingerprints: userAgent, viewport, timezone, language, device type.
+
+Simulate human interaction: click search box, type slowly, pick suggestion from dropdown, wait for networkidle + explicit flight card selectors.
+
+Use exponential backoff on failures, and escalate: desktop → mobile site → Playwright (full dynamic) → (if permitted) third-party API.
+
+Playwright scraper skeleton (async, production style)
+This is a drop-in architecture sketch (pseudo-complete) you can implement in your app. It focuses on reliability, concurrency control, proxy & context pooling, and clean extraction/parsing.
+
+python
+Copy code
+# sample_playwright_scraper.py  (concept)
+import asyncio
+from playwright.async_api import async_playwright, TimeoutError as PWTimeout
+import random
+import re
+from datetime import datetime
+from typing import List, Dict
+import backoff  # helpful for retry patterns
+
+class PWContextPool:
+    def __init__(self, browser, size=6, proxies=None, user_agents=None):
+        self.browser = browser
+        self.size = size
+        self.proxies = proxies or [None]
+        self.user_agents = user_agents or []
+        self._semaphore = asyncio.Semaphore(size)
+        self._contexts = []  # optionally prewarm
+    async def new_context(self, proxy=None, user_agent=None, timezone=None):
+        ctx_args = {}
+        if user_agent:
+            ctx_args['user_agent'] = user_agent
+        if proxy:
+            ctx_args['proxy'] = {"server": proxy}
+        if timezone:
+            ctx_args['timezone_id'] = timezone
+        ctx = await self.browser.new_context(**ctx_args)
+        # add stealth-like init scripts
+        await ctx.add_init_script(STEALTH_SCRIPT)
+        return ctx
+    async def run(self, coro):
+        async with self._semaphore:
+            return await coro()
+
+STEALTH_SCRIPT = """
+// small stealth injections: navigator.webdriver, languages, plugins, etc.
+Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+Object.defineProperty(navigator, 'languages', {get: () => ['en-US','en']});
+"""
+
+class PlaywrightFlightScraper:
+    def __init__(self, concurrency=4, proxies=None, user_agents=None):
+        self.concurrency = concurrency
+        self.proxies = proxies or []
+        self.user_agents = user_agents or [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ... Chrome/120',
+            # add variety
+        ]
+
+    async def _init_browser(self):
+        self.playwright = await async_playwright().start()
+        # use chromium; consider installing a recent Chromium build for stealth
+        self.browser = await self.playwright.chromium.launch(headless=False, args=[
+            '--no-sandbox','--disable-blink-features=AutomationControlled'
+        ])
+        self.pool = PWContextPool(self.browser, size=self.concurrency, proxies=self.proxies, user_agents=self.user_agents)
+
+    async def close(self):
+        await self.browser.close()
+        await self.playwright.stop()
+
+    @backoff.on_exception(backoff.expo, (PWTimeout, Exception), max_tries=3)
+    async def search_site(self, site_config: dict, departure: str, destination: str, date: str):
+        """Search one site and return extracted itinerary list"""
+        user_agent = random.choice(self.user_agents)
+        proxy = random.choice(self.proxies) if self.proxies else None
+        timezone = random.choice(['Europe/London','America/New_York','Europe/Amsterdam'])
+        ctx = await self.pool.new_context(proxy=proxy, user_agent=user_agent, timezone=timezone)
+        page = await ctx.new_page()
+
+        try:
+            # baseline: navigate to site, wait for search UI to load
+            await page.goto(site_config['url'], wait_until='domcontentloaded', timeout=30000)
+            await asyncio.sleep(random.uniform(1,2))
+
+            # simulate human typing into origin/dest inputs if present
+            # this requires site specific selectors; first try a general approach:
+            await self.fill_location_inputs(page, departure, destination, date)
+
+            # wait for results
+            await page.wait_for_selector(site_config.get('result_container_selector', 'div'), timeout=30000)
+            # give results time to render
+            await asyncio.sleep(2)
+
+            # extract flight cards
+            raw_cards = await page.query_selector_all(site_config.get('flight_card_selector', '[data-testid*="result"], .result'))
+            results = []
+            for card in raw_cards[:20]:
+                parsed = await self.parse_card(card, page)
+                if parsed:
+                    results.append(parsed)
+
+            return results
+
+        finally:
+            await page.close()
+            await ctx.close()
+
+    async def fill_location_inputs(self, page, origin, dest, date):
+        # best-effort: focus inputs by common placeholders/aria labels
+        for sel in ['input[placeholder*="Where from"]','input[aria-label*="From"]','input[name*="origin"]']:
+            try:
+                inp = await page.query_selector(sel)
+                if inp:
+                    await inp.click()
+                    await inp.fill('')
+                    await asyncio.sleep(0.2)
+                    await inp.type(origin, delay=random.randint(80,160))
+                    await asyncio.sleep(0.4)
+                    # choose first suggestion if exists
+                    suggestion = await page.query_selector('[role="option"], .suggestion')
+                    if suggestion: await suggestion.click()
+                    break
+            except Exception:
+                continue
+        # same for destination...
+        # then for date - open datepicker etc (site-specific)
+        return
+
+    async def parse_card(self, card_handle, page):
+        # site-agnostic extraction: try a set of selectors and robust parsing
+        try:
+            # price
+            price_text = await (await card_handle.query_selector('.price')) .inner_text() if await card_handle.query_selector('.price') else None
+            # fallback search in card text
+            if not price_text:
+                text = await card_handle.inner_text()
+                m = re.search(r'[£€$]\s*([\d,]+)', text)
+                price_text = m.group(0) if m else None
+            if not price_text:
+                return None
+            price = int(re.sub(r'[^\d]','', price_text))
+
+            # airline(s)
+            airline = None
+            airline_elem = await card_handle.query_selector('[data-testid*="airline"], .airline')
+            if airline_elem:
+                airline = (await airline_elem.inner_text()).strip()
+
+            # times
+            times = await card_handle.query_selector_all('.time, [data-testid*="time"]')
+            dep = (await times[0].inner_text()).strip() if times and len(times)>0 else None
+            arr = (await times[1].inner_text()).strip() if times and len(times)>1 else None
+
+            # duration & stops
+            duration = await (await card_handle.query_selector('.duration')).inner_text() if await card_handle.query_selector('.duration') else None
+            stops = await (await card_handle.query_selector('.stops')).inner_text() if await card_handle.query_selector('.stops') else None
+
+            return {
+                'price': price,
+                'airline': airline or 'Multiple',
+                'departure_time': dep,
+                'arrival_time': arr,
+                'duration': duration,
+                'stops': stops,
+                'raw': await card_handle.inner_text()
+            }
+        except Exception:
+            return None
+Notes & improvements
+
+Use headful mode (headless=False) on at least some contexts; many sites detect headless or --headless=new.
+
+Add mouse movement & typing delays to mimic users. Use page.mouse.move(...), small random drifts, and page.keyboard.type() with variable delays.
+
+Use per-site config files that contain selectors for inputs and flight cards (so you can update them without changing code). The SelectorUpdater module in your repo is a good start — extend it to store per-site best selectors.
+
+B. Proxy strategy & session isolation
+Use residential or mobile proxies (not cheap datacenter proxies) for the most sensitive sites. Providers: reputable residential proxy providers (mention privately).
+
+Maintain a pool of proxies; bind each browser context to a single proxy — never reuse the same proxy for too many concurrent scrapes for the same site.
+
+Keep sessions alive for a few scrapes to reuse the cookie / auth tokens. But rotate before too many searches from same origin to avoid fingerprint correlation.
+
+C. Intelligent site fallbacks & prioritization
+Flow per search:
+
+Use prioritized list of sources (partner APIs first, then meta-search engines, then direct airlines).
+
+For each source: attempt desktop scraping (Playwright) with best selectors.
+
+If blocked (detected by page content: CAPTCHA, JS challenge, 403, abnormal HTML), immediately retry with:
+
+Mobile site / m.* domain
+
+Different proxy + userAgent pair
+
+Different timezone/geo (if geo matters)
+
+If all static fails and Playwright is available, use full dynamic load with network interception to capture XHR responses (many sites send JSON with fare info).
+
+If still fails, mark site as temporarily unhealthy; rely on other sources.
+
+The ScraperHealthMonitor and SelectorUpdater in your codebase are excellent — make them run automatically and feed updated selectors into scraper.
+
+D. Extract full itinerary (not just price)
+For each flight card find:
+
+segment list of legs: for each leg → airline, flight number, aircraft, dep airport (IATA), arr airport (IATA), dep datetime (with timezone), arr datetime (with timezone).
+
+fare info: total price, taxes, currency, fare basis if available.
+
+booking/redirect link: the URL to book (or deep link), or OTA's offer id if booking link not available.
+
+baggage rules & fare restrictions if present (some OTAs include).
+
+Do not trust plain text times — parse with timezone mapping using airport database (IATA → timezone). You already have airports.json — fill lat/long/timezone fields and keep it updated.
+
+Deduplication & normalization
+Normalize results into canonical shape:
+
+json
+Copy code
+{
+  "search": {"origin":"LHR","dest":"AMS","date":"2025-08-08"},
+  "itinerary_id": "sha256(origin+dest+date+legs_signature+price)",
+  "price": {"amount": 89, "currency": "GBP"},
+  "legs": [
+    {"airline":"KLM","flight":"KL100","from":"LHR","to":"AMS","dep":"2025-08-08T07:30:00+01:00","arr":"2025-08-08T09:50:00+02:00","duration_min":80}
+  ],
+  "book_link": "...",
+  "source": "Kayak",
+  "scrape_ts": "..."
+}
+Deduplicate by hashing legs (airports+dep times+flight numbers) and price. Keep the cheapest per identical legs.
+
+E. Captcha & bot mitigation (practical)
+Avoid triggering captchas via all previous measures: browser realism, proxies, and throttling.
+
+If captcha occurs, options:
+
+Use a captcha-solving service (2Captcha, AntiCaptcha) but these add cost and latency.
+
+If solving is not acceptable, mark site as blocked and rely on other sources.
+
+Monitor frequency of captchas and remove offending proxies or fingerprints.
+
+F. Data validation & plausibility checks
+The scraper must validate extracted data:
+
+Ensure price is within heuristic bounds for origin/destination and time (use histograms).
+
+Verify time logic: arrival > departure (consider crossing midnight/timezones).
+
+Verify airports are correct (IATA codes).
+
+Validate flight numbers format: airline code (2 letters/numeric) + number.
+
+Reject obviously malformed items (price 0, price > 20000, missing legs).
+
+Implement digit-by-digit parsing for price to avoid mistakes (per your earlier instruction about arithmetic care).
+
+G. Selector auto-update & health automation (you have parts)
+Continue with SelectorUpdater approach but add:
+
+Synthetic unit tests per site that assert n cards parsed.
+
+Canary runs every N minutes and if a site falls below thresholds, create a debug HTML snapshot and queue for selector analysis.
+
+Use difflib or structural DOM fingerprinting to detect site changes instead of manual inspection.
+
+H. Storage & schema (reliable)
+Use PostgreSQL for normalized results, Redis for queues, S3 for raw snapshots.
+
+Example minimal flights table:
+
+sql
+Copy code
+CREATE TABLE flights (
+  id UUID PRIMARY KEY,
+  search_origin text,
+  search_dest text,
+  search_date date,
+  source text,
+  itinerary_hash text,
+  price_amount int,
+  price_currency text,
+  legs jsonb,
+  book_link text,
+  scraped_at timestamptz,
+  raw_snapshot_key text,
+  UNIQUE (itinerary_hash, source)
+);
+Keep raw snapshots (HTML / HAR) in S3 for debugging.
+
+3) Production readiness: testing, monitoring, infra, ops
+Testing
+Unit tests for parser functions (given HTML snippets).
+
+Integration tests: run a small set of known searches on a staging environment with throttled concurrency and fixed proxies.
+
+End-to-end synthetic tests: nightly runs against partner API (if available) or known stable sites.
+
+Monitoring & observability
+Metrics: scrape_success_rate per site, parse_success_rate, average latency, captcha_rate, ban_rate, queue length. Export to Prometheus.
+
+Logs: structured JSON logs with request id, site, proxy, userAgent, timing, errors.
+
+Traces: instrument critical paths (browser launch, page.goto, first selector).
+
+Alerts: notify if site success rate < 50% or captcha rate spikes > threshold.
+
+Automation & selector maintenance
+Automatic baseline snapshots nightly.
+
+Auto-generate selector proposals via SelectorUpdater and optionally run an approval workflow (human in the loop before auto-deploying selector changes).
+
+Deployment & scaling
+Containerize (Docker). Use Kubernetes for horizontal scaling.
+
+Use a job queue (Celery / RabbitMQ or RQ) and scale worker pods.
+
+Browser-heavy tasks: put Playwright workers on nodes with enough memory/CPU; limit concurrency per node.
+
+Use sticky sessions: one browser per worker, reuse contexts.
+
+Cost & estimate (ballpark)
+Residential proxy pool: significant ongoing cost (hundreds–thousands USD/month depending on volume).
+
+Cloud infra for Playwright (k8s nodes with 2–4GB+ each): $X/month depending on scale.
+
+Captcha solver / premium APIs: per-solve costs.
+
+Consider using paid flight APIs for mission-critical reliability.
+
+4) Operational checklist / prioritized plan (what to implement first)
+Implement Playwright orchestration skeleton (above). Use headful contexts, add stealth script, careful typing simulation.
+
+Add proxy pool + context binding. Test with small set of sites (Skyscanner, Kayak, Google Flights).
+
+Improve parser to extract full legs, flight numbers, times and add a robust normalization/dedup step.
+
+Integrate health monitor & selector updater to auto-collect debug HTML and propose selectors.
+
+Add structured storage (Postgres) + raw snapshot S3.
+
+Implement metrics + alerts (Prometheus + Grafana).
+
+Run integration tests & a 7-day canary: measure success rate, iterate selectors & heuristics.
+
+Add captcha handling as optional step (costy) or fallback to other sources.
+
+5) Concrete quick wins you can do in <48 hours
+Convert the current synchronous Playwright calls to the async implementation shown. This reduces overhead and lets you run several browsers concurrently.
+
+Add a per-site config file (JSON) with selectors, priority, result container, and test patterns — load it dynamically so you don’t change code every time site changes.
+
+Hook your existing SelectorUpdater to save current selectors and make the scraper load them at runtime.
+
+Add a simple dedupe by hashing normalized legs + price and return the cheapest per hash.
+
+6) Example small validation function (Python)
+python
+Copy code
+import pytz
+from dateutil import parser as dtparse
+
+def validate_and_normalize_itinerary(itin: dict) -> dict:
+    # ensure price
+    price = int(itin['price'])
+    if price < 10 or price > 20000:
+        raise ValueError("price out of bounds")
+    # ensure legs correctness
+    for leg in itin['legs']:
+        dep = dtparse.parse(leg['dep'])
+        arr = dtparse.parse(leg['arr'])
+        if arr <= dep:
+            raise ValueError("arrival <= departure")
+    # compute canonical hash
+    import hashlib, json
+    legs_sig = json.dumps([[l['from'], l['to'], l['dep'], l.get('flight','')] for l in itin['legs']], sort_keys=True)
+    h = hashlib.sha256((legs_sig + str(price)).encode()).hexdigest()
+    itin['canonical_hash'] = h
+    return itin
+7) Final notes — tradeoffs & where I recommend spending time/money
+Best reliability → paid flight APIs (Amadeus, Sabre, Travelport). If you can budget them, use them for core product.
+
+If scraping: budget for residential proxies, long-term maintenance (selector churn), and an operator who can own site issues.
+
+Captchas are the biggest operational cost & time sink. Avoid them where possible.
+
+If you want, I’ll:
+
+convert your repo’s RealFlightScraper / AdvancedFlightScraper into the async Playwright service above (complete code, runnable),
+
+create per-site config JSON files + examples for Skyscanner/Kayak/Google,
+
+implement the normalization + dedupe + Postgres persistence,
+
+and add test scripts + Prometheus metrics.
+

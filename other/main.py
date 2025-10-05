@@ -64,11 +64,10 @@ from dateutil import parser as dtparse
 import pytz
 import requests
 
-Updated upstream
 # Get the directory of this script for template path
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIR = os.path.join(SCRIPT_DIR, "templates")
-=======
+
 # Try to import Playwright for optional server-side validation
 try:
     from playwright.async_api import async_playwright, Browser, BrowserContext, Page, TimeoutError as PWTimeout
@@ -77,7 +76,6 @@ try:
 except ImportError:
     PLAYWRIGHT_AVAILABLE = False
     print("⚠️ Playwright not available - install with: pip install playwright && playwright install chromium")
->>>>>>> Stashed changes
 
 # Force headless mode for server validation
 HEADLESS = True
@@ -98,7 +96,6 @@ AMADEUS_API_SECRET = os.getenv("AMADEUS_API_SECRET", "")
 AMADEUS_BASE_URL = "https://api.amadeus.com"
 AMADEUS_TEST_MODE = os.getenv("AMADEUS_TEST_MODE", "true").lower() == "true"
 
-<<<<<<< Updated upstream
 # Mock ryanair module - in a real app this would be a proper airline API integration
 class ryanair:
     @staticmethod
@@ -126,13 +123,12 @@ deep_airline_urls = {
 
 # Database setup
 DB_PATH = os.path.join(os.path.dirname(SCRIPT_DIR), "flightalert.db")
-=======
+
 # Duffel API Configuration
 # For Replit: Add DUFFEL_API_KEY as a Secret
 # For GitHub: Set as environment variable or manually configure
-DUFFEL_API_KEY = os.getenv("DUFFEL_API_KEY", "DUFFEL_API_KEY = os.getenv(\"DUFFEL_API_KEY\")")
+DUFFEL_API_KEY = os.getenv("DUFFEL_API_KEY", "")
 DUFFEL_BASE_URL = "https://api.duffel.com"
->>>>>>> Stashed changes
 
 # Debug Duffel configuration
 print(f"🔧 Duffel API Key: {DUFFEL_API_KEY[:20]}...")
@@ -190,6 +186,26 @@ def get_db_connection():
         yield conn
     finally:
         conn.close()
+
+def get_db_conn():
+    """Get database connection with Row factory (alias for compatibility)"""
+    conn = sqlite3.connect(DB_PATH, timeout=10.0)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def get_exchange_rate(from_currency: str, to_currency: str) -> float:
+    """Get exchange rate between two currencies"""
+    # Simple mock exchange rates - in production, use a real API
+    rates = {
+        ("GBP", "USD"): 1.27,
+        ("GBP", "EUR"): 1.17,
+        ("GBP", "GBP"): 1.0,
+        ("USD", "GBP"): 0.79,
+        ("EUR", "GBP"): 0.85,
+    }
+    return rates.get((from_currency.upper(), to_currency.upper()), 1.0)
+
+
 
 def init_database():
     """Initialize SQLite database with BYOB architecture tables"""
@@ -2703,56 +2719,11 @@ async def ingest_from_extension(payload: IngestPayload, request: Request, x_fa_t
         else:
             site_id = site['id']
 
-<<<<<<< Updated upstream
-def create_query(departure: str, arrival: str, date: Optional[str] = None, passengers: int = 1, airline: Optional[str] = None) -> Dict[str, Any]:
-    """
-    Create a standardized flight query object for airline APIs
-    
-    Args:
-        departure (str): Departure airport code
-        arrival (str): Arrival airport code  
-        date (str, optional): Travel date in YYYY-MM-DD format
-        passengers (int): Number of passengers
-        airline (str, optional): Preferred airline
-        
-    Returns:
-        dict: Standardized query object
-    """
-    query = {
-        "departure": departure.upper(),
-        "arrival": arrival.upper(),
-        "passengers": passengers,
-        "query_timestamp": datetime.now().isoformat()
-    }
-    
-    if date:
-        query["date"] = date
-    if airline:
-        query["airline"] = airline.lower()
-        
-    return query
-
-def get_airline_name(code: str) -> str:
-    """Get airline full name from code"""
-    conn = get_db_conn()
-    cur = conn.cursor()
-    cur.execute("SELECT name FROM airlines WHERE code = ?", (code.upper(),))
-    row = cur.fetchone()
-    conn.close()
-    
-    if row:
-        return row['name']
-    
-    # If not found, return code as-is
-    logger.warning(f"Unknown airline code: {code}")
-    return code
-=======
         # Insert results
         processed = 0
         for result in clean_results:
             try:
                 result_hash = hashlib.sha256(json.dumps(result.dict(), sort_keys=True).encode()).hexdigest()[:16]
->>>>>>> Stashed changes
 
                 # Check for existing
                 existing = conn.execute(
@@ -2805,6 +2776,49 @@ def get_airline_name(code: str) -> str:
 
     return {"ok": True, "ingested": processed, "deduplicated": len(payload.results) - len(clean_results), "filtered": filtered_count}
 
+def create_query(departure: str, arrival: str, date: Optional[str] = None, passengers: int = 1, airline: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Create a standardized flight query object for airline APIs
+    
+    Args:
+        departure (str): Departure airport code
+        arrival (str): Arrival airport code  
+        date (str, optional): Travel date in YYYY-MM-DD format
+        passengers (int): Number of passengers
+        airline (str, optional): Preferred airline
+        
+    Returns:
+        dict: Standardized query object
+    """
+    query = {
+        "departure": departure.upper(),
+        "arrival": arrival.upper(),
+        "passengers": passengers,
+        "query_timestamp": datetime.now().isoformat()
+    }
+    
+    if date:
+        query["date"] = date
+    if airline:
+        query["airline"] = airline.lower()
+        
+    return query
+
+def get_airline_name(code: str) -> str:
+    """Get airline full name from code"""
+    conn = get_db_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM airlines WHERE code = ?", (code.upper(),))
+    row = cur.fetchone()
+    conn.close()
+    
+    if row:
+        return row['name']
+    
+    # If not found, return code as-is
+    logger.warning(f"Unknown airline code: {code}")
+    return code
+
 # ==================== AEROSPACE ENGINEERING ENDPOINTS ====================
 
 @app.get("/api/aerospace/weather/{airport_code}")
@@ -2834,7 +2848,6 @@ async def get_airport_weather(airport_code: str):
         logger.error(f"❌ Weather API error for {airport_code}: {e}")
         raise HTTPException(status_code=500, detail=f"Weather data unavailable for {airport_code}")
 
-<<<<<<< Updated upstream
 def generate_deep_link(airline_code: str, origin: str, destination: str, date: str, passengers: int = 1) -> str:
     """Generate real airline booking deep link"""
     conn = get_db_conn()
@@ -3033,20 +3046,70 @@ def get_random_aerospace_fact() -> Dict[str, Any]:
 async def startup_event():
     init_database()
     logger.info("🚀 FlightAlert Pro started successfully")
-=======
+
 @app.get("/api/aerospace/route-analysis/{origin}/{destination}")
 async def analyze_flight_route(origin: str, destination: str):
     """Aerospace engineering analysis of flight route (GREAT CIRCLE, FUEL, NAVIGATION)"""
     try:
         origin = origin.upper()
         destination = destination.upper()
->>>>>>> Stashed changes
 
         # Get airport coordinates
         origin_coords = get_airport_coordinates(origin)
         dest_coords = get_airport_coordinates(destination)
 
-<<<<<<< Updated upstream
+        if not origin_coords or not dest_coords:
+            raise HTTPException(status_code=404, detail="Airport coordinates not found")
+
+        # Calculate great circle distance and navigation data
+        distance_data = aerospace_calc.great_circle_distance(
+            origin_coords['lat'], origin_coords['lon'],
+            dest_coords['lat'], dest_coords['lon']
+        )
+
+        # Calculate initial bearing for navigation
+        bearing = aerospace_calc.initial_bearing(
+            origin_coords['lat'], origin_coords['lon'],
+            dest_coords['lat'], dest_coords['lon']
+        )
+
+        # Fuel efficiency estimates for different aircraft types
+        aircraft_types = ['A320', 'A350', 'B737', 'B787', 'B777']
+        fuel_estimates = {}
+
+        for aircraft in aircraft_types:
+            fuel_data = aerospace_calc.fuel_efficiency_estimate(
+                distance_data['great_circle_km'], aircraft
+            )
+            fuel_estimates[aircraft] = fuel_data
+
+        response = {
+            'route': f"{origin} → {destination}",
+            'airports': {
+                'origin': {'code': origin, 'coordinates': origin_coords},
+                'destination': {'code': destination, 'coordinates': dest_coords}
+            },
+            'distance_analysis': distance_data,
+            'navigation': {
+                'initial_bearing': round(bearing, 1),
+                'bearing_description': get_bearing_description(bearing),
+                'great_circle_route': True
+            },
+            'fuel_analysis_by_aircraft': fuel_estimates,
+            'flight_time_estimates': {
+                'commercial_average': f"{round(distance_data['great_circle_km'] / 900, 1)} hours",  # ~900 km/h average
+                'business_jet': f"{round(distance_data['great_circle_km'] / 800, 1)} hours",
+                'supersonic_estimated': f"{round(distance_data['great_circle_km'] / 2100, 1)} hours"  # Concorde speed
+            },
+            'generated_at': datetime.utcnow().isoformat()
+        }
+
+        return response
+
+    except Exception as e:
+        logger.error(f"❌ Route analysis error for {origin}-{destination}: {e}")
+        raise HTTPException(status_code=500, detail=f"Route analysis failed")
+
 @app.post("/api/query")
 async def api_query(q: QueryIn, request: Request, user: Dict = Depends(paid_user_dependency)):
     """Main query endpoint - saves query and triggers search, returns real flight results"""
@@ -3148,58 +3211,7 @@ async def api_query(q: QueryIn, request: Request, user: Dict = Depends(paid_user
             "passengers": q.passengers,
             "cabin": q.cabin
         }
-=======
-        if not origin_coords or not dest_coords:
-            raise HTTPException(status_code=404, detail="Airport coordinates not found")
-
-        # Calculate great circle distance and navigation data
-        distance_data = aerospace_calc.great_circle_distance(
-            origin_coords['lat'], origin_coords['lon'],
-            dest_coords['lat'], dest_coords['lon']
-        )
-
-        # Calculate initial bearing for navigation
-        bearing = aerospace_calc.initial_bearing(
-            origin_coords['lat'], origin_coords['lon'],
-            dest_coords['lat'], dest_coords['lon']
-        )
-
-        # Fuel efficiency estimates for different aircraft types
-        aircraft_types = ['A320', 'A350', 'B737', 'B787', 'B777']
-        fuel_estimates = {}
-
-        for aircraft in aircraft_types:
-            fuel_data = aerospace_calc.fuel_efficiency_estimate(
-                distance_data['great_circle_km'], aircraft
-            )
-            fuel_estimates[aircraft] = fuel_data
-
-        response = {
-            'route': f"{origin} → {destination}",
-            'airports': {
-                'origin': {'code': origin, 'coordinates': origin_coords},
-                'destination': {'code': destination, 'coordinates': dest_coords}
-            },
-            'distance_analysis': distance_data,
-            'navigation': {
-                'initial_bearing': round(bearing, 1),
-                'bearing_description': get_bearing_description(bearing),
-                'great_circle_route': True
-            },
-            'fuel_analysis_by_aircraft': fuel_estimates,
-            'flight_time_estimates': {
-                'commercial_average': f"{round(distance_data['great_circle_km'] / 900, 1)} hours",  # ~900 km/h average
-                'business_jet': f"{round(distance_data['great_circle_km'] / 800, 1)} hours",
-                'supersonic_estimated': f"{round(distance_data['great_circle_km'] / 2100, 1)} hours"  # Concorde speed
-            },
-            'generated_at': datetime.utcnow().isoformat()
-        }
-
-        return response
-
-    except Exception as e:
-        logger.error(f"❌ Route analysis error for {origin}-{destination}: {e}")
-        raise HTTPException(status_code=500, detail=f"Route analysis failed")
+    }
 
 @app.get("/api/aerospace/dashboard/{query_id}")
 async def aerospace_dashboard(query_id: int):
@@ -4160,7 +4172,6 @@ async def surprise_me(budget: float = 200):
     return {
         'message': f'Amazing destinations under £{budget}!',
         'destinations': destinations
->>>>>>> Stashed changes
     }
 
 @app.post("/api/ingest")
@@ -4306,7 +4317,6 @@ async def amadeus_status():
         'token_expires_at': amadeus_client.token_expires_at.isoformat() if amadeus_client.token_expires_at else None
     }
 
-<<<<<<< Updated upstream
 @app.get("/api/airports")
 async def get_airports(search: Optional[str] = None):
     """Get airport database - clean format without extra text"""
@@ -4499,7 +4509,7 @@ async def get_aerospace_facts():
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc: HTTPException):
     return {"error": "Endpoint not found", "detail": "The requested endpoint does not exist"}
-=======
+
 @app.get("/api/duffel/status")
 async def duffel_status():
     """Check Duffel API configuration status"""
@@ -4509,7 +4519,6 @@ async def duffel_status():
         'api_key_prefix': DUFFEL_API_KEY[:20] + '...' if DUFFEL_API_KEY else None,
         'base_url': DUFFEL_BASE_URL
     }
->>>>>>> Stashed changes
 
 @app.post("/api/amadeus/test")
 async def test_amadeus():

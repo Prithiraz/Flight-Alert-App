@@ -60,4 +60,4 @@ dump.rdb
 # Temporary files
 *.tmp
 *.temp
-/tmp/
+/tmp/*.db
